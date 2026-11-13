@@ -1,6 +1,6 @@
 {
- "name": "batch.day",
- "short_name": "batch.day",
+ "name": "batch.recipes",
+ "short_name": "batch.recipes",
  "description": "Cook once. Eat all week.",
  "start_url": "./",
  "scope": "./",

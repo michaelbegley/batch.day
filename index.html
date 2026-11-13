@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-fUd94LlaZpBiHQ6fiP2a5mbfnAegN3IiuFkj0qbeG/s=' 'sha256-QvzMdZR1QK9Yfc1v3z8P+E1gfftV6mCXeSkf4JhO+HI=' 'sha256-TPv3tNBtaZUiLecizaaEWm5yTJQkaMVd1mcNYJVTXD8=' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; worker-src blob: https://cdn.jsdelivr.net; connect-src https://cdn.jsdelivr.net https://michbegl-batch-day-reader.hf.space; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-fUd94LlaZpBiHQ6fiP2a5mbfnAegN3IiuFkj0qbeG/s=' 'sha256-QvzMdZR1QK9Yfc1v3z8P+E1gfftV6mCXeSkf4JhO+HI=' 'sha256-2kzmRv0ONC9G2y+mUs8RSviNzJNx9ezPJzyr+SvS9xU=' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; worker-src blob: https://cdn.jsdelivr.net; connect-src https://cdn.jsdelivr.net https://michbegl-batch-day-reader.hf.space; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>batch.day: cook once, eat all week</title>
+<title>batch.recipes: cook once, eat all week</title>
 <meta name="description" content="Add a recipe screenshot or paste it. Get the whole batch day: what to buy, which pot, what to cook first, and what goes in the freezer.">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
@@ -14,11 +14,11 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="batch.day">
-<meta property="og:title" content="batch.day: cook once, eat all week">
+<meta name="apple-mobile-web-app-title" content="batch.recipes">
+<meta property="og:title" content="batch.recipes: cook once, eat all week">
 <meta property="og:description" content="Add a recipe screenshot. Get the whole batch day: what to buy, which pot, what to cook first.">
-<meta property="og:image" content="https://batch.day/og.png">
-<meta property="og:url" content="https://batch.day/">
+<meta property="og:image" content="https://batch.recipes/og.png">
+<meta property="og:url" content="https://batch.recipes/">
 <meta name="twitter:card" content="summary_large_image">
 <script>try{var t=localStorage.getItem('bd-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
 <style>
@@ -267,7 +267,7 @@ footer{color:var(--ink2);font-size:13px;text-align:center;padding:32px 24px 0}
 </head>
 <body>
 <header class="bar">
-  <a class="mark" href="./" aria-label="batch.day home">batch<b>.</b>day</a>
+  <a class="mark" href="./" aria-label="batch.recipes home">batch<b>.</b>recipes</a>
   <button class="switch" id="theme" role="switch" aria-checked="false" aria-label="Dark mode"><i><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M13 9.5A5.5 5.5 0 0 1 6.5 3a5.5 5.5 0 1 0 6.5 6.5z"/></svg></i></button>
 </header>
 
@@ -312,7 +312,7 @@ footer{color:var(--ink2);font-size:13px;text-align:center;padding:32px 24px 0}
     <div class="card mine hidden" id="mine">
       <h3>My batches</h3>
       <ul class="saved" id="savedList"></ul>
-      <div class="tip hidden" id="tip"><b>Keep these for good.</b> On iPhone, Safari can clear them if you don't visit for a week. Add batch.day to your Home Screen: tap Share, then Add to Home Screen.<button class="link" id="tipX">Got it</button></div>
+      <div class="tip hidden" id="tip"><b>Keep these for good.</b> On iPhone, Safari can clear them if you don't visit for a week. Add batch.recipes to your Home Screen: tap Share, then Add to Home Screen.<button class="link" id="tipX">Got it</button></div>
     </div>
   </div>
 
@@ -333,7 +333,7 @@ footer{color:var(--ink2);font-size:13px;text-align:center;padding:32px 24px 0}
     </div>
     <div class="card">
       <h3>What we read <span class="muted" style="font-size:13px;font-weight:400" id="ingCount"></span></h3>
-      <div class="ai hidden" id="aiRow"><span>Words look off?</span><button class="link" id="aiGo">Read it with AI</button><small>Sends your screenshots to an AI model to read them. batch.day doesn't keep them.</small></div>
+      <div class="ai hidden" id="aiRow"><span>Words look off?</span><button class="link" id="aiGo">Read it with AI</button><small>Sends your screenshots to an AI model to read them. batch.recipes doesn't keep them.</small></div>
       <ul class="ings" id="ings"></ul>
       <details class="edit"><summary>Something wrong? Edit the text</summary>
         <textarea id="text" aria-label="Recipe text"></textarea>
@@ -1126,7 +1126,7 @@ function plainText(){
 }
 async function shareIt(){
   let url='';try{url=await linkFor()}catch(e){}
-  const text=plainText()+(url?`\n\nOpen in batch.day:\n${url}`:'');
+  const text=plainText()+(url?`\n\nOpen in batch.recipes:\n${url}`:'');
   try{await navigator.share({title:recipe.title,text})}catch(e){if(e&&e.name==='AbortError')return;try{await navigator.clipboard.writeText(text);toast('Copied. Paste it into Notes.')}catch(e2){}}
 }
 async function openFromHash(h){

@@ -1,4 +1,4 @@
-# batch.day
+# batch.recipes
 
 Cook once, eat all week. Drop in a recipe screenshot or paste it, and get the whole batch day: what to buy, which pot, what to cook first, and what goes in the freezer.
 

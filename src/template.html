@@ -9,6 +9,10 @@
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="batch.day">
 <meta property="og:title" content="batch.day: cook once, eat all week">
 <meta property="og:description" content="Add a recipe screenshot. Get the whole batch day: what to buy, which pot, what to cook first.">
 <meta property="og:image" content="https://batch.day/og.png">
@@ -139,7 +143,7 @@ details.edit[open] summary{margin-bottom:8px}
 .step input{width:40px;text-align:center;border:0;background:none;font-weight:600;font-size:17px;outline:none;border-radius:8px}
 
 /* sheet */
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center;margin:8px 0 24px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center;margin:8px 0 20px}
 .stat b{display:block;font-size:36px;font-weight:600;letter-spacing:-.02em;line-height:1.1}
 .stat span{color:var(--ink2);font-size:13px}
 .tabs{position:sticky;top:60px;z-index:5;margin-bottom:16px}
@@ -176,13 +180,36 @@ ul.plain li{margin:8px 0}
 .osteps{font-size:15px;color:var(--ink2);padding-left:20px;margin:0}
 .osteps li{margin:8px 0}
 .tools{display:flex;gap:4px}
+/* saved */
+.mine{margin-top:24px}
+.saved{list-style:none;margin:0;padding:0}
+.saved li{display:flex;align-items:center;gap:8px;border-top:1px solid var(--line)}
+.saved li:first-child{border-top:0}
+.saved .open{flex:1;min-width:0;text-align:left;background:none;border:0;padding:8px 0;min-height:56px;cursor:pointer;display:flex;flex-direction:column;justify-content:center}
+.saved .open b{font-weight:600;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.saved .open span{font-size:13px;color:var(--ink2)}
+.rm{width:44px;height:44px;flex:none;border:0;background:none;color:var(--ink2);cursor:pointer;border-radius:50%;display:grid;place-items:center;transition:background .2s var(--fade)}
+.rm:hover{background:var(--bg2)}
+.rm svg{width:14px;height:14px}
+.tip{background:var(--bg2);border-radius:14px;padding:16px;font-size:14px;color:var(--ink2);margin-top:16px}
+.tip b{color:var(--ink);font-weight:600}
+.tip .link{min-height:32px;padding:0;margin-top:4px;display:block}
+.acts{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:0 0 8px}
+.pillb{min-height:44px;padding:0 16px;border-radius:980px;border:0;background:var(--bg2);font-size:15px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:transform .15s var(--ease)}
+.pillb:active{transform:scale(.96)}
+.pillb svg{width:18px;height:18px;color:var(--accent)}
+.savednote{text-align:center;font-size:13px;color:var(--ink2);margin:0 0 24px}
+.toast{position:fixed;left:50%;bottom:24px;z-index:50;transform:translate(-50%,16px);opacity:0;pointer-events:none;background:var(--ink);color:var(--bg);border-radius:980px;padding:8px 20px;min-height:48px;font-size:15px;display:flex;gap:8px;align-items:center;white-space:nowrap;transition:opacity .25s var(--fade),transform .35s var(--ease)}
+.toast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.toast.u{padding-right:8px}
+.toast button{background:none;border:0;color:var(--accent);font-weight:600;min-height:40px;padding:0 12px;cursor:pointer;font-size:15px}
 footer{color:var(--ink2);font-size:13px;text-align:center;padding:32px 24px 0}
 
 /* dock */
 .dock{position:fixed;left:0;right:0;bottom:0;z-index:15;padding:12px 16px calc(12px + env(safe-area-inset-bottom));
   background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-top:1px solid var(--line);
-  transform:translateY(110%);transition:transform .4s var(--ease)}
-.dock.on{transform:none}
+  transform:translateY(110%);visibility:hidden;transition:transform .4s var(--ease),visibility 0s .4s}
+.dock.on{transform:none;visibility:visible;transition:transform .4s var(--ease)}
 .dock .in{max-width:608px;margin:0 auto;display:flex;gap:8px}
 .dock .btn.soft{flex:0 0 auto;width:auto;padding:0 20px}
 
@@ -277,6 +304,11 @@ footer{color:var(--ink2);font-size:13px;text-align:center;padding:32px 24px 0}
       <button class="link" id="pasteToggle">Paste text instead</button>
       <button class="link" id="sample">Try a sample</button>
     </div>
+    <div class="card mine hidden" id="mine">
+      <h3>My batches</h3>
+      <ul class="saved" id="savedList"></ul>
+      <div class="tip hidden" id="tip"><b>Keep these for good.</b> On iPhone, Safari can clear them if you don't visit for a week. Add batch.day to your Home Screen: tap Share, then Add to Home Screen.<button class="link" id="tipX">Got it</button></div>
+    </div>
   </div>
 
   <!-- 2. check -->
@@ -311,6 +343,7 @@ footer{color:var(--ink2);font-size:13px;text-align:center;padding:32px 24px 0}
   </div>
 </main>
 
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="dock" id="dock"><div class="in" id="dockIn"></div></div>
 
 <div class="cook hidden" id="cook" role="dialog" aria-modal="true" aria-label="Cook mode">
@@ -358,6 +391,7 @@ function show(v,push){
 }
 $$('#steps button').forEach((b)=>b.onclick=()=>show(b.dataset.go,true));
 addEventListener('popstate',(e)=>{if(!$('#cook').classList.contains('hidden')){closeCook(true);return}show((e.state&&e.state.v)||'add',false)});
+const startHash=location.hash;
 history.replaceState({v:'add'},'',location.pathname+location.search);
 
 function dock(){
@@ -436,6 +470,7 @@ function guessTitle(raw){
 }
 const FRIENDLY={range:'Range given, using the middle',noamount:'No amount given, we estimate it',amount:'Check this amount, it may be misread'};
 function load(raw,groups){
+  curId=null;
   $('#text').value=raw;
   parse(groups);
   plan=null;
@@ -502,11 +537,12 @@ function build(){
     const p=E.batchDay(recipe,want);plan={mode,p,want};
     const mins=Math.round(p.totalMin/5)*5;
     h+=`<div class="stats"><div class="stat"><b class="num" data-n="${want}">${want}</b><span>meals</span></div><div class="stat"><b class="num" data-n="${fmtX(p.factor)}" data-x>${fmtX(p.factor)}×</b><span>the recipe</span></div><div class="stat"><b class="num" data-n="${mins}">${mins}</b><span>minutes, about</span></div></div>`;
+    h+=ACTS;
     p.notes.forEach((n)=>h+=`<div class="note">${esc(n)}</div>`);
     h+=`<div class="seg tabs noprint" id="tabs" role="tablist"><span class="pill"></span><button role="tab" data-tab="shop">Shop</button><button role="tab" data-tab="cook">Cook</button><button role="tab" data-tab="store">Store</button></div>`;
     // shop
     const list=p.grocery.map((g)=>g.amt==='for serving'?`${g.name} (for serving)`:`${g.amt?g.amt+' ':''}${g.name}`).join('\n');
-    h+=`<div data-panel="shop"><div class="card rise"><h3>Grocery list <span class="tools noprint"><button class="link" data-copy>Copy</button><button class="link" data-print>Print</button></span></h3><ul class="checks">${p.grocery.map((g)=>`<li><label><input type="checkbox"><span>${g.amt==='for serving'?`${esc(g.name)} <span class="muted">for serving</span>`:`<b class="num">${esc(g.amt)}</b> ${esc(g.name)}`}</span></label></li>`).join('')}</ul><textarea hidden id="glist">${esc(list)}</textarea></div></div>`;
+    h+=`<div data-panel="shop"><div class="card rise"><h3>Grocery list <span class="tools noprint"><button class="link" data-copy>Copy</button></span></h3><ul class="checks">${p.grocery.map((g)=>`<li><label><input type="checkbox"><span>${g.amt==='for serving'?`${esc(g.name)} <span class="muted">for serving</span>`:`<b class="num">${esc(g.amt)}</b> ${esc(g.name)}`}</span></label></li>`).join('')}</ul><textarea hidden id="glist">${esc(list)}</textarea></div></div>`;
     // cook
     h+=`<div data-panel="cook">`;
     if(p.pots.length)h+=`<div class="card rise"><h3>Pots and pans</h3><ul class="plain">${p.pots.map((x)=>`<li>${esc(x)}</li>`).join('')}</ul></div>`;
@@ -519,8 +555,9 @@ function build(){
   }else{
     const s=E.scaleAll(recipe,want);plan={mode,s,want};
     h+=`<div class="stats" style="grid-template-columns:1fr 1fr"><div class="stat"><b class="num" data-n="${want}">${want}</b><span>servings</span></div><div class="stat"><b class="num" data-n="${fmtX(s.factor)}" data-x>${fmtX(s.factor)}×</b><span>the recipe</span></div></div>`;
+    h+=ACTS;
     if(recipe.baking&&s.factor>2)h+=`<div class="note">Baking doesn't scale well past 2×. Make ${Math.ceil(s.factor/2)} batches instead of one big one.</div>`;
-    h+=`<div class="card rise"><h3>Ingredients <span class="tools noprint"><button class="link" data-print>Print</button></span></h3><table class="tbl">${ingRows(s.items)}</table></div>`;
+    h+=`<div class="card rise"><h3>Ingredients</h3><table class="tbl">${ingRows(s.items)}</table></div>`;
     if(recipe.steps.length)h+=`<div class="card rise"><h3>Steps</h3><ol class="osteps">${recipe.steps.map((x)=>`<li>${esc(x.text)}</li>`).join('')}</ol></div>`;
   }
   sh.innerHTML=h;
@@ -528,9 +565,16 @@ function build(){
   sh.querySelectorAll('[data-print]').forEach((b)=>b.onclick=()=>{try{print()}catch(e){}});
   const cp=sh.querySelector('[data-copy]');if(cp)cp.onclick=()=>{navigator.clipboard.writeText($('#glist').value).then(()=>{cp.textContent='Copied';setTimeout(()=>cp.textContent='Copy',1600)},()=>{cp.textContent='Copy failed'})};
   sh.querySelectorAll('[data-tab]').forEach((b)=>b.onclick=()=>setTab(b.dataset.tab));
+  sh.querySelectorAll('[data-share]').forEach((b)=>b.onclick=shareIt);
+  sh.querySelectorAll('[data-link]').forEach((b)=>b.onclick=copyLink);
   setTab('shop',true);
   counted=false;
+  remember(want);
 }
+const SHARE_IC='<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13V3M6 6.5L10 3l4 3.5"/><path d="M5 10H4v7h12v-7h-1"/></svg>';
+const LINK_IC='<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8.5 11.5a3.5 3.5 0 0 0 5 0l2.5-2.5a3.5 3.5 0 0 0-5-5l-1 1"/><path d="M11.5 8.5a3.5 3.5 0 0 0-5 0L4 11a3.5 3.5 0 0 0 5 5l1-1"/></svg>';
+const PRINT_IC='<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6 8V3h8v5M6 14H3V8h14v6h-3"/><path d="M6 11h8v6H6z"/></svg>';
+const ACTS=`<div class="acts noprint">${navigator.share?`<button class="pillb" data-share>${SHARE_IC}Send</button>`:''}<button class="pillb" data-link>${LINK_IC}Copy link</button><button class="pillb" data-print>${PRINT_IC}Print</button></div><p class="savednote noprint">Saved to My batches on this phone.</p>`;
 function setTab(t,quiet){
   tab=t;$$('#tabs [data-tab]').forEach((b)=>{const on=b.dataset.tab===t;b.setAttribute('aria-pressed',on);b.setAttribute('aria-selected',on)});
   $$('[data-panel]').forEach((p)=>{const on=p.dataset.panel===t;p.classList.toggle('hidden',!on);if(on&&!quiet){p.querySelectorAll('.rise').forEach((el,k)=>{el.classList.remove('in');el.style.transitionDelay=Math.min(k,4)*60+'ms';requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('in')))})}});
@@ -549,6 +593,92 @@ function count(){
 /* reveal */
 const io=new IntersectionObserver((es)=>es.forEach((e)=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.05});
 function watch(el,delay){if(delay)el.style.transitionDelay=delay+'ms';io.observe(el)}
+
+/* saving: on this device, no account */
+const KEY='bd-batches';let curId=null;
+function allB(){try{return JSON.parse(localStorage.getItem(KEY))||[]}catch(e){return[]}}
+function putB(a){try{localStorage.setItem(KEY,JSON.stringify(a.slice(0,50)));return true}catch(e){return false}}
+function remember(want){
+  const text=$('#text').value;
+  const rec={id:curId||Date.now().toString(36),title:recipe.title,text,y:recipe.yield,w:want,m:mode,at:Date.now()};
+  const a=allB().filter((x)=>x.id!==rec.id&&x.text!==text);a.unshift(rec);curId=rec.id;
+  if(!putB(a))$$('.savednote').forEach((n)=>n.textContent="Couldn't save on this phone. Use Copy link to keep it.");
+  renderSaved();
+}
+function openRec(r,push){
+  curId=r.id||null;mode=r.m||'batch';
+  $('#text').value=r.text;parse();
+  $('#yield').value=r.y||recipe.yield;setMode(r.m||'batch',true);$('#want').value=r.w||14;
+  plan=null;build();show('sheet',push!==false);
+}
+const X_IC='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3l10 10M13 3L3 13"/></svg>';
+function renderSaved(){
+  const a=allB();$('#mine').classList.toggle('hidden',!a.length);
+  $('#savedList').innerHTML=a.map((r)=>`<li><button class="open" data-id="${esc(r.id)}"><b>${esc(r.title||'Recipe')}</b><span class="num">${r.m==='scale'?`${r.w} servings`:`${r.w} meals`} · ${new Date(r.at).toLocaleDateString(undefined,{month:'short',day:'numeric'})}</span></button><button class="rm" data-rm="${esc(r.id)}" aria-label="Remove ${esc(r.title||'recipe')}">${X_IC}</button></li>`).join('');
+  $$('#savedList .open').forEach((b)=>b.onclick=()=>{const r=allB().find((x)=>x.id===b.dataset.id);if(r)openRec(r)});
+  $$('#savedList .rm').forEach((b)=>b.onclick=()=>{const all=allB(),i=all.findIndex((x)=>x.id===b.dataset.rm);if(i<0)return;const gone=all.splice(i,1)[0];putB(all);renderSaved();
+    toast(`Removed ${gone.title||'recipe'}`,()=>{const now=allB();now.splice(Math.min(i,now.length),0,gone);putB(now);renderSaved()})});
+  let dismissed=false;try{dismissed=localStorage.getItem('bd-tip')==='1'}catch(e){}
+  const ios=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  const home=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+  $('#tip').classList.toggle('hidden',!(a.length&&ios&&!home&&!dismissed));
+}
+$('#tipX').onclick=()=>{try{localStorage.setItem('bd-tip','1')}catch(e){}$('#tip').classList.add('hidden')};
+
+let tt=null;
+function toast(msg,undo){
+  const el=$('#toast');clearTimeout(tt);
+  el.innerHTML=`<span>${esc(msg)}</span>${undo?'<button>Undo</button>':''}`;el.classList.toggle('u',!!undo);
+  el.style.bottom=view==='add'?'24px':'calc(var(--dock) + 16px)';
+  if(undo)el.querySelector('button').onclick=()=>{undo();hideToast()};
+  el.classList.add('on');tt=setTimeout(hideToast,undo?5000:2400);
+}
+function hideToast(){$('#toast').classList.remove('on')}
+
+/* the link is the recipe: it rides after the #, which never reaches a server */
+function b64u(bytes){let s='';for(let i=0;i<bytes.length;i++)s+=String.fromCharCode(bytes[i]);return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+function unb64u(s){s=s.replace(/-/g,'+').replace(/_/g,'/');const b=atob(s),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u}
+async function encode(o){
+  const raw=new TextEncoder().encode(JSON.stringify(o));
+  if(window.CompressionStream){try{const st=new Blob([raw]).stream().pipeThrough(new CompressionStream('deflate-raw'));return 'z'+b64u(new Uint8Array(await new Response(st).arrayBuffer()))}catch(e){}}
+  return 'p'+b64u(raw);
+}
+async function decode(code){
+  const bytes=unb64u(code.slice(1));
+  if(code[0]==='z'){const st=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));return JSON.parse(await new Response(st).text())}
+  return JSON.parse(new TextDecoder().decode(bytes));
+}
+async function linkFor(){return location.origin+location.pathname+'#r='+await encode({v:1,t:$('#text').value,y:recipe.yield,w:plan.want,m:plan.mode})}
+async function copyLink(){
+  try{const u=await linkFor();await navigator.clipboard.writeText(u);toast('Link copied. It opens this exact sheet.')}catch(e){toast("Couldn't copy the link.")}
+}
+function plainText(){
+  const L=[];
+  if(plan.mode==='batch'){
+    const p=plan.p;L.push(`${recipe.title}: ${plan.want} meals (${fmtX(p.factor)}× the recipe)`,'','Shopping');
+    p.grocery.forEach((g)=>L.push(`- ${g.amt==='for serving'?g.name+' (for serving)':(g.amt?g.amt+' ':'')+g.name}`));
+    L.push('','Cook order');
+    p.order.forEach((o,k)=>{L.push(`${k+1}. ${o.t}${o.min?` (${o.min} min)`:''}`);(o.use||[]).forEach((u)=>L.push(`   ${u.amt?u.amt+' ':''}${u.name}`))});
+    if(p.pots.length){L.push('','Pots');p.pots.forEach((x)=>L.push('- '+x))}
+    L.push('','Store',...p.split.freezer.map((x)=>'Freezer: '+x),...p.split.fridge.map((x)=>'Fridge: '+x));
+    if(p.split.fresh.length)L.push('Fresh at serving: '+p.split.fresh.join(', '));
+  }else{
+    L.push(`${recipe.title}: ${plan.want} servings (${fmtX(plan.s.factor)}×)`,'');
+    plan.s.items.forEach((i)=>L.push(`- ${i.scaled?i.scaled+' ':''}${i.name}`));
+    if(recipe.steps.length){L.push('');recipe.steps.forEach((s,k)=>L.push(`${k+1}. ${s.text}`))}
+  }
+  return L.join('\n');
+}
+async function shareIt(){
+  let url='';try{url=await linkFor()}catch(e){}
+  const text=plainText()+(url?`\n\nOpen in batch.day:\n${url}`:'');
+  try{await navigator.share({title:recipe.title,text})}catch(e){if(e&&e.name==='AbortError')return;try{await navigator.clipboard.writeText(text);toast('Copied. Paste it into Notes.')}catch(e2){}}
+}
+async function openFromHash(h){
+  const m=h.match(/^#r=([\w-]+)$/);if(!m)return;
+  try{const o=await decode(m[1]);if(!o||typeof o.t!=='string')throw 0;openRec({text:o.t,y:o.y,w:o.w,m:o.m==='scale'?'scale':'batch'},true)}
+  catch(e){toast("That link didn't open. It may have been cut off.")}
+}
 
 /* cook mode */
 let cs=0, lock=null, csteps=[];
@@ -635,6 +765,9 @@ Directions
 6. Pour in the broth, coconut milk and soy sauce. Simmer a few minutes.
 7. Add the chicken back and simmer until cooked through. Add bok choy until just tender.
 8. Spoon rice into bowls, ladle the broth over, and finish with green onion, lime and chili oil.`;
+renderSaved();
+if(/^#r=/.test(startHash))openFromHash(startHash);
+addEventListener('hashchange',()=>{if(/^#r=/.test(location.hash)){const h=location.hash;history.replaceState({v:view},'',location.pathname+location.search);openFromHash(h)}});
 })();
 </script>
 </body>

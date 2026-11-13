@@ -14,3 +14,6 @@ csp=("default-src 'self'; script-src "+' '.join(hashes)+" https://cdn.jsdelivr.n
 h=h.replace('<meta charset="utf-8">','<meta charset="utf-8">\n<meta http-equiv="Content-Security-Policy" content="'+csp+'">\n<meta name="referrer" content="strict-origin-when-cross-origin">',1)
 open('site/index.html','w').write(h)
 print(len(hashes),'script hashes')
+import json
+json.dump({"name":"batch.day","short_name":"batch.day","description":"Cook once. Eat all week.","start_url":"./","scope":"./","display":"standalone","background_color":"#ffffff","theme_color":"#ffffff",
+ "icons":[{"src":"icon-192.png","sizes":"192x192","type":"image/png"},{"src":"icon-512.png","sizes":"512x512","type":"image/png"},{"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"}]},open('site/manifest.webmanifest','w'),indent=1)

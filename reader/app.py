@@ -14,7 +14,7 @@ TOKEN = os.environ.get("HF_TOKEN", "")
 MODELS = [m.strip() for m in os.environ.get(
     "MODELS", "Qwen/Qwen3-VL-235B-A22B-Instruct,Qwen/Qwen2.5-VL-32B-Instruct").split(",") if m.strip()]
 ORIGINS = [o.strip() for o in os.environ.get(
-    "ALLOWED_ORIGINS", "https://batch.recipes,https://www.batch.recipes,https://michaelbegley.github.io").split(",") if o.strip()]
+    "ALLOWED_ORIGINS", "https://batch.recipes,https://www.batch.recipes").split(",") if o.strip()]
 PER_HOUR = int(os.environ.get("PER_VISITOR_PER_HOUR", "10"))
 PER_DAY = int(os.environ.get("DAILY_CAP", "300"))
 MAX_IMAGES = 6

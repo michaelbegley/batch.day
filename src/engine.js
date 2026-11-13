@@ -347,7 +347,7 @@
     grain.forEach((g) => {
       if (g.qty == null && /rice|quinoa|orzo|couscous/i.test(g.name)) {
         const dry = meals / 3;
-        g.scaled = `${fmtNum(niceFrac(dry, .5))} cups dry (about ⅓ cup per meal — estimate)`;
+        g.scaled = `${fmtNum(niceFrac(dry, .5))} cups dry (about ⅓ cup per meal, an estimate)`;
         g.estimated = true;
         plan.rice = dry;
       } else if (g.qty != null && /rice/i.test(g.name)) plan.rice = cupsOf(g, f);
@@ -357,11 +357,11 @@
     const soupCups = liquid.reduce((s, i) => s + cupsOf(i, f), 0) + protein.reduce((s, i) => s + cupsOf(i, f), 0) * 0.9 + veg.reduce((s, i) => s + cupsOf(i, f), 0);
     if (!baking && soupCups > 0) {
       const q = potFor(soupCups, 0.75);
-      plan.pots.push(q ? `Main pot: ${q} qt or bigger (about ${Math.round(soupCups)} cups of food, kept under ¾ full)` : `Main pot: about ${Math.round(soupCups)} cups of food — split across two big pots`);
+      plan.pots.push(q ? `Main pot: ${q} qt or bigger (about ${Math.round(soupCups)} cups of food, kept under ¾ full)` : `Main pot: about ${Math.round(soupCups)} cups of food. Split it across two big pots`);
     }
     if (plan.rice) {
       const q = potFor(plan.rice, 1 / 3);
-      plan.pots.push(q ? `Rice pot: ${q} qt (dry rice under ⅓ full — it triples)` : 'Rice: cook in two pots or batches');
+      plan.pots.push(q ? `Rice pot: ${q} qt (dry rice under ⅓ full, it triples)` : 'Rice: cook in two pots or batches');
     }
     const lbs = protein.reduce((s, i) => s + (i.qty != null && i.unit && WT_OZ[i.unit] ? mid(i) * f * WT_OZ[i.unit] / 16 : 0), 0);
     if (lbs > 0 && /sear|brown|pan-?fry|golden/i.test(recipe.steps.map((s) => s.text).join(' '))) {

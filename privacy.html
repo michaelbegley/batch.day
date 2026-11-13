@@ -30,24 +30,29 @@ footer a{color:var(--ink2);margin:0 8px}
 <main>
 <h1>Privacy</h1>
 <p class="muted">Last updated 13 November 2026</p>
-<p>batch.recipes turns a recipe screenshot into a batch-cooking plan. There are no accounts, so we never know who you are.</p>
+<p>batch.recipes turns recipe screenshots into a batch-cooking plan. There are no accounts, so we never know who you are.</p>
+
+<h2>Screenshots</h2>
+<p>When you add screenshots, they are sent to our reader on Hugging Face. The reader passes them to an AI model through Hugging Face Inference Providers and sends back the recipe text. The reader doesn't save the screenshots or the text. To enforce read limits it keeps your IP address in memory for up to a day, and nothing else.</p>
+<ul>
+<li>Screenshots are only sent when you add them. Nothing is sent in the background.</li>
+<li>If the AI reader doesn't answer or is over its limit, your screenshots are read in your browser instead. If you're offline, they aren't sent at all.</li>
+<li>Don't add screenshots that show anything private.</li>
+</ul>
 
 <h2>What stays on your device</h2>
 <ul>
-<li>Screenshots and recipe text are read right in your browser. They aren't uploaded unless you tap <b>Read it with AI</b>.</li>
-<li>Recipes you plan are saved in your browser's storage under My batches. Clearing your browser data removes them. We can't see or recover them.</li>
+<li>Recipe text you paste is read in your browser and isn't uploaded.</li>
+<li>Recipes are saved in your browser's storage under My batches. Clearing your browser data removes them. We can't see or recover them.</li>
 <li>When you use <b>Copy link</b> or <b>Send</b>, the recipe goes inside the link itself. The part of a link after the # isn't sent to our servers.</li>
 </ul>
-
-<h2>Read it with AI (optional)</h2>
-<p>If you tap <b>Read it with AI</b>, your screenshots go to our reader on Hugging Face. The reader passes them to an AI model through Hugging Face Inference Providers. batch.recipes doesn't keep the images or the text that comes back.</p>
 
 <h2>Services the site uses</h2>
 <ul>
 <li><b>Vercel</b> hosts the site. Like any web host, it handles basic request information such as your IP address so the page can load.</li>
-<li><b>jsDelivr</b> serves the free screenshot reader the first time you add a screenshot.</li>
-<li><b>Hugging Face</b> runs the optional AI reader described above.</li>
-<li><b>Vercel Web Analytics</b> counts visits and a few anonymous actions, like planning a batch or opening cook mode. It uses no cookies and stores no personal information. We use it to see whether the site is worth keeping.</li>
+<li><b>Hugging Face</b> runs the AI reader described above and passes screenshots to the AI model through its Inference Providers.</li>
+<li><b>jsDelivr</b> serves the in-browser reader, which is only loaded if the AI reader can't be used.</li>
+<li><b>Vercel Web Analytics</b> counts visits and a few anonymous actions, like reading a recipe or opening cook mode. It uses no cookies and stores no personal information. We use it to see whether the site is worth keeping.</li>
 </ul>
 
 <h2>Advertising</h2>

@@ -112,6 +112,9 @@ textarea{width:100%;min-height:200px;border-radius:12px;border:1px solid var(--l
 textarea:focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent)}
 
 /* check list */
+.ai{background:var(--bg2);border-radius:14px;padding:12px 16px;margin:0 0 16px;font-size:15px;display:flex;flex-wrap:wrap;align-items:center;gap:0 8px}
+.ai .link{padding:0;font-weight:600}
+.ai small{flex-basis:100%;color:var(--ink2);font-size:13px;margin-top:-4px;padding-bottom:4px}
 .ings{list-style:none;margin:0;padding:0}
 .ings .sec{color:var(--ink2);font-size:13px;padding:16px 0 4px}
 .ings .sec:first-child{padding-top:0}
@@ -328,6 +331,7 @@ footer{color:var(--ink2);font-size:13px;text-align:center;padding:32px 24px 0}
     </div>
     <div class="card">
       <h3>What we read <span class="muted" style="font-size:13px;font-weight:400" id="ingCount"></span></h3>
+      <div class="ai hidden" id="aiRow"><span>Words look off?</span><button class="link" id="aiGo">Read it with AI</button><small>Sends your screenshots to an AI model to read them. batch.day doesn't keep them.</small></div>
       <ul class="ings" id="ings"></ul>
       <details class="edit"><summary>Something wrong? Edit the text</summary>
         <textarea id="text" aria-label="Recipe text"></textarea>
@@ -362,7 +366,8 @@ footer{color:var(--ink2);font-size:13px;text-align:center;padding:32px 24px 0}
 'use strict';
 const $=(s)=>document.querySelector(s), $$=(s)=>[...document.querySelectorAll(s)], E=window.BatchEngine;
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-let recipe=null, mode='batch', view='add', plan=null, tab='shop';
+let recipe=null, mode='batch', view='add', plan=null, tab='shop', shots=[];
+const READER='/*READER*/';
 function esc(s){return String(s).replace(/[&<>"]/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function fmtX(f){return (Math.round(f*10)/10).toString().replace(/\.0$/,'')}
 
@@ -441,6 +446,7 @@ function prepImage(f){
 function resetPick(){$('#pick').classList.remove('hidden');$('#reading').classList.add('hidden')}
 async function handleFiles(list){
   list=list.filter((f)=>f&&f.type.startsWith('image/'));if(!list.length)return;
+  shots=list;
   $('#pastebox').classList.add('hidden');$('#pasteToggle').textContent='Paste text instead';
   $('#pick').classList.add('hidden');$('#reading').classList.remove('hidden');
   const th=$('#thumbs');th.innerHTML='';
@@ -469,8 +475,8 @@ function guessTitle(raw){
   return 'Your recipe';
 }
 const FRIENDLY={range:'Range given, using the middle',noamount:'No amount given, we estimate it',amount:'Check this amount, it may be misread'};
-function load(raw,groups){
-  curId=null;
+function load(raw,groups,keepShots){
+  curId=null;if(!keepShots&&!groups)shots=[];
   $('#text').value=raw;
   parse(groups);
   plan=null;
@@ -501,6 +507,7 @@ function parse(groups){
   });
   $('#ings').innerHTML=h;
   $('#ingCount').textContent=recipe.ingredients.length?`${recipe.ingredients.length} items`:'';
+  $('#aiRow').classList.toggle('hidden',!(READER&&shots.length));
   setMode(recipe.baking?'scale':mode,true);
 }
 $('#reparse').onclick=()=>{parse();plan=null;show('check',false)};
@@ -516,6 +523,22 @@ function moveSeg(){const on=$('#mode button[aria-pressed=true]'),p=$('#mode .pil
 addEventListener('resize',()=>{moveSeg();moveTabs()});
 $$('.step button').forEach((b)=>b.onclick=()=>{const i=$('#'+b.dataset.t);i.value=Math.max(1,(+i.value||1)+(+b.dataset.d));plan=null});
 ['yield','want'].forEach((id)=>$('#'+id).addEventListener('change',()=>{const i=$('#'+id);i.value=Math.max(1,Math.round(+i.value)||1);plan=null}));
+
+/* optional AI reading, only when the cook taps it */
+function shrink(f){return new Promise((ok,no)=>{const img=new Image();img.onerror=no;img.onload=()=>{
+  const w=Math.min(1000,img.width),h=Math.round(img.height*w/img.width),c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);
+  let q=.85,d=c.toDataURL('image/jpeg',q);while(d.length>1.8e6&&q>.4){q-=.15;d=c.toDataURL('image/jpeg',q)}URL.revokeObjectURL(img.src);ok(d)};img.src=URL.createObjectURL(f)})}
+$('#aiGo').onclick=async()=>{
+  const b=$('#aiGo');if(b.disabled||!shots.length)return;b.disabled=true;b.textContent='Reading…';
+  try{
+    const images=await Promise.all(shots.slice(0,6).map(shrink));
+    const r=await fetch(READER+'/read',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({images})});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok||!j.text)throw new Error(j.error||'The AI reader couldn\'t read it right now. Paste the text instead.');
+    load(j.text,j.text.split(/\n-{3,}\n/).length,true);toast('Read with AI. Give it a quick check.');
+  }catch(e){toast(e.message&&e.message.length<90?e.message:'The AI reader couldn\'t read it right now.')}
+  finally{b.disabled=false;b.textContent='Read it with AI'}
+};
 
 /* 3. cook sheet */
 const IC={freezer:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M10 2v16M3 6l14 8M17 6L3 14"/></svg>',fridge:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="10" height="16" rx="2"/><path d="M5 8h10M8 5v1M8 11v2"/></svg>',fresh:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16C4 8 9 4 16 4c0 7-4 12-12 12z"/><path d="M4 16l6-6"/></svg>'};

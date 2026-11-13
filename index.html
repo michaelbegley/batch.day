@@ -27,7 +27,7 @@
 <style>
 :root{
   --bg:#fff;--bg2:#f5f5f7;--raise:#fff;--ink:#1d1d1f;--ink2:#6e6e73;--line:rgba(0,0,0,.08);
-  --accent:#d9480f;--accent-ink:#fff;--warn:#b25e00;--warn-bg:#fff4e5;
+  --accent:#c2410c;--accent-ink:#fff;--warn:#a65200;--warn-bg:#fff4e5;
   --shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);
   --ease:cubic-bezier(.32,.72,0,1);--fade:cubic-bezier(.25,.1,.25,1);
   --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Inter,system-ui,sans-serif;
@@ -202,6 +202,14 @@ ul.plain li{margin:8px 0}
 .tip{background:var(--bg2);border-radius:14px;padding:16px;font-size:14px;color:var(--ink2);margin-top:16px}
 .tip b{color:var(--ink);font-weight:600}
 .tip .link{min-height:32px;padding:0;margin-top:4px;display:block}
+.how{margin:40px 0 0;padding:0}
+.how h2{font-size:20px;line-height:26px;font-weight:600;margin:0 0 16px}
+.how h3{font-size:17px;line-height:24px;font-weight:600;margin:32px 0 12px}
+.how3{list-style:none;counter-reset:s;margin:0;padding:0;display:grid;gap:16px}
+.how3 li{counter-increment:s;position:relative;padding-left:40px;font-size:15px;line-height:22px;color:var(--ink2)}
+.how3 li::before{content:counter(s);position:absolute;left:0;top:-2px;width:28px;height:28px;border-radius:50%;background:var(--bg2);color:var(--ink);font-weight:600;font-size:14px;display:grid;place-items:center}
+.how b{color:var(--ink);font-weight:600}
+.rules{margin:0;padding:0 0 0 20px;display:grid;gap:8px;font-size:15px;line-height:22px;color:var(--ink2)}
 .tip.inst{text-align:left;margin:16px 0}
 .tip .ic{width:16px;height:16px;vertical-align:-3px;color:var(--accent)}
 .instrow{display:flex;align-items:center;gap:16px;margin-top:12px}
@@ -324,6 +332,22 @@ ul.plain li{margin:8px 0}
       <ul class="saved" id="savedList"></ul>
       <div class="tip hidden" id="tip"><b>Keep these for good.</b> On iPhone, Safari can clear them if you don't visit for a week. Add batch.recipes to your Home Screen: tap Share, then Add to Home Screen.<button class="link" id="tipX">Got it</button></div>
     </div>
+    <section class="how" aria-labelledby="howH">
+      <h2 id="howH">How it works</h2>
+      <ol class="how3">
+        <li><b>Add the recipe.</b> A screenshot from TikTok or Instagram, a few screenshots of one recipe, or pasted text. It's read right on your phone.</li>
+        <li><b>Pick how many meals.</b> Say how many servings the recipe makes and how many meals you want, like 4 servings into 14 meals.</li>
+        <li><b>Cook from the sheet.</b> You get the grocery list, which pot fits, what to start first, and a step-by-step cook mode that keeps your screen on.</li>
+      </ol>
+      <h3>What changes when you scale up</h3>
+      <ul class="rules">
+        <li>Meat, vegetables, grains and broth scale straight up.</li>
+        <li>Salt, spices and oil are eased back past double, so a big pot isn't over-seasoned. Taste at the end and add more.</li>
+        <li>Lime, herbs and other fresh finishers are kept for serving.</li>
+        <li>Stews fill a pot no more than three-quarters, dry rice no more than a third, and meat is seared in batches.</li>
+        <li>Baking isn't eased back, and you'll get a warning past double.</li>
+      </ul>
+    </section>
     <footer class="foot"><a href="about">About</a><a href="privacy">Privacy</a></footer>
   </div>
 

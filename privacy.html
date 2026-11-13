@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy · batch.recipes</title>
+<meta name="description" content="How batch.recipes handles your recipes, screenshots and ads.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+:root{--bg:#fff;--ink:#1d1d1f;--ink2:#6e6e73;--line:rgba(0,0,0,.08);--accent:#d9480f;--font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Inter,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#000;--ink:#f5f5f7;--ink2:#a1a1a6;--line:rgba(255,255,255,.12);--accent:#ff7a3d}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.55 var(--font);-webkit-font-smoothing:antialiased}
+.bar{display:flex;align-items:center;height:52px;padding:0 16px;border-bottom:1px solid var(--line)}
+.mark{font-weight:600;font-size:19px;letter-spacing:-.02em;color:var(--ink);text-decoration:none;min-height:44px;display:flex;align-items:center}
+.mark b{color:var(--accent);font-weight:600}
+main{max-width:640px;margin:0 auto;padding:40px 16px 64px}
+h1{font-size:40px;line-height:1.1;letter-spacing:-.03em;margin:0 0 8px;font-weight:600}
+h2{font-size:21px;letter-spacing:-.01em;margin:32px 0 8px;font-weight:600}
+p,li{color:var(--ink)}
+.muted{color:var(--ink2);font-size:15px}
+ul{padding-left:20px}li{margin:8px 0}
+a{color:var(--accent)}
+footer{border-top:1px solid var(--line);padding:24px 16px;text-align:center;font-size:14px;color:var(--ink2)}
+footer a{color:var(--ink2);margin:0 8px}
+</style>
+</head>
+<body>
+<header class="bar"><a class="mark" href="./">batch<b>.</b>recipes</a></header>
+<main>
+<h1>Privacy</h1>
+<p class="muted">Last updated 12 November 2026</p>
+<p>batch.recipes turns a recipe screenshot into a batch-cooking plan. There are no accounts, so we never know who you are.</p>
+
+<h2>What stays on your device</h2>
+<ul>
+<li>Screenshots and recipe text are read right in your browser. They aren't uploaded unless you tap <b>Read it with AI</b>.</li>
+<li>Recipes you plan are saved in your browser's storage under My batches. Clearing your browser data removes them. We can't see or recover them.</li>
+<li>When you use <b>Copy link</b> or <b>Send</b>, the recipe goes inside the link itself. The part of a link after the # isn't sent to our servers.</li>
+</ul>
+
+<h2>Read it with AI (optional)</h2>
+<p>If you tap <b>Read it with AI</b>, your screenshots go to our reader on Hugging Face. The reader passes them to an AI model through Hugging Face Inference Providers. batch.recipes doesn't keep the images or the text that comes back.</p>
+
+<h2>Services the site uses</h2>
+<ul>
+<li><b>Vercel</b> hosts the site. Like any web host, it handles basic request information such as your IP address so the page can load.</li>
+<li><b>jsDelivr</b> serves the free screenshot reader the first time you add a screenshot.</li>
+<li><b>Hugging Face</b> runs the optional AI reader described above.</li>
+</ul>
+
+<h2>Advertising</h2>
+<p>batch.recipes may show ads from Google AdSense to keep the site free.</p>
+<ul>
+<li>Third-party vendors, including Google, use cookies to serve ads based on your earlier visits to this website or other websites.</li>
+<li>Google's advertising cookies let Google and its partners serve ads to you based on your visits to this site and other sites.</li>
+<li>You can opt out of personalized advertising in <a href="https://adssettings.google.com" rel="noopener">Google's Ads Settings</a>. You can also opt out of some third-party vendors' use of cookies at <a href="https://www.aboutads.info" rel="noopener">aboutads.info</a>.</li>
+<li>Visitors in the EEA, the UK and Switzerland are asked for consent before personalized ads are used.</li>
+</ul>
+<p>Learn more in <a href="https://policies.google.com/technologies/partner-sites" rel="noopener">how Google uses information from sites that use its services</a>.</p>
+
+<h2>Children</h2>
+<p>batch.recipes isn't directed at children under 13 and doesn't knowingly collect their information.</p>
+
+<h2>Contact</h2>
+<p>Questions or requests: open an issue at <a href="https://github.com/michaelbegley/batch.day/issues" rel="noopener">github.com/michaelbegley/batch.day</a>.</p>
+
+</main>
+<footer><a href="./">Home</a><a href="about">About</a><a href="privacy">Privacy</a></footer>
+</body>
+</html>

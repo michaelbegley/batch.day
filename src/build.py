@@ -19,3 +19,7 @@ print(len(hashes),'script hashes')
 import json
 json.dump({"name":"batch.recipes","short_name":"batch.recipes","description":"Cook once. Eat all week.","start_url":"./","scope":"./","display":"standalone","background_color":"#ffffff","theme_color":"#ffffff",
  "icons":[{"src":"icon-192.png","sizes":"192x192","type":"image/png"},{"src":"icon-512.png","sizes":"512x512","type":"image/png"},{"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"}]},open('site/manifest.webmanifest','w'),indent=1)
+
+s=open('pages/_shell.html').read()
+for n,t_,d in [('privacy','Privacy','How batch.recipes handles your recipes, screenshots and ads.'),('about','About','What batch.recipes is and who makes it.')]:
+    open(f'site/{n}.html','w').write(s.replace('{{TITLE}}',t_).replace('{{DESC}}',d).replace('{{BODY}}',open(f'pages/{n}.body').read()))

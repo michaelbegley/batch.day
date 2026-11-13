@@ -208,7 +208,9 @@ ul.plain li{margin:8px 0}
 .toast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
 .toast.u{padding-right:8px}
 .toast button{background:none;border:0;color:var(--accent);font-weight:600;min-height:40px;padding:0 12px;cursor:pointer;font-size:15px}
-footer{color:var(--ink2);font-size:13px;text-align:center;padding:32px 24px 0}
+.foot{display:flex;justify-content:center;gap:24px;padding:40px 0 0;font-size:13px}
+.foot a{color:var(--ink2);text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.foot a:hover{color:var(--ink)}
 
 /* dock */
 .dock{position:fixed;left:0;right:0;bottom:0;z-index:15;padding:12px 16px calc(12px + env(safe-area-inset-bottom));
@@ -314,6 +316,7 @@ footer{color:var(--ink2);font-size:13px;text-align:center;padding:32px 24px 0}
       <ul class="saved" id="savedList"></ul>
       <div class="tip hidden" id="tip"><b>Keep these for good.</b> On iPhone, Safari can clear them if you don't visit for a week. Add batch.recipes to your Home Screen: tap Share, then Add to Home Screen.<button class="link" id="tipX">Got it</button></div>
     </div>
+    <footer class="foot"><a href="about">About</a><a href="privacy">Privacy</a></footer>
   </div>
 
   <!-- 2. check -->

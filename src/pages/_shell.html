@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}} · batch.recipes</title>
+<meta name="description" content="{{DESC}}">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+:root{--bg:#fff;--ink:#1d1d1f;--ink2:#6e6e73;--line:rgba(0,0,0,.08);--accent:#d9480f;--font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Inter,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#000;--ink:#f5f5f7;--ink2:#a1a1a6;--line:rgba(255,255,255,.12);--accent:#ff7a3d}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.55 var(--font);-webkit-font-smoothing:antialiased}
+.bar{display:flex;align-items:center;height:52px;padding:0 16px;border-bottom:1px solid var(--line)}
+.mark{font-weight:600;font-size:19px;letter-spacing:-.02em;color:var(--ink);text-decoration:none;min-height:44px;display:flex;align-items:center}
+.mark b{color:var(--accent);font-weight:600}
+main{max-width:640px;margin:0 auto;padding:40px 16px 64px}
+h1{font-size:40px;line-height:1.1;letter-spacing:-.03em;margin:0 0 8px;font-weight:600}
+h2{font-size:21px;letter-spacing:-.01em;margin:32px 0 8px;font-weight:600}
+p,li{color:var(--ink)}
+.muted{color:var(--ink2);font-size:15px}
+ul{padding-left:20px}li{margin:8px 0}
+a{color:var(--accent)}
+footer{border-top:1px solid var(--line);padding:24px 16px;text-align:center;font-size:14px;color:var(--ink2)}
+footer a{color:var(--ink2);margin:0 8px}
+</style>
+</head>
+<body>
+<header class="bar"><a class="mark" href="./">batch<b>.</b>recipes</a></header>
+<main>
+{{BODY}}
+</main>
+<footer><a href="./">Home</a><a href="about">About</a><a href="privacy">Privacy</a></footer>
+</body>
+</html>

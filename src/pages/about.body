@@ -1,0 +1,14 @@
+<h1>About</h1>
+<p>batch.recipes is a free tool for people who cook once and eat all week.</p>
+<p>Add a screenshot of any recipe, from TikTok, Reels or a blog, and it plans your batch day:</p>
+<ul>
+<li>how much to buy for the number of meals you want</li>
+<li>which pots and pans fit</li>
+<li>what to cook first</li>
+<li>what goes in the freezer, in the fridge and fresh at serving</li>
+</ul>
+<p>The scaling follows real batch-cooking rules, not just multiplication. Salt, spices and oil are eased back in big batches. Rice and stews are sized to fit the pot. Baking gets a warning, because it doesn't scale well past double.</p>
+<p>It works on your phone with no account. Your recipes stay on your device.</p>
+<p>Made by Michael Begley.</p>
+<h2>Contact</h2>
+<p>Ideas, bugs or questions: open an issue at <a href="https://github.com/michaelbegley/batch.day/issues" rel="noopener">github.com/michaelbegley/batch.day</a>.</p>

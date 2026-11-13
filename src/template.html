@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>batch.day: cook once, eat all week</title>
+<meta name="description" content="Drop a recipe screenshot or paste it. Get the whole batch day: what to buy, which pot, what to cook first, and what goes in the freezer.">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:title" content="batch.day: cook once, eat all week">
+<meta property="og:description" content="Drop in a recipe screenshot. Get the whole batch day: what to buy, which pot, what to cook first.">
+<meta property="og:image" content="https://batch.day/og.png">
+<meta property="og:url" content="https://batch.day/">
+<meta name="twitter:card" content="summary_large_image">
+<script>try{var t=localStorage.getItem('bd-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+<style>
+:root{
+  --bg:#fff;--bg2:#f5f5f7;--raise:#fff;--ink:#1d1d1f;--ink2:#6e6e73;--line:rgba(0,0,0,.08);
+  --accent:#d9480f;--accent-ink:#fff;--warn:#b25e00;--warn-bg:#fff4e5;
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);
+  --ease:cubic-bezier(.32,.72,0,1);--fade:cubic-bezier(.25,.1,.25,1);
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Inter,system-ui,sans-serif;
+}
+[data-theme=dark]{
+  --bg:#000;--bg2:#0e0e10;--raise:#1c1c1e;--ink:#f5f5f7;--ink2:#a1a1a6;--line:rgba(255,255,255,.12);
+  --accent:#ff7a3d;--accent-ink:#1d1d1f;--warn:#ffb454;--warn-bg:#2a2010;--shadow:none;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#000;--bg2:#0e0e10;--raise:#1c1c1e;--ink:#f5f5f7;--ink2:#a1a1a6;--line:rgba(255,255,255,.12);
+  --accent:#ff7a3d;--accent-ink:#1d1d1f;--warn:#ffb454;--warn-bg:#2a2010;--shadow:none;}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.47 var(--font);-webkit-font-smoothing:antialiased;transition:background .3s var(--fade),color .3s var(--fade)}
+button,input,textarea{font:inherit;color:inherit}
+.num{font-variant-numeric:tabular-nums}
+/* bar */
+.bar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;height:52px;padding:0 24px;
+  background:color-mix(in srgb,var(--bg) 72%,transparent);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line)}
+.mark{font-weight:600;font-size:19px;letter-spacing:-.02em;text-decoration:none;color:var(--ink)}
+.mark b{color:var(--accent);font-weight:600}
+.switch{width:52px;height:30px;border-radius:15px;border:0;background:var(--bg2);box-shadow:inset 0 0 0 1px var(--line);position:relative;cursor:pointer;padding:0}
+.switch i{position:absolute;top:4px;left:4px;width:22px;height:22px;border-radius:50%;background:var(--raise);box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .3s var(--ease);display:grid;place-items:center}
+[data-theme=dark] .switch i{transform:translateX(22px)}
+.switch svg{width:13px;height:13px}
+/* layout */
+main{max-width:1080px;margin:0 auto;padding:0 24px}
+.hero{text-align:center;padding:96px 0 40px}
+h1{font-weight:600;font-size:clamp(44px,8vw,80px);line-height:1.05;letter-spacing:-.03em;margin:0}
+.sub{color:var(--ink2);font-size:21px;max-width:600px;text-wrap:balance;margin:20px auto 0}
+.pot{width:56px;height:56px;margin:0 auto 24px;color:var(--accent)}
+.pot .steam path{stroke-dasharray:14;stroke-dashoffset:14;animation:steam 3.2s var(--fade) infinite}
+.pot .steam path:nth-child(2){animation-delay:.5s}.pot .steam path:nth-child(3){animation-delay:1s}
+@keyframes steam{0%{stroke-dashoffset:14;opacity:0}30%{opacity:1}70%{stroke-dashoffset:0;opacity:.8}100%{stroke-dashoffset:-14;opacity:0}}
+/* card */
+.card{background:var(--raise);border-radius:22px;box-shadow:var(--shadow);border:1px solid var(--line);padding:32px;max-width:680px;margin:0 auto}
+.drop{display:block;border:1.5px dashed color-mix(in srgb,var(--ink2) 45%,transparent);border-radius:18px;padding:40px 24px;text-align:center;cursor:pointer;transition:border-color .2s var(--fade),background .2s var(--fade),transform .2s var(--ease)}
+.drop:hover,.drop.over{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 5%,transparent)}
+.drop svg{width:32px;height:32px;color:var(--ink2);margin-bottom:8px}
+.drop strong{display:block;font-weight:600}
+.drop span{color:var(--ink2);font-size:14px}
+.or{display:flex;align-items:center;gap:12px;color:var(--ink2);font-size:14px;margin:20px 0}
+.or:before,.or:after{content:"";flex:1;height:1px;background:var(--line)}
+textarea{width:100%;min-height:150px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);padding:14px 16px;resize:vertical;font-size:15px;line-height:1.5;outline:none;transition:box-shadow .2s var(--fade)}
+textarea:focus,input:focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent)}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.btn{border:0;border-radius:980px;padding:12px 22px;font-weight:600;cursor:pointer;background:var(--accent);color:var(--accent-ink);transition:transform .15s var(--ease),opacity .2s var(--fade)}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.ghost{background:transparent;color:var(--accent);padding:12px 4px}
+.link{background:none;border:0;color:var(--accent);cursor:pointer;padding:0;font-size:15px}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.thumbs img{width:56px;height:96px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+.status{color:var(--ink2);font-size:14px;margin-top:12px}.status:empty,.thumbs:empty{display:none}
+.bar-prog{height:4px;border-radius:2px;background:var(--bg2);overflow:hidden;margin-top:8px}
+.bar-prog i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s var(--ease)}
+/* controls */
+section{padding:40px 0}
+.controls{max-width:680px;margin:24px auto 0}
+.seg{display:inline-flex;background:var(--bg2);border-radius:980px;padding:3px;position:relative}
+.seg button{border:0;background:none;padding:8px 18px;border-radius:980px;cursor:pointer;font-size:15px;position:relative;z-index:1;color:var(--ink2);transition:color .2s var(--fade)}
+.seg button[aria-pressed=true]{color:var(--ink);font-weight:600}
+.seg .pill{position:absolute;top:3px;bottom:3px;left:3px;border-radius:980px;background:var(--raise);box-shadow:0 1px 3px rgba(0,0,0,.12);transition:transform .35s var(--ease),width .35s var(--ease)}
+.step{display:inline-flex;align-items:center;gap:4px;background:var(--bg2);border-radius:980px;padding:3px}
+.step button{width:34px;height:34px;border-radius:50%;border:0;background:var(--raise);cursor:pointer;font-size:19px;line-height:1;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.step button:active{transform:scale(.92)}
+.step input{width:44px;text-align:center;border:0;background:none;font-weight:600;outline:none;border-radius:8px}
+.label{color:var(--ink2);font-size:15px}
+.flags{list-style:none;padding:0;margin:16px 0 0;display:grid;gap:8px}
+.flags li{background:var(--warn-bg);color:var(--ink);border-radius:12px;padding:10px 14px;font-size:14px;display:flex;gap:10px;align-items:flex-start}
+.flags li:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--warn);margin-top:6px;flex:none}
+.flags em{font-style:normal;color:var(--ink2)}
+/* sheet */
+.sheet{max-width:880px;margin:0 auto}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:center;margin-bottom:24px}
+.stat b{display:block;font-size:44px;font-weight:600;letter-spacing:-.02em;line-height:1.1}
+.stat span{color:var(--ink2);font-size:14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.box{background:var(--raise);border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:var(--shadow)}
+.box.wide{grid-column:1/-1}
+.box h3{margin:0 0 12px;font-size:19px;font-weight:600;letter-spacing:-.01em;display:flex;align-items:center;justify-content:space-between}
+.tbl{width:100%;border-collapse:collapse;font-size:15px}
+.tbl td{padding:8px 0;border-top:1px solid var(--line);vertical-align:top}
+.tbl tr:first-child td{border-top:0}
+.tbl .q{font-weight:600;white-space:nowrap;padding-right:16px;width:1%}
+.tbl .o{color:var(--ink2);font-size:13px;white-space:nowrap;text-align:right;padding-left:12px}
+.tbl .sec td{color:var(--ink2);font-size:13px;padding-top:16px;border-top:0}
+.tag{font-size:12px;color:var(--warn);margin-left:6px}
+ol.order{list-style:none;padding:0;margin:0;counter-reset:o}
+ol.order li{counter-increment:o;display:grid;grid-template-columns:28px 1fr auto;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+ol.order li:first-child{border-top:0}
+ol.order li:before{content:counter(o);width:24px;height:24px;border-radius:50%;background:var(--bg2);font-size:13px;font-weight:600;display:grid;place-items:center}
+ol.order small{display:block;color:var(--ink2);font-size:14px}
+ol.order .t{color:var(--ink2);font-size:14px;white-space:nowrap}
+.split{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.split div{background:var(--bg2);border-radius:14px;padding:16px}
+.split h4{margin:0 0 6px;font-size:15px;font-weight:600}
+.split p{margin:0;font-size:14px;color:var(--ink2)}
+ul.plain{margin:0;padding-left:18px;font-size:15px}
+ul.plain li{margin:4px 0}
+.note{background:var(--warn-bg);border-radius:14px;padding:14px 16px;font-size:15px;margin-bottom:16px}
+details{margin-top:8px}
+summary{cursor:pointer;color:var(--accent);font-size:15px}
+.steps{font-size:15px;color:var(--ink2);padding-left:20px}
+footer{color:var(--ink2);font-size:13px;text-align:center;padding:48px 24px 64px}
+/* motion */
+.rise{opacity:0;transform:translateY(14px)}
+.rise.in{opacity:1;transform:none;transition:opacity .7s var(--fade),transform .7s var(--ease)}
+.hidden{display:none!important}
+.puff{position:fixed;pointer-events:none;width:8px;height:8px;border-radius:50%;background:var(--accent);opacity:.0}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:opacity .2s linear!important}.rise{transform:none}}
+@media (max-width:720px){
+  .hero{padding:56px 0 24px}.sub{font-size:19px}.card{padding:20px}.grid,.split{grid-template-columns:1fr}
+  .stat b{font-size:32px}.bar{padding:0 16px}main{padding:0 16px}section{padding:24px 0}
+}
+@media print{
+  .bar,.hero,#input,.controls,footer,.noprint{display:none!important}
+  body{background:#fff;color:#000}.box{box-shadow:none;break-inside:avoid}.rise{opacity:1!important;transform:none!important}
+}
+</style>
+</head>
+<body>
+<header class="bar">
+  <a class="mark" href="./" aria-label="batch.day home">batch<b>.</b>day</a>
+  <button class="switch" id="theme" role="switch" aria-checked="false" aria-label="Dark mode"><i><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M13 9.5A5.5 5.5 0 0 1 6.5 3a5.5 5.5 0 1 0 6.5 6.5z"/></svg></i></button>
+</header>
+
+<main>
+  <div class="hero">
+    <svg class="pot" viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <g class="steam"><path d="M20 16c-2-3 2-5 0-8"/><path d="M28 16c-2-3 2-5 0-8"/><path d="M36 16c-2-3 2-5 0-8"/></g>
+      <path d="M10 24h36"/><path d="M13 24v16a6 6 0 0 0 6 6h18a6 6 0 0 0 6-6V24"/><path d="M6 28h7M43 28h7"/>
+    </svg>
+    <h1>Cook once.<br>Eat all week.</h1>
+    <p class="sub">Drop in a recipe screenshot or paste it. Get the whole batch day: what to buy, which pot, and what to cook first.</p>
+  </div>
+
+  <section id="input">
+    <div class="card rise">
+      <label class="drop" id="drop" tabindex="0">
+        <input type="file" id="file" accept="image/*" multiple hidden>
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="22" height="22" rx="5"/><path d="M5 21l6-6 5 5 4-4 7 7"/><circle cx="20.5" cy="11.5" r="2"/></svg>
+        <strong>Drop screenshots here</strong>
+        <span>Several screenshots of one recipe are fine. They stay on your device.</span>
+      </label>
+      <div class="thumbs" id="thumbs"></div>
+      <div class="status" id="status" aria-live="polite"></div>
+      <div class="bar-prog hidden" id="prog"><i></i></div>
+      <div class="or">or paste it</div>
+      <textarea id="text" placeholder="Paste a recipe: ingredients, steps, servings…" aria-label="Recipe text"></textarea>
+      <ul class="flags" id="flags"></ul>
+      <div class="row" style="margin-top:16px;justify-content:space-between">
+        <button class="link" id="sample">Try a sample</button>
+        <button class="btn" id="go" disabled>Plan my batch day</button>
+      </div>
+    </div>
+
+    <div class="controls rise hidden" id="controls">
+      <div class="row" style="justify-content:space-between">
+        <div class="seg" id="mode" role="group" aria-label="Mode">
+          <span class="pill"></span>
+          <button aria-pressed="true" data-m="batch">Batch day</button>
+          <button aria-pressed="false" data-m="scale">Just scale</button>
+        </div>
+        <div class="row">
+          <span class="label">Recipe makes</span>
+          <div class="step"><button data-t="yield" data-d="-1" aria-label="Fewer">−</button><input id="yield" class="num" inputmode="numeric" value="4" aria-label="Recipe servings"><button data-t="yield" data-d="1" aria-label="More">+</button></div>
+        </div>
+      </div>
+      <div class="row" style="margin-top:16px;justify-content:center">
+        <span class="label" id="wantLabel">I want</span>
+        <div class="step"><button data-t="want" data-d="-1" aria-label="Fewer">−</button><input id="want" class="num" inputmode="numeric" value="14" aria-label="Meals wanted"><button data-t="want" data-d="1" aria-label="More">+</button></div>
+        <span class="label" id="wantUnit">meals</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="out" class="hidden">
+    <div class="sheet" id="sheet"></div>
+  </section>
+</main>
+
+<footer>Recipes are read on your device and never uploaded. Taste before you salt.</footer>
+
+<script>
+/*ENGINE*/
+</script>
+<script>
+(function(){
+'use strict';
+const $=(s)=>document.querySelector(s), E=window.BatchEngine;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let recipe=null, mode='batch', files=[];
+
+/* theme */
+const root=document.documentElement, sw=$('#theme');
+function curTheme(){return root.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
+function syncSwitch(){sw.setAttribute('aria-checked',curTheme()==='dark')}
+syncSwitch();
+sw.onclick=()=>{const t=curTheme()==='dark'?'light':'dark';root.dataset.theme=t;try{localStorage.setItem('bd-theme',t)}catch(e){};syncSwitch()};
+
+/* reveal */
+const io=new IntersectionObserver((es)=>es.forEach((e)=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1});
+function watch(el,delay){if(delay)el.style.transitionDelay=delay+'ms';io.observe(el)}
+document.querySelectorAll('.rise').forEach((el)=>watch(el));
+
+/* input */
+const text=$('#text'), go=$('#go');
+function onText(){go.disabled=!text.value.trim();}
+text.addEventListener('input',()=>{onText();recipe=null});
+$('#sample').onclick=()=>{text.value=SAMPLE;onText();text.focus();parseNow()};
+
+const drop=$('#drop'), file=$('#file');
+drop.addEventListener('keydown',(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();file.click()}});
+['dragenter','dragover'].forEach((t)=>drop.addEventListener(t,(e)=>{e.preventDefault();drop.classList.add('over')}));
+['dragleave','drop'].forEach((t)=>drop.addEventListener(t,(e)=>{e.preventDefault();drop.classList.remove('over')}));
+drop.addEventListener('drop',(e)=>handleFiles([...e.dataTransfer.files]));
+file.addEventListener('change',()=>handleFiles([...file.files]));
+document.addEventListener('paste',(e)=>{const imgs=[...(e.clipboardData||{}).items||[]].filter((i)=>i.type.startsWith('image/')).map((i)=>i.getAsFile());if(imgs.length){e.preventDefault();handleFiles(imgs)}});
+
+function setStatus(s){$('#status').textContent=s}
+function prog(p){const b=$('#prog');b.classList.toggle('hidden',p==null);if(p!=null)b.firstElementChild.style.width=Math.round(p*100)+'%'}
+
+let tess=null;
+function loadTesseract(){
+  if(window.Tesseract)return Promise.resolve();
+  if(tess)return tess;
+  tess=new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';s.onload=ok;s.onerror=()=>no(new Error('load'));document.head.appendChild(s)});
+  return tess;
+}
+// clean up a screenshot so the text reader can see it
+function prepImage(f){
+  return new Promise((ok)=>{const img=new Image();img.onload=()=>{
+    const tall=img.height/img.width>1.6;
+    const sx=0, sy=tall?Math.round(img.height*.28):0, sw=tall?Math.round(img.width*.82):img.width, sh=tall?Math.round(img.height*.6):img.height;
+    const c=document.createElement('canvas');c.width=sw*2;c.height=sh*2;const x=c.getContext('2d');
+    x.drawImage(img,sx,sy,sw,sh,0,0,c.width,c.height);
+    const d=x.getImageData(0,0,c.width,c.height),p=d.data;let sum=0;
+    for(let i=0;i<p.length;i+=4)sum+=.299*p[i]+.587*p[i+1]+.114*p[i+2];
+    const dark=sum/(p.length/4)<110;
+    for(let i=0;i<p.length;i+=4){const g=.299*p[i]+.587*p[i+1]+.114*p[i+2];const v=dark?(g>185?0:255):(g<140?0:255);p[i]=p[i+1]=p[i+2]=v}
+    x.putImageData(d,0,0);ok(c);URL.revokeObjectURL(img.src)};img.src=URL.createObjectURL(f)});
+}
+async function handleFiles(list){
+  list=list.filter((f)=>f&&f.type.startsWith('image/'));if(!list.length)return;
+  files=list;const th=$('#thumbs');th.innerHTML='';
+  list.forEach((f)=>{const i=new Image();i.src=URL.createObjectURL(f);i.alt='';th.appendChild(i)});
+  setStatus(`Reading ${list.length} screenshot${list.length>1?'s':''}…`);prog(0);
+  try{await loadTesseract()}catch(e){setStatus("Couldn't load the reader. Check your connection, or paste the recipe instead.");prog(null);return}
+  const texts=[];
+  try{
+    const worker=await Tesseract.createWorker('eng');
+    for(let k=0;k<list.length;k++){
+      const c=await prepImage(list[k]);const {data}=await worker.recognize(c);texts.push(data.text);prog((k+1)/list.length);
+    }
+    await worker.terminate();
+  }catch(e){setStatus("Couldn't read that image. Try a clearer screenshot, or paste the text.");prog(null);return}
+  const groups=E.stitch(texts);
+  text.value=groups.map((g)=>g.text.trim()).join('\n\n---\n\n');
+  prog(null);
+  setStatus(groups.length>1?`Found ${groups.length} recipes. Planning the first one; check the text below.`:'Got it. Check the highlighted lines, then plan.');
+  onText();parseNow();
+}
+
+function parseNow(){
+  const raw=text.value.split(/\n-{3,}\n/)[0];
+  recipe=E.parseRecipe(raw);
+  $('#yield').value=recipe.yield;
+  const fl=$('#flags');fl.innerHTML='';
+  recipe.flags.forEach((f)=>{const li=document.createElement('li');li.innerHTML=`<span>${esc(f.msg)}${f.line?` <em>“${esc(f.line.slice(0,60))}”</em>`:''}</span>`;fl.appendChild(li)});
+  const c=$('#controls');c.classList.remove('hidden');requestAnimationFrame(()=>c.classList.add('in'));
+  moveSeg();
+  if(recipe.baking&&mode==='batch')setMode('scale');
+}
+go.onclick=()=>{if(!recipe)parseNow();else{recipe.yield=+$('#yield').value||recipe.yield}render(true);puff(go)};
+
+/* controls */
+document.querySelectorAll('.step button').forEach((b)=>b.onclick=()=>{const i=$('#'+b.dataset.t);i.value=Math.max(1,(+i.value||1)+(+b.dataset.d));if(!$('#out').classList.contains('hidden'))render(false)});
+['yield','want'].forEach((id)=>$('#'+id).addEventListener('change',()=>{if(!$('#out').classList.contains('hidden'))render(false)}));
+function setMode(m){mode=m;document.querySelectorAll('#mode button').forEach((b)=>b.setAttribute('aria-pressed',b.dataset.m===m));
+  $('#wantLabel').textContent=m==='batch'?'I want':'Make it';$('#wantUnit').textContent=m==='batch'?'meals':'servings';
+  if(m==='scale'&&+$('#want').value===14)$('#want').value=Math.max(1,recipe?recipe.yield*2:8);
+  if(m==='batch'&&recipe&&+$('#want').value===recipe.yield*2)$('#want').value=14;
+  moveSeg();if(!$('#out').classList.contains('hidden'))render(false)}
+document.querySelectorAll('#mode button').forEach((b)=>b.onclick=()=>setMode(b.dataset.m));
+function moveSeg(){const on=$('#mode button[aria-pressed=true]'),p=$('#mode .pill');if(!on.offsetWidth)return;p.style.width=on.offsetWidth+'px';p.style.transform=`translateX(${on.offsetLeft-3}px)`}
+addEventListener('resize',moveSeg);
+
+/* render */
+function esc(s){return String(s).replace(/[&<>"]/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function fmtX(f){return (Math.round(f*10)/10).toString().replace(/\.0$/,'')}
+function ingRows(items){
+  let sec=null,h='';
+  items.forEach((i)=>{
+    if(i.section!==sec){sec=i.section;if(sec)h+=`<tr class="sec"><td colspan="3">${esc(sec)}</td></tr>`}
+    const orig=i.qty==null?'':esc(i.raw.match(/^[^a-zA-Z]*[a-zA-Z]*/)[0].trim());
+    h+=`<tr><td class="q num">${esc(i.scaled||'')}</td><td>${esc(i.name)}${i.adjusted?'<span class="tag">eased back</span>':''}${i.estimated?'<span class="tag">estimate</span>':''}</td><td class="o num">${orig}</td></tr>`;
+  });
+  return h;
+}
+function render(scroll){
+  if(!recipe)parseNow();
+  recipe.yield=Math.max(1,+$('#yield').value||recipe.yield);
+  const want=Math.max(1,+$('#want').value||1), out=$('#out'), sh=$('#sheet');
+  let h='';
+  if(mode==='batch'){
+    const p=E.batchDay(recipe,want);
+    h+=`<div class="stats"><div class="stat rise"><b class="num" data-n="${want}">${want}</b><span>meals</span></div><div class="stat rise"><b class="num" data-n="${fmtX(p.factor)}" data-x>${fmtX(p.factor)}×</b><span>the recipe</span></div><div class="stat rise"><b class="num" data-n="${Math.round(p.totalMin/5)*5}" data-m>${Math.round(p.totalMin/5)*5}</b><span>minutes, about</span></div></div>`;
+    p.notes.forEach((n)=>h+=`<div class="note rise">${esc(n)}</div>`);
+    h+=`<div class="grid">`;
+    h+=`<div class="box rise"><h3>Shopping amounts</h3><table class="tbl">${ingRows(p.items)}</table></div>`;
+    h+=`<div class="box rise"><h3>Cook order</h3><ol class="order">${p.order.map((o)=>`<li><div>${esc(o.t)}<small>${esc(o.d)}</small></div><span class="t num">${o.min?o.min+' min':''}</span></li>`).join('')}</ol></div>`;
+    if(p.pots.length)h+=`<div class="box rise wide"><h3>Pots and pans</h3><ul class="plain">${p.pots.map((x)=>`<li>${esc(x)}</li>`).join('')}</ul></div>`;
+    h+=`<div class="box rise wide"><h3>Where it all goes</h3><div class="split"><div><h4>Freezer</h4><p>${esc(p.split.freezer.join(' ')||'Nothing this time.')}</p></div><div><h4>Fridge</h4><p>${esc(p.split.fridge.join(' '))}</p></div><div><h4>Fresh at serving</h4><p>${esc(p.split.fresh.join(', ')||'Nothing extra.')}</p></div></div></div>`;
+    const list=p.grocery.map((g)=>g.amt==='for serving'?`${g.name} (for serving)`:`${g.amt?g.amt+' ':''}${g.name}`).join('\n');
+    h+=`<div class="box rise wide"><h3>Grocery list <span class="row noprint"><button class="link" data-copy>Copy</button><button class="link" data-print>Print</button></span></h3><ul class="plain">${p.grocery.map((g)=>g.amt==='for serving'?`<li>${esc(g.name)} <span style="color:var(--ink2)">for serving</span></li>`:`<li><span class="num">${esc(g.amt)}</span> ${esc(g.name)}</li>`).join('')}</ul><textarea hidden id="glist">${esc(list)}</textarea></div>`;
+    h+=`</div>`;
+  }else{
+    const s=E.scaleAll(recipe,want);
+    if(recipe.baking&&s.factor>2)h+=`<div class="note rise">Baking doesn't scale well past 2×. Make ${Math.ceil(s.factor/2)} batches instead of one big one.</div>`;
+    h+=`<div class="stats" style="grid-template-columns:1fr 1fr"><div class="stat rise"><b class="num" data-n="${want}">${want}</b><span>servings</span></div><div class="stat rise"><b class="num" data-n="${fmtX(s.factor)}" data-x>${fmtX(s.factor)}×</b><span>the recipe</span></div></div>`;
+    h+=`<div class="box rise"><h3>Scaled ingredients <span class="noprint"><button class="link" data-print>Print</button></span></h3><table class="tbl">${ingRows(s.items)}</table></div>`;
+  }
+  if(recipe.steps.length)h+=`<details class="rise"><summary>Original steps</summary><ol class="steps">${recipe.steps.map((s)=>`<li>${esc(s.text)}</li>`).join('')}</ol></details>`;
+  sh.innerHTML=h;out.classList.remove('hidden');
+  sh.querySelectorAll('.rise').forEach((el,k)=>watch(el,Math.min(k,8)*50));
+  sh.querySelectorAll('[data-print]').forEach((b)=>b.onclick=()=>{try{print()}catch(e){}});
+  const cp=sh.querySelector('[data-copy]');if(cp)cp.onclick=()=>{navigator.clipboard.writeText($('#glist').value).then(()=>{cp.textContent='Copied';setTimeout(()=>cp.textContent='Copy',1600)})};
+  if(scroll){count(sh);out.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'})}
+}
+function count(sh){
+  if(reduce)return;
+  sh.querySelectorAll('[data-n]').forEach((b)=>{const end=parseFloat(b.dataset.n),x=b.hasAttribute('data-x'),t0=performance.now(),dur=700;
+    (function tick(t){const k=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-k,3),v=end*e;b.textContent=(x?fmtX(v)+'×':Math.round(v));if(k<1)requestAnimationFrame(tick)})(t0)});
+}
+// signature moment: three little puffs of steam rise from the button
+function puff(el){
+  if(reduce)return;const r=el.getBoundingClientRect();
+  for(let k=0;k<3;k++){const d=document.createElement('span');d.className='puff';document.body.appendChild(d);
+    const x=r.left+r.width/2+(k-1)*14,y=r.top;d.style.left=x+'px';d.style.top=y+'px';
+    d.animate([{opacity:0,transform:'translateY(0) scale(.6)'},{opacity:.55,transform:'translateY(-14px) scale(1)'},{opacity:0,transform:'translateY(-36px) scale(1.6)'}],{duration:900,delay:k*90,easing:'cubic-bezier(.25,.1,.25,1)'}).onfinish=()=>d.remove()}
+}
+
+const SAMPLE=`Brothy chicken and rice
+Serves 4
+
+Chicken
+1½–2 lbs boneless chicken thighs
+Salt & black pepper
+1 tsp ginger paste
+½ tsp garlic powder
+Neutral oil, for cooking
+
+Aromatics
+Green onion whites, sliced
+2–5 cloves garlic, minced
+1–2 tsp ginger paste
+Red chili flakes, to taste
+
+Broth
+16 oz chicken bone broth
+5 oz coconut milk
+1½ tbsp red curry paste
+1–2 tsp soy sauce
+
+Rice
+1 cup jasmine rice
+
+Optional finish
+Baby bok choy
+Green onion tops
+Fresh lime juice
+Chili oil
+
+Directions
+1. Season chicken with salt, pepper, ginger paste and garlic powder.
+2. Cook the rice and set aside.
+3. Heat oil in a heavy pot. Pan-fry the chicken until golden on both sides. Set aside.
+4. In the same pot, soften the green onion whites, then add garlic, ginger and chili flakes.
+5. Stir in the curry paste and cook about 1 minute.
+6. Pour in the broth, coconut milk and soy sauce. Simmer a few minutes.
+7. Add the chicken back and simmer until cooked through. Add bok choy until just tender.
+8. Spoon rice into bowls, ladle the broth over, and finish with green onion, lime and chili oil.`;
+})();
+</script>
+</body>
+</html>

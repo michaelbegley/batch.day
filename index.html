@@ -2,17 +2,17 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-fUd94LlaZpBiHQ6fiP2a5mbfnAegN3IiuFkj0qbeG/s=' 'sha256-jfnDZlEESVCSnwN3sJAEkkWM8hfMhpFMLslSPepkKhI=' 'sha256-sF0xQSebP8rzlNYzGh2q2v6Ml6JyRWs5CTgZrAVReNs=' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; worker-src blob: https://cdn.jsdelivr.net; connect-src https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-fUd94LlaZpBiHQ6fiP2a5mbfnAegN3IiuFkj0qbeG/s=' 'sha256-jfnDZlEESVCSnwN3sJAEkkWM8hfMhpFMLslSPepkKhI=' 'sha256-e9Xuzi70GA2oH8zelX/EwEIZb9gDyP3f3c4Gys76oAM=' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; worker-src blob: https://cdn.jsdelivr.net; connect-src https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>batch.day: cook once, eat all week</title>
-<meta name="description" content="Drop a recipe screenshot or paste it. Get the whole batch day: what to buy, which pot, what to cook first, and what goes in the freezer.">
+<meta name="description" content="Add a recipe screenshot or paste it. Get the whole batch day: what to buy, which pot, what to cook first, and what goes in the freezer.">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta property="og:title" content="batch.day: cook once, eat all week">
-<meta property="og:description" content="Drop in a recipe screenshot. Get the whole batch day: what to buy, which pot, what to cook first.">
+<meta property="og:description" content="Add a recipe screenshot. Get the whole batch day: what to buy, which pot, what to cook first.">
 <meta property="og:image" content="https://batch.day/og.png">
 <meta property="og:url" content="https://batch.day/">
 <meta name="twitter:card" content="summary_large_image">
@@ -24,121 +24,210 @@
   --shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);
   --ease:cubic-bezier(.32,.72,0,1);--fade:cubic-bezier(.25,.1,.25,1);
   --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Inter,system-ui,sans-serif;
+  --dock:88px;
 }
 [data-theme=dark]{
-  --bg:#000;--bg2:#0e0e10;--raise:#1c1c1e;--ink:#f5f5f7;--ink2:#a1a1a6;--line:rgba(255,255,255,.12);
+  --bg:#000;--bg2:#2c2c2e;--raise:#1c1c1e;--ink:#f5f5f7;--ink2:#a1a1a6;--line:rgba(255,255,255,.12);
   --accent:#ff7a3d;--accent-ink:#1d1d1f;--warn:#ffb454;--warn-bg:#2a2010;--shadow:none;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]){
-  --bg:#000;--bg2:#0e0e10;--raise:#1c1c1e;--ink:#f5f5f7;--ink2:#a1a1a6;--line:rgba(255,255,255,.12);
+  --bg:#000;--bg2:#2c2c2e;--raise:#1c1c1e;--ink:#f5f5f7;--ink2:#a1a1a6;--line:rgba(255,255,255,.12);
   --accent:#ff7a3d;--accent-ink:#1d1d1f;--warn:#ffb454;--warn-bg:#2a2010;--shadow:none;}}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.47 var(--font);-webkit-font-smoothing:antialiased;transition:background .3s var(--fade),color .3s var(--fade)}
 button,input,textarea{font:inherit;color:inherit}
+button{-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:2px}
 .num{font-variant-numeric:tabular-nums}
-/* bar */
-.bar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;height:52px;padding:0 24px;
+.hidden{display:none!important}
+.muted{color:var(--ink2)}
+
+/* top bar */
+.bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;height:52px;padding:0 16px;
   background:color-mix(in srgb,var(--bg) 72%,transparent);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line)}
-.mark{font-weight:600;font-size:19px;letter-spacing:-.02em;text-decoration:none;color:var(--ink)}
+.mark{font-weight:600;font-size:19px;letter-spacing:-.02em;text-decoration:none;color:var(--ink);display:flex;align-items:center;min-height:44px}
 .mark b{color:var(--accent);font-weight:600}
-.switch{width:52px;height:30px;border-radius:15px;border:0;background:var(--bg2);box-shadow:inset 0 0 0 1px var(--line);position:relative;cursor:pointer;padding:0}
-.switch i{position:absolute;top:4px;left:4px;width:22px;height:22px;border-radius:50%;background:var(--raise);box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .3s var(--ease);display:grid;place-items:center}
+.switch{width:52px;height:30px;border-radius:15px;border:0;background:var(--bg2);box-shadow:inset 0 0 0 1px var(--line);position:relative;cursor:pointer;padding:0;margin:7px 0}
+.switch:before{content:"";position:absolute;inset:-7px 0}
+.switch i{position:absolute;top:4px;left:4px;width:22px;height:22px;border-radius:50%;background:var(--bg);box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .3s var(--ease);display:grid;place-items:center}
 [data-theme=dark] .switch i{transform:translateX(22px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .switch i{transform:translateX(22px)}}
 .switch svg{width:13px;height:13px}
+
+/* steps */
+.steps{display:flex;justify-content:center;gap:4px;margin:16px auto 0;max-width:640px}
+.steps button{flex:1;max-width:120px;min-height:44px;border:0;background:none;cursor:pointer;color:var(--ink2);font-size:13px;display:flex;flex-direction:column;align-items:center;gap:8px;padding:8px 0}
+.steps button:disabled{cursor:default}
+.steps i{display:block;width:100%;height:3px;border-radius:2px;background:var(--line);overflow:hidden;position:relative}
+.steps i:after{content:"";position:absolute;inset:0;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .45s var(--ease)}
+.steps [data-on=done] i:after,.steps [data-on=now] i:after{transform:none}
+.steps [data-on=now]{color:var(--ink);font-weight:600}
+
 /* layout */
-main{max-width:1080px;margin:0 auto;padding:0 24px}
-.hero{text-align:center;padding:96px 0 40px}
-h1{font-weight:600;font-size:clamp(44px,8vw,80px);line-height:1.05;letter-spacing:-.03em;margin:0}
-.sub{color:var(--ink2);font-size:21px;max-width:600px;text-wrap:balance;margin:20px auto 0}
-.pot{width:56px;height:56px;margin:0 auto 24px;color:var(--accent)}
+main{max-width:640px;margin:0 auto;padding:0 16px calc(var(--dock) + 24px)}
+.view{animation:viewIn .45s var(--ease) both}
+@keyframes viewIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+h1{font-weight:600;font-size:clamp(40px,9vw,72px);line-height:1.05;letter-spacing:-.03em;margin:0}
+h2{font-weight:600;font-size:28px;line-height:1.15;letter-spacing:-.02em;margin:0}
+h3{margin:0 0 8px;font-size:19px;font-weight:600;letter-spacing:-.01em}
+.hero{text-align:center;padding:40px 0 32px}
+.sub{color:var(--ink2);font-size:19px;max-width:520px;text-wrap:balance;margin:16px auto 0}
+.pot{width:48px;height:48px;margin:0 auto 20px;color:var(--accent);display:block}
 .pot .steam path{stroke-dasharray:14;stroke-dashoffset:14;animation:steam 3.2s var(--fade) infinite}
 .pot .steam path:nth-child(2){animation-delay:.5s}.pot .steam path:nth-child(3){animation-delay:1s}
 @keyframes steam{0%{stroke-dashoffset:14;opacity:0}30%{opacity:1}70%{stroke-dashoffset:0;opacity:.8}100%{stroke-dashoffset:-14;opacity:0}}
-/* card */
-.card{background:var(--raise);border-radius:22px;box-shadow:var(--shadow);border:1px solid var(--line);padding:32px;max-width:680px;margin:0 auto}
-.drop{display:block;border:1.5px dashed color-mix(in srgb,var(--ink2) 45%,transparent);border-radius:18px;padding:40px 24px;text-align:center;cursor:pointer;transition:border-color .2s var(--fade),background .2s var(--fade),transform .2s var(--ease)}
-.drop:hover,.drop.over{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 5%,transparent)}
-.drop svg{width:32px;height:32px;color:var(--ink2);margin-bottom:8px}
-.drop strong{display:block;font-weight:600}
-.drop span{color:var(--ink2);font-size:14px}
-.or{display:flex;align-items:center;gap:12px;color:var(--ink2);font-size:14px;margin:20px 0}
-.or:before,.or:after{content:"";flex:1;height:1px;background:var(--line)}
-textarea{width:100%;min-height:150px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);padding:14px 16px;resize:vertical;font-size:15px;line-height:1.5;outline:none;transition:box-shadow .2s var(--fade)}
-textarea:focus,input:focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent)}
-.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.btn{border:0;border-radius:980px;padding:12px 22px;font-weight:600;cursor:pointer;background:var(--accent);color:var(--accent-ink);transition:transform .15s var(--ease),opacity .2s var(--fade)}
+.head{padding:24px 0 16px}
+.head p{margin:4px 0 0;color:var(--ink2);font-size:15px}
+
+/* cards */
+.card{background:var(--raise);border-radius:20px;box-shadow:var(--shadow);border:1px solid var(--line);padding:24px;margin-bottom:16px;transition:border-color .2s var(--fade),background .2s var(--fade)}
+.card.over{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 5%,var(--raise))}
+.card h3{display:flex;align-items:center;justify-content:space-between;gap:8px}
+
+/* buttons */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:56px;border:0;border-radius:980px;padding:0 24px;font-weight:600;font-size:17px;cursor:pointer;background:var(--accent);color:var(--accent-ink);transition:transform .15s var(--ease),opacity .2s var(--fade),filter .2s var(--fade)}
+.btn:hover{filter:brightness(1.06)}
 .btn:active{transform:scale(.97)}
-.btn:disabled{opacity:.4;cursor:default}
-.btn.ghost{background:transparent;color:var(--accent);padding:12px 4px}
-.link{background:none;border:0;color:var(--accent);cursor:pointer;padding:0;font-size:15px}
-.thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
-.thumbs img{width:56px;height:96px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
-.status{color:var(--ink2);font-size:14px;margin-top:12px}.status:empty,.thumbs:empty{display:none}
-.bar-prog{height:4px;border-radius:2px;background:var(--bg2);overflow:hidden;margin-top:8px}
-.bar-prog i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s var(--ease)}
-/* controls */
-section{padding:40px 0}
-.controls{max-width:680px;margin:24px auto 0}
-.seg{display:inline-flex;background:var(--bg2);border-radius:980px;padding:3px;position:relative}
-.seg button{border:0;background:none;padding:8px 18px;border-radius:980px;cursor:pointer;font-size:15px;position:relative;z-index:1;color:var(--ink2);transition:color .2s var(--fade)}
+.btn:disabled{opacity:.4;cursor:default;transform:none;filter:none}
+.btn svg{width:22px;height:22px}
+.btn.soft{background:var(--bg2);color:var(--ink)}
+.link{background:none;border:0;color:var(--accent);cursor:pointer;padding:0 4px;font-size:15px;min-height:44px;font-weight:500}
+.links{display:flex;justify-content:center;gap:24px;margin-top:8px}
+.hint{color:var(--ink2);font-size:14px;text-align:center;margin:12px 0 0}
+
+/* reading */
+.reading{text-align:center}
+.thumbs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.thumbs img{width:48px;height:84px;object-fit:cover;border-radius:10px;border:1px solid var(--line);animation:viewIn .4s var(--ease) both}
+.status{color:var(--ink2);font-size:15px;margin-top:16px}
+.prog{height:4px;border-radius:2px;background:var(--bg2);overflow:hidden;margin:12px auto 0;max-width:240px}
+.prog i{display:block;height:100%;width:0;background:var(--accent);transition:width .4s var(--ease)}
+.err{color:var(--warn)}
+
+/* paste */
+textarea{width:100%;min-height:200px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);padding:16px;resize:vertical;font-size:16px;line-height:1.5;outline:none;transition:box-shadow .2s var(--fade)}
+textarea:focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent)}
+
+/* check list */
+.ings{list-style:none;margin:0;padding:0}
+.ings .sec{color:var(--ink2);font-size:13px;padding:16px 0 4px}
+.ings .sec:first-child{padding-top:0}
+.ings li.i{display:grid;grid-template-columns:92px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line);font-size:16px}
+.ings .sec+li.i{border-top:0}
+.ings .q{font-weight:600}
+.ings small{display:block;font-size:13px;color:var(--ink2);margin-top:2px}
+.ings small.w{color:var(--warn)}
+.alert{background:var(--warn-bg);border-radius:14px;padding:16px;font-size:15px;margin-bottom:16px;display:flex;gap:12px}
+.alert:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--warn);margin-top:7px;flex:none}
+details.edit summary{list-style:none;cursor:pointer;color:var(--accent);font-size:15px;font-weight:500;min-height:44px;display:flex;align-items:center}
+details.edit summary::-webkit-details-marker{display:none}
+details.edit[open] summary{margin-bottom:8px}
+
+/* settings */
+.set{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.set:first-of-type{border-top:0;padding-top:4px}
+.set label{font-size:16px}
+.set small{display:block;color:var(--ink2);font-size:13px}
+.seg{display:flex;background:var(--bg2);border-radius:980px;padding:3px;position:relative;margin-bottom:12px}
+.seg button{flex:1;border:0;background:none;min-height:40px;border-radius:980px;cursor:pointer;font-size:15px;position:relative;z-index:1;color:var(--ink2);transition:color .2s var(--fade)}
 .seg button[aria-pressed=true]{color:var(--ink);font-weight:600}
 .seg .pill{position:absolute;top:3px;bottom:3px;left:3px;border-radius:980px;background:var(--raise);box-shadow:0 1px 3px rgba(0,0,0,.12);transition:transform .35s var(--ease),width .35s var(--ease)}
-.step{display:inline-flex;align-items:center;gap:4px;background:var(--bg2);border-radius:980px;padding:3px}
-.step button{width:34px;height:34px;border-radius:50%;border:0;background:var(--raise);cursor:pointer;font-size:19px;line-height:1;box-shadow:0 1px 2px rgba(0,0,0,.08)}
-.step button:active{transform:scale(.92)}
-.step input{width:44px;text-align:center;border:0;background:none;font-weight:600;outline:none;border-radius:8px}
-.label{color:var(--ink2);font-size:15px}
-.flags{list-style:none;padding:0;margin:16px 0 0;display:grid;gap:8px}
-.flags li{background:var(--warn-bg);color:var(--ink);border-radius:12px;padding:10px 14px;font-size:14px;display:flex;gap:10px;align-items:flex-start}
-.flags li:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--warn);margin-top:6px;flex:none}
-.flags em{font-style:normal;color:var(--ink2)}
+[data-theme=dark] .seg .pill{background:#48484a}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .seg .pill{background:#48484a}}
+.step{display:inline-flex;align-items:center;gap:2px;background:var(--bg2);border-radius:980px;padding:2px;flex:none}
+.step button{width:44px;height:44px;border-radius:50%;border:0;background:none;cursor:pointer;font-size:22px;line-height:1;color:var(--accent);transition:transform .15s var(--ease)}
+.step button:active{transform:scale(.88)}
+.step input{width:40px;text-align:center;border:0;background:none;font-weight:600;font-size:17px;outline:none;border-radius:8px}
+
 /* sheet */
-.sheet{max-width:880px;margin:0 auto}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:center;margin-bottom:24px}
-.stat b{display:block;font-size:44px;font-weight:600;letter-spacing:-.02em;line-height:1.1}
-.stat span{color:var(--ink2);font-size:14px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.box{background:var(--raise);border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:var(--shadow)}
-.box.wide{grid-column:1/-1}
-.box h3{margin:0 0 12px;font-size:19px;font-weight:600;letter-spacing:-.01em;display:flex;align-items:center;justify-content:space-between}
-.tbl{width:100%;border-collapse:collapse;font-size:15px}
-.tbl td{padding:8px 0;border-top:1px solid var(--line);vertical-align:top}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center;margin:8px 0 24px}
+.stat b{display:block;font-size:36px;font-weight:600;letter-spacing:-.02em;line-height:1.1}
+.stat span{color:var(--ink2);font-size:13px}
+.tabs{position:sticky;top:60px;z-index:5;margin-bottom:16px}
+.tbl{width:100%;border-collapse:collapse;font-size:16px}
+.tbl td{padding:12px 0;border-top:1px solid var(--line);vertical-align:top}
 .tbl tr:first-child td{border-top:0}
-.tbl .q{font-weight:600;white-space:nowrap;padding-right:16px;width:1%}
-.tbl .o{color:var(--ink2);font-size:13px;white-space:nowrap;text-align:right;padding-left:12px}
+.tbl .q{font-weight:600;white-space:nowrap;padding-right:12px;width:1%}
+.tbl .o{color:var(--ink2);font-size:13px;white-space:nowrap;text-align:right;padding-left:8px}
 .tbl .sec td{color:var(--ink2);font-size:13px;padding-top:16px;border-top:0}
-.tag{font-size:12px;color:var(--warn);margin-left:6px}
+.tag{font-size:12px;color:var(--warn);margin-left:8px;white-space:nowrap}
+.checks{list-style:none;margin:0;padding:0}
+.checks label{display:flex;align-items:center;gap:16px;min-height:48px;border-top:1px solid var(--line);cursor:pointer;font-size:16px}
+.checks li:first-child label{border-top:0}
+.checks input{appearance:none;-webkit-appearance:none;width:24px;height:24px;border-radius:50%;border:1.5px solid color-mix(in srgb,var(--ink2) 60%,transparent);margin:0;flex:none;display:grid;place-items:center;transition:background .2s var(--fade),border-color .2s var(--fade);cursor:pointer}
+.checks input:checked{background:var(--accent);border-color:var(--accent)}
+.checks input:checked:after{content:"";width:10px;height:5px;border:2px solid var(--accent-ink);border-top:0;border-right:0;transform:translateY(-1px) rotate(-45deg)}
+.checks span{transition:color .2s var(--fade)}
+.checks input:checked+span{color:var(--ink2);text-decoration:line-through}
+.checks b{font-weight:600}
 ol.order{list-style:none;padding:0;margin:0;counter-reset:o}
-ol.order li{counter-increment:o;display:grid;grid-template-columns:28px 1fr auto;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+ol.order li{counter-increment:o;display:grid;grid-template-columns:28px 1fr auto;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
 ol.order li:first-child{border-top:0}
-ol.order li:before{content:counter(o);width:24px;height:24px;border-radius:50%;background:var(--bg2);font-size:13px;font-weight:600;display:grid;place-items:center}
+ol.order li:before{content:counter(o);width:26px;height:26px;border-radius:50%;background:var(--bg2);font-size:13px;font-weight:600;display:grid;place-items:center}
 ol.order small{display:block;color:var(--ink2);font-size:14px}
 ol.order .t{color:var(--ink2);font-size:14px;white-space:nowrap}
-.split{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+ul.plain{margin:0;padding-left:20px;font-size:16px}
+ul.plain li{margin:8px 0}
+.split{display:grid;gap:12px}
 .split div{background:var(--bg2);border-radius:14px;padding:16px}
-.split h4{margin:0 0 6px;font-size:15px;font-weight:600}
-.split p{margin:0;font-size:14px;color:var(--ink2)}
-ul.plain{margin:0;padding-left:18px;font-size:15px}
-ul.plain li{margin:4px 0}
-.note{background:var(--warn-bg);border-radius:14px;padding:14px 16px;font-size:15px;margin-bottom:16px}
-details{margin-top:8px}
-summary{cursor:pointer;color:var(--accent);font-size:15px}
-.steps{font-size:15px;color:var(--ink2);padding-left:20px}
-footer{color:var(--ink2);font-size:13px;text-align:center;padding:48px 24px 64px}
+.split h4{margin:0 0 4px;font-size:16px;font-weight:600;display:flex;gap:8px;align-items:center}
+.split h4 svg{width:18px;height:18px;color:var(--accent)}
+.split p{margin:0;font-size:15px;color:var(--ink2)}
+.note{background:var(--warn-bg);border-radius:14px;padding:16px;font-size:15px;margin-bottom:16px}
+.osteps{font-size:15px;color:var(--ink2);padding-left:20px;margin:0}
+.osteps li{margin:8px 0}
+.tools{display:flex;gap:4px}
+footer{color:var(--ink2);font-size:13px;text-align:center;padding:32px 24px 0}
+
+/* dock */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:15;padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+  background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-top:1px solid var(--line);
+  transform:translateY(110%);transition:transform .4s var(--ease)}
+.dock.on{transform:none}
+.dock .in{max-width:608px;margin:0 auto;display:flex;gap:8px}
+.dock .btn.soft{flex:0 0 auto;width:auto;padding:0 20px}
+
+/* cook mode */
+.cook{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;flex-direction:column;padding:env(safe-area-inset-top) 0 0;animation:viewIn .35s var(--ease) both}
+.cook .top{display:flex;align-items:center;justify-content:space-between;padding:8px 8px 8px 20px;gap:12px}
+.cook .top span{font-size:15px;color:var(--ink2)}
+.x{width:44px;height:44px;border-radius:50%;border:0;background:var(--bg2);cursor:pointer;display:grid;place-items:center}
+.x svg{width:16px;height:16px}
+.cook .prog{max-width:none;margin:0 20px;border-radius:2px}
+.cook .body{flex:1;overflow:auto;padding:32px 24px;max-width:720px;width:100%;margin:0 auto;display:flex;flex-direction:column;justify-content:center}
+.cook .n{color:var(--accent);font-weight:600;font-size:15px;margin-bottom:8px}
+.cook h2{font-size:clamp(30px,7vw,44px)}
+.cook p{font-size:21px;line-height:1.4;color:var(--ink2);margin:16px 0 0}
+.cook .time{display:inline-flex;align-items:center;gap:8px;margin-top:24px;background:var(--bg2);border-radius:980px;padding:8px 16px;font-size:17px;font-weight:600;align-self:flex-start}
+.cook .time svg{width:18px;height:18px;color:var(--accent)}
+.cook .awake{font-size:13px;color:var(--ink2);text-align:center;padding:0 20px 8px}
+.cook .nav{display:flex;gap:8px;padding:12px 16px calc(12px + env(safe-area-inset-bottom));max-width:720px;width:100%;margin:0 auto}
+.cook .nav .btn.soft{flex:0 0 120px}
+.cook .body.go{animation:stepIn .35s var(--ease) both}
+.cook .body.back{animation:stepBack .35s var(--ease) both}
+@keyframes stepIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+@keyframes stepBack{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:none}}
+.done{text-align:center;align-items:center}
+.done svg{width:64px;height:64px;color:var(--accent);margin-bottom:16px}
+
 /* motion */
 .rise{opacity:0;transform:translateY(14px)}
 .rise.in{opacity:1;transform:none;transition:opacity .7s var(--fade),transform .7s var(--ease)}
-.hidden{display:none!important}
-.puff{position:fixed;pointer-events:none;width:8px;height:8px;border-radius:50%;background:var(--accent);opacity:.0}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:opacity .2s linear!important}.rise{transform:none}}
-@media (max-width:720px){
-  .hero{padding:56px 0 24px}.sub{font-size:19px}.card{padding:20px}.grid,.split{grid-template-columns:1fr}
-  .stat b{font-size:32px}.bar{padding:0 16px}main{padding:0 16px}section{padding:24px 0}
+.puff{position:fixed;pointer-events:none;width:8px;height:8px;border-radius:50%;background:var(--accent);opacity:0;z-index:30}
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01s!important;animation-delay:0s!important;transition:opacity .2s linear!important}.rise{transform:none}.pot .steam path{stroke-dashoffset:0;opacity:1}}
+
+/* bigger screens */
+@media (min-width:721px){
+  .hero{padding:72px 0 40px}.sub{font-size:21px}.card{padding:32px}
+  .split{grid-template-columns:repeat(3,1fr)}
+  .stat b{font-size:44px}
+  .dock{padding-left:24px;padding-right:24px}
 }
 @media print{
-  .bar,.hero,#input,.controls,footer,.noprint{display:none!important}
-  body{background:#fff;color:#000}.box{box-shadow:none;break-inside:avoid}.rise{opacity:1!important;transform:none!important}
+  .bar,.steps,.dock,footer,.noprint,.tabs,.cook{display:none!important}
+  body{background:#fff;color:#000}main{padding:0}.card{box-shadow:none;break-inside:avoid;border:1px solid #ddd}
+  .rise{opacity:1!important;transform:none!important}[data-panel]{display:block!important}
 }
 </style>
 </head>
@@ -149,61 +238,86 @@ footer{color:var(--ink2);font-size:13px;text-align:center;padding:48px 24px 64px
 </header>
 
 <main>
-  <div class="hero">
-    <svg class="pot" viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <g class="steam"><path d="M20 16c-2-3 2-5 0-8"/><path d="M28 16c-2-3 2-5 0-8"/><path d="M36 16c-2-3 2-5 0-8"/></g>
-      <path d="M10 24h36"/><path d="M13 24v16a6 6 0 0 0 6 6h18a6 6 0 0 0 6-6V24"/><path d="M6 28h7M43 28h7"/>
-    </svg>
-    <h1>Cook once.<br>Eat all week.</h1>
-    <p class="sub">Drop in a recipe screenshot or paste it. Get the whole batch day: what to buy, which pot, and what to cook first.</p>
+  <nav class="steps hidden" id="steps" aria-label="Progress">
+    <button data-go="add" data-on="done"><i></i>Add</button>
+    <button data-go="check" data-on="now"><i></i>Check</button>
+    <button data-go="sheet" data-on="todo" disabled><i></i>Cook sheet</button>
+  </nav>
+
+  <!-- 1. add -->
+  <div class="view" id="v-add">
+    <div class="hero">
+      <svg class="pot" viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <g class="steam"><path d="M20 16c-2-3 2-5 0-8"/><path d="M28 16c-2-3 2-5 0-8"/><path d="M36 16c-2-3 2-5 0-8"/></g>
+        <path d="M10 24h36"/><path d="M13 24v16a6 6 0 0 0 6 6h18a6 6 0 0 0 6-6V24"/><path d="M6 28h7M43 28h7"/>
+      </svg>
+      <h1>Cook once.<br>Eat all week.</h1>
+      <p class="sub">Add a recipe screenshot. Get what to buy, which pot, and what to cook first.</p>
+    </div>
+
+    <div class="card" id="dropcard">
+      <div id="pick">
+        <input type="file" id="file" accept="image/*" multiple hidden>
+        <button class="btn" id="choose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="15.5" cy="8.5" r="1.5"/></svg>Choose screenshots</button>
+        <p class="hint">Got a few screenshots of one recipe? Add them all. They never leave your phone.</p>
+      </div>
+      <div class="reading hidden" id="reading" aria-live="polite">
+        <div class="thumbs" id="thumbs"></div>
+        <div class="status" id="status"></div>
+        <div class="prog" id="prog"><i></i></div>
+      </div>
+      <div class="hidden" id="pastebox">
+        <textarea id="paste" placeholder="Paste the recipe: ingredients, steps, servings" aria-label="Recipe text"></textarea>
+        <button class="btn" id="usePaste" style="margin-top:12px" disabled>Use this recipe</button>
+      </div>
+    </div>
+    <div class="links">
+      <button class="link" id="pasteToggle">Paste text instead</button>
+      <button class="link" id="sample">Try a sample</button>
+    </div>
   </div>
 
-  <section id="input">
-    <div class="card rise">
-      <label class="drop" id="drop" tabindex="0">
-        <input type="file" id="file" accept="image/*" multiple hidden>
-        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="22" height="22" rx="5"/><path d="M5 21l6-6 5 5 4-4 7 7"/><circle cx="20.5" cy="11.5" r="2"/></svg>
-        <strong>Drop screenshots here</strong>
-        <span>Several screenshots of one recipe are fine. They stay on your device.</span>
-      </label>
-      <div class="thumbs" id="thumbs"></div>
-      <div class="status" id="status" aria-live="polite"></div>
-      <div class="bar-prog hidden" id="prog"><i></i></div>
-      <div class="or">or paste it</div>
-      <textarea id="text" placeholder="Paste a recipe: ingredients, steps, servings…" aria-label="Recipe text"></textarea>
-      <ul class="flags" id="flags"></ul>
-      <div class="row" style="margin-top:16px;justify-content:space-between">
-        <button class="link" id="sample">Try a sample</button>
-        <button class="btn" id="go" disabled>Plan my batch day</button>
+  <!-- 2. check -->
+  <div class="view hidden" id="v-check">
+    <div class="head"><h2 id="rTitle">Your recipe</h2><p id="rMeta"></p></div>
+    <div id="alerts"></div>
+    <div class="card">
+      <div class="seg" id="mode" role="group" aria-label="What to make">
+        <span class="pill"></span>
+        <button aria-pressed="true" data-m="batch">Batch day</button>
+        <button aria-pressed="false" data-m="scale">Just scale</button>
       </div>
+      <div class="set"><label for="yield">Recipe makes<small id="yieldNote">servings</small></label>
+        <div class="step"><button data-t="yield" data-d="-1" aria-label="Fewer servings">−</button><input id="yield" class="num" inputmode="numeric" value="4"><button data-t="yield" data-d="1" aria-label="More servings">+</button></div></div>
+      <div class="set"><label for="want" id="wantLabel">I want<small id="wantUnit">meals</small></label>
+        <div class="step"><button data-t="want" data-d="-1" aria-label="Fewer">−</button><input id="want" class="num" inputmode="numeric" value="14"><button data-t="want" data-d="1" aria-label="More">+</button></div></div>
     </div>
-
-    <div class="controls rise hidden" id="controls">
-      <div class="row" style="justify-content:space-between">
-        <div class="seg" id="mode" role="group" aria-label="Mode">
-          <span class="pill"></span>
-          <button aria-pressed="true" data-m="batch">Batch day</button>
-          <button aria-pressed="false" data-m="scale">Just scale</button>
-        </div>
-        <div class="row">
-          <span class="label">Recipe makes</span>
-          <div class="step"><button data-t="yield" data-d="-1" aria-label="Fewer">−</button><input id="yield" class="num" inputmode="numeric" value="4" aria-label="Recipe servings"><button data-t="yield" data-d="1" aria-label="More">+</button></div>
-        </div>
-      </div>
-      <div class="row" style="margin-top:16px;justify-content:center">
-        <span class="label" id="wantLabel">I want</span>
-        <div class="step"><button data-t="want" data-d="-1" aria-label="Fewer">−</button><input id="want" class="num" inputmode="numeric" value="14" aria-label="Meals wanted"><button data-t="want" data-d="1" aria-label="More">+</button></div>
-        <span class="label" id="wantUnit">meals</span>
-      </div>
+    <div class="card">
+      <h3>What we read <span class="muted" style="font-size:13px;font-weight:400" id="ingCount"></span></h3>
+      <ul class="ings" id="ings"></ul>
+      <details class="edit"><summary>Something wrong? Edit the text</summary>
+        <textarea id="text" aria-label="Recipe text"></textarea>
+        <button class="btn soft" id="reparse" style="margin-top:12px">Update</button>
+      </details>
     </div>
-  </section>
+  </div>
 
-  <section id="out" class="hidden">
-    <div class="sheet" id="sheet"></div>
-  </section>
+  <!-- 3. sheet -->
+  <div class="view hidden" id="v-sheet">
+    <div class="head"><h2 id="sTitle"></h2></div>
+    <div id="sheet"></div>
+  </div>
 </main>
 
-<footer>Recipes are read on your device and never uploaded. Taste before you salt.</footer>
+<div class="dock" id="dock"><div class="in" id="dockIn"></div></div>
+
+<div class="cook hidden" id="cook" role="dialog" aria-modal="true" aria-label="Cook mode">
+  <div class="top"><span id="cStep"></span><button class="x" id="cClose" aria-label="Close cook mode"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3l10 10M13 3L3 13"/></svg></button></div>
+  <div class="prog"><i id="cProg"></i></div>
+  <div class="body" id="cBody"></div>
+  <div class="awake" id="cAwake"></div>
+  <div class="nav"><button class="btn soft" id="cBack">Back</button><button class="btn" id="cNext">Next</button></div>
+</div>
 
 <script>
 /* Batch Day engine: parse, stitch, scale, plan. No dependencies. */
@@ -620,9 +734,11 @@ footer{color:var(--ink2);font-size:13px;text-align:center;padding:48px 24px 64px
 <script>
 (function(){
 'use strict';
-const $=(s)=>document.querySelector(s), E=window.BatchEngine;
+const $=(s)=>document.querySelector(s), $$=(s)=>[...document.querySelectorAll(s)], E=window.BatchEngine;
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-let recipe=null, mode='batch', files=[];
+let recipe=null, mode='batch', view='add', plan=null, tab='shop';
+function esc(s){return String(s).replace(/[&<>"]/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function fmtX(f){return (Math.round(f*10)/10).toString().replace(/\.0$/,'')}
 
 /* theme */
 const root=document.documentElement, sw=$('#theme');
@@ -631,96 +747,150 @@ function syncSwitch(){sw.setAttribute('aria-checked',curTheme()==='dark')}
 syncSwitch();
 sw.onclick=()=>{const t=curTheme()==='dark'?'light':'dark';root.dataset.theme=t;try{localStorage.setItem('bd-theme',t)}catch(e){};syncSwitch()};
 
-/* reveal */
-const io=new IntersectionObserver((es)=>es.forEach((e)=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1});
-function watch(el,delay){if(delay)el.style.transitionDelay=delay+'ms';io.observe(el)}
-document.querySelectorAll('.rise').forEach((el)=>watch(el));
+/* views */
+const ORDER=['add','check','sheet'];
+function show(v,push){
+  if(v!=='add'&&!recipe)v='add';
+  if(v==='sheet'&&!plan)v='check';
+  view=v;
+  ORDER.forEach((k)=>{const el=$('#v-'+k);const on=k===v;el.classList.toggle('hidden',!on);if(on){el.style.animation='none';el.offsetHeight;el.style.animation=''}});
+  $('#steps').classList.toggle('hidden',v==='add');
+  const i=ORDER.indexOf(v);
+  $$('#steps button').forEach((b,k)=>{b.dataset.on=k<i?'done':k===i?'now':'todo';b.disabled=k===i||(k===2&&!plan);b.setAttribute('aria-current',k===i?'step':'false')});
+  dock();
+  if(push)history.pushState({v},'','#'+(v==='add'?'':v));
+  scrollTo(0,0);
+  if(v==='check')requestAnimationFrame(moveSeg);
+  if(v==='sheet')requestAnimationFrame(()=>{moveTabs();count()});
+}
+$$('#steps button').forEach((b)=>b.onclick=()=>show(b.dataset.go,true));
+addEventListener('popstate',(e)=>{if(!$('#cook').classList.contains('hidden')){closeCook(true);return}show((e.state&&e.state.v)||'add',false)});
+history.replaceState({v:'add'},'',location.pathname+location.search);
 
-/* input */
-const text=$('#text'), go=$('#go');
-function onText(){go.disabled=!text.value.trim();}
-text.addEventListener('input',()=>{onText();recipe=null});
-$('#sample').onclick=()=>{text.value=SAMPLE;onText();text.focus();parseNow()};
+function dock(){
+  const d=$('#dock'),i=$('#dockIn');
+  if(view==='check'){i.innerHTML=`<button class="btn" id="dGo">Plan my ${mode==='batch'?'batch day':'recipe'}</button>`;$('#dGo').onclick=(e)=>{plan=null;build();puff(e.currentTarget);show('sheet',true)}}
+  else if(view==='sheet'){i.innerHTML=`<button class="btn soft" id="dEdit">Edit</button><button class="btn" id="dCook">Start cooking</button>`;$('#dEdit').onclick=()=>show('check',true);$('#dCook').onclick=openCook}
+  else i.innerHTML='';
+  d.classList.toggle('on',view!=='add');
+}
 
-const drop=$('#drop'), file=$('#file');
-drop.addEventListener('keydown',(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();file.click()}});
-['dragenter','dragover'].forEach((t)=>drop.addEventListener(t,(e)=>{e.preventDefault();drop.classList.add('over')}));
-['dragleave','drop'].forEach((t)=>drop.addEventListener(t,(e)=>{e.preventDefault();drop.classList.remove('over')}));
-drop.addEventListener('drop',(e)=>handleFiles([...e.dataTransfer.files]));
-file.addEventListener('change',()=>handleFiles([...file.files]));
-document.addEventListener('paste',(e)=>{const imgs=[...(e.clipboardData||{}).items||[]].filter((i)=>i.type.startsWith('image/')).map((i)=>i.getAsFile());if(imgs.length){e.preventDefault();handleFiles(imgs)}});
+/* 1. add */
+const file=$('#file'), card=$('#dropcard');
+$('#choose').onclick=()=>file.click();
+file.addEventListener('change',()=>{handleFiles([...file.files]);file.value=''});
+['dragenter','dragover'].forEach((t)=>card.addEventListener(t,(e)=>{e.preventDefault();card.classList.add('over')}));
+['dragleave','drop'].forEach((t)=>card.addEventListener(t,(e)=>{e.preventDefault();card.classList.remove('over')}));
+card.addEventListener('drop',(e)=>handleFiles([...e.dataTransfer.files]));
+document.addEventListener('paste',(e)=>{if(view!=='add')return;const imgs=[...((e.clipboardData||{}).items||[])].filter((i)=>i.type.startsWith('image/')).map((i)=>i.getAsFile());if(imgs.length){e.preventDefault();handleFiles(imgs)}});
+const paste=$('#paste');
+$('#pasteToggle').onclick=()=>{const open=$('#pastebox').classList.toggle('hidden');$('#pick').classList.toggle('hidden',!open);$('#reading').classList.add('hidden');$('#pasteToggle').textContent=open?'Paste text instead':'Use screenshots instead';if(!open)paste.focus()};
+paste.addEventListener('input',()=>$('#usePaste').disabled=!paste.value.trim());
+$('#usePaste').onclick=()=>load(paste.value);
+$('#sample').onclick=()=>load(SAMPLE);
 
-function setStatus(s){$('#status').textContent=s}
-function prog(p){const b=$('#prog');b.classList.toggle('hidden',p==null);if(p!=null)b.firstElementChild.style.width=Math.round(p*100)+'%'}
-
+function setStatus(s,err){const el=$('#status');el.textContent=s;el.classList.toggle('err',!!err)}
+function prog(p){$('#prog').firstElementChild.style.width=Math.round(p*100)+'%'}
 let tess=null;
 function loadTesseract(){
   if(window.Tesseract)return Promise.resolve();
   if(tess)return tess;
-  tess=new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';s.onload=ok;s.onerror=()=>no(new Error('load'));document.head.appendChild(s)});
+  tess=new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';s.onload=ok;s.onerror=()=>{tess=null;no(new Error('load'))};document.head.appendChild(s)});
   return tess;
 }
 // clean up a screenshot so the text reader can see it
 function prepImage(f){
-  return new Promise((ok)=>{const img=new Image();img.onload=()=>{
+  return new Promise((ok,no)=>{const img=new Image();img.onerror=no;img.onload=()=>{
     const tall=img.height/img.width>1.6;
-    const sx=0, sy=tall?Math.round(img.height*.28):0, sw=tall?Math.round(img.width*.82):img.width, sh=tall?Math.round(img.height*.6):img.height;
-    const c=document.createElement('canvas');c.width=sw*2;c.height=sh*2;const x=c.getContext('2d');
-    x.drawImage(img,sx,sy,sw,sh,0,0,c.width,c.height);
+    const sy=tall?Math.round(img.height*.28):0, sw2=tall?Math.round(img.width*.82):img.width, sh=tall?Math.round(img.height*.6):img.height;
+    const c=document.createElement('canvas');c.width=sw2*2;c.height=sh*2;const x=c.getContext('2d');
+    x.drawImage(img,0,sy,sw2,sh,0,0,c.width,c.height);
     const d=x.getImageData(0,0,c.width,c.height),p=d.data;let sum=0;
     for(let i=0;i<p.length;i+=4)sum+=.299*p[i]+.587*p[i+1]+.114*p[i+2];
     const dark=sum/(p.length/4)<110;
     for(let i=0;i<p.length;i+=4){const g=.299*p[i]+.587*p[i+1]+.114*p[i+2];const v=dark?(g>185?0:255):(g<140?0:255);p[i]=p[i+1]=p[i+2]=v}
     x.putImageData(d,0,0);ok(c);URL.revokeObjectURL(img.src)};img.src=URL.createObjectURL(f)});
 }
+function resetPick(){$('#pick').classList.remove('hidden');$('#reading').classList.add('hidden')}
 async function handleFiles(list){
   list=list.filter((f)=>f&&f.type.startsWith('image/'));if(!list.length)return;
-  files=list;const th=$('#thumbs');th.innerHTML='';
-  list.forEach((f)=>{const i=new Image();i.src=URL.createObjectURL(f);i.alt='';th.appendChild(i)});
-  setStatus(`Reading ${list.length} screenshot${list.length>1?'s':''}…`);prog(0);
-  try{await loadTesseract()}catch(e){setStatus("Couldn't load the reader. Check your connection, or paste the recipe instead.");prog(null);return}
+  $('#pastebox').classList.add('hidden');$('#pasteToggle').textContent='Paste text instead';
+  $('#pick').classList.add('hidden');$('#reading').classList.remove('hidden');
+  const th=$('#thumbs');th.innerHTML='';
+  list.forEach((f,k)=>{const i=new Image();i.src=URL.createObjectURL(f);i.alt='';i.style.animationDelay=k*50+'ms';th.appendChild(i)});
+  setStatus(`Reading ${list.length} screenshot${list.length>1?'s':''}…`);prog(.04);
+  try{await loadTesseract()}catch(e){setStatus("Couldn't load the reader. Check your connection, or paste the text instead.",true);setTimeout(resetPick,3500);return}
   const texts=[];
   try{
-    const worker=await Tesseract.createWorker('eng');
+    const worker=await Tesseract.createWorker('eng',1,{logger:(m)=>{if(m.status==='recognizing text')prog((texts.length+m.progress)/list.length)}});
     for(let k=0;k<list.length;k++){
+      setStatus(list.length>1?`Reading screenshot ${k+1} of ${list.length}…`:'Reading your screenshot…');
       const c=await prepImage(list[k]);const {data}=await worker.recognize(c);texts.push(data.text);prog((k+1)/list.length);
     }
     await worker.terminate();
-  }catch(e){setStatus("Couldn't read that image. Try a clearer screenshot, or paste the text.");prog(null);return}
+  }catch(e){setStatus("Couldn't read that. Try a clearer screenshot, or paste the text.",true);setTimeout(resetPick,3500);return}
   const groups=E.stitch(texts);
-  text.value=groups.map((g)=>g.text.trim()).join('\n\n---\n\n');
-  prog(null);
-  setStatus(groups.length>1?`Found ${groups.length} recipes. Planning the first one; check the text below.`:'Got it. Check the highlighted lines, then plan.');
-  onText();parseNow();
+  const all=groups.map((g)=>g.text.trim()).join('\n\n---\n\n');
+  load(all,groups.length);
+  resetPick();
 }
 
-function parseNow(){
-  const raw=text.value.split(/\n-{3,}\n/)[0];
+/* 2. check */
+function guessTitle(raw){
+  const first=(raw.split('\n').find((l)=>l.trim())||'').trim();
+  if(first.length&&first.length<48&&!/^[\d½¼¾⅓⅔]/.test(first)&&!/serves|servings|ingredients/i.test(first))return first.replace(/[^\w\s'&,-]/g,'').trim();
+  return 'Your recipe';
+}
+const FRIENDLY={range:'Range given, using the middle',noamount:'No amount given, we estimate it',amount:'Check this amount, it may be misread'};
+function load(raw,groups){
+  $('#text').value=raw;
+  parse(groups);
+  plan=null;
+  show('check',true);
+}
+function parse(groups){
+  const raw=$('#text').value.split(/\n-{3,}\n/)[0];
   recipe=E.parseRecipe(raw);
+  recipe.title=recipe.title||guessTitle(raw);
   $('#yield').value=recipe.yield;
-  const fl=$('#flags');fl.innerHTML='';
-  recipe.flags.forEach((f)=>{const li=document.createElement('li');li.innerHTML=`<span>${esc(f.msg)}${f.line?` <em>“${esc(f.line.slice(0,60))}”</em>`:''}</span>`;fl.appendChild(li)});
-  const c=$('#controls');c.classList.remove('hidden');requestAnimationFrame(()=>c.classList.add('in'));
-  moveSeg();
-  if(recipe.baking&&mode==='batch')setMode('scale');
+  $('#rTitle').textContent=recipe.title;
+  $('#rMeta').textContent=`${recipe.ingredients.length} ingredients · ${recipe.steps.length} steps${recipe.baking?' · baking':''}`;
+  $('#yieldNote').textContent=recipe.yieldGuessed?'our guess, change it if you know':'servings';
+  // alerts: only things the cook needs to act on
+  const al=[];
+  if(groups>1)al.push(`We found ${groups} recipes in your screenshots. This is the first one; the rest are in the text below.`);
+  recipe.flags.filter((f)=>f.type==='cutoff').forEach(()=>al.push('The steps look cut off. If there’s another screenshot, add it too.'));
+  if(recipe.baking)al.push('Baking doesn’t scale well past 2×. We switched to Just scale.');
+  if(!recipe.ingredients.length)al.push('We couldn’t find any ingredients. Edit the text below, or try a clearer screenshot.');
+  $('#alerts').innerHTML=al.map((a)=>`<div class="alert">${esc(a)}</div>`).join('');
+  // ingredients
+  const byLine={};recipe.flags.forEach((f)=>{if(f.line)byLine[f.line]=f});
+  let sec=null,h='';
+  recipe.ingredients.forEach((i)=>{
+    if(i.section!==sec){sec=i.section;if(sec)h+=`<li class="sec">${esc(sec)}</li>`}
+    const f=byLine[i.raw];const q=i.qty==null?'':(i.raw.match(/^[^a-zA-Z]*[a-zA-Z]*/)[0].trim());
+    h+=`<li class="i"><span class="q num">${esc(q||'—')}</span><span>${esc(i.name)}${f&&FRIENDLY[f.type]?`<small class="${f.type==='amount'?'w':''}">${FRIENDLY[f.type]}</small>`:''}</span></li>`;
+  });
+  $('#ings').innerHTML=h;
+  $('#ingCount').textContent=recipe.ingredients.length?`${recipe.ingredients.length} items`:'';
+  setMode(recipe.baking?'scale':mode,true);
 }
-go.onclick=()=>{if(!recipe)parseNow();else{recipe.yield=+$('#yield').value||recipe.yield}render(true);puff(go)};
+$('#reparse').onclick=()=>{parse();plan=null;show('check',false)};
 
-/* controls */
-document.querySelectorAll('.step button').forEach((b)=>b.onclick=()=>{const i=$('#'+b.dataset.t);i.value=Math.max(1,(+i.value||1)+(+b.dataset.d));if(!$('#out').classList.contains('hidden'))render(false)});
-['yield','want'].forEach((id)=>$('#'+id).addEventListener('change',()=>{if(!$('#out').classList.contains('hidden'))render(false)}));
-function setMode(m){mode=m;document.querySelectorAll('#mode button').forEach((b)=>b.setAttribute('aria-pressed',b.dataset.m===m));
-  $('#wantLabel').textContent=m==='batch'?'I want':'Make it';$('#wantUnit').textContent=m==='batch'?'meals':'servings';
-  if(m==='scale'&&+$('#want').value===14)$('#want').value=Math.max(1,recipe?recipe.yield*2:8);
-  if(m==='batch'&&recipe&&+$('#want').value===recipe.yield*2)$('#want').value=14;
-  moveSeg();if(!$('#out').classList.contains('hidden'))render(false)}
-document.querySelectorAll('#mode button').forEach((b)=>b.onclick=()=>setMode(b.dataset.m));
-function moveSeg(){const on=$('#mode button[aria-pressed=true]'),p=$('#mode .pill');if(!on.offsetWidth)return;p.style.width=on.offsetWidth+'px';p.style.transform=`translateX(${on.offsetLeft-3}px)`}
-addEventListener('resize',moveSeg);
+function setMode(m,quiet){mode=m;$$('#mode button').forEach((b)=>b.setAttribute('aria-pressed',b.dataset.m===m));
+  $('#wantLabel').firstChild.textContent=m==='batch'?'I want':'Make it';$('#wantUnit').textContent=m==='batch'?'meals':'servings';
+  const w=$('#want');
+  if(m==='scale'&&+w.value===14)w.value=Math.max(1,recipe?recipe.yield*2:8);
+  if(m==='batch'&&recipe&&+w.value===recipe.yield*2)w.value=14;
+  moveSeg();plan=null;if(!quiet)dock();else if(view==='check')dock()}
+$$('#mode button').forEach((b)=>b.onclick=()=>setMode(b.dataset.m));
+function moveSeg(){const on=$('#mode button[aria-pressed=true]'),p=$('#mode .pill');if(!on||!on.offsetWidth)return;p.style.width=on.offsetWidth+'px';p.style.transform=`translateX(${on.offsetLeft-3}px)`}
+addEventListener('resize',()=>{moveSeg();moveTabs()});
+$$('.step button').forEach((b)=>b.onclick=()=>{const i=$('#'+b.dataset.t);i.value=Math.max(1,(+i.value||1)+(+b.dataset.d));plan=null});
+['yield','want'].forEach((id)=>$('#'+id).addEventListener('change',()=>{const i=$('#'+id);i.value=Math.max(1,Math.round(+i.value)||1);plan=null}));
 
-/* render */
-function esc(s){return String(s).replace(/[&<>"]/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
-function fmtX(f){return (Math.round(f*10)/10).toString().replace(/\.0$/,'')}
+/* 3. cook sheet */
+const IC={freezer:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M10 2v16M3 6l14 8M17 6L3 14"/></svg>',fridge:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="10" height="16" rx="2"/><path d="M5 8h10M8 5v1M8 11v2"/></svg>',fresh:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16C4 8 9 4 16 4c0 7-4 12-12 12z"/><path d="M4 16l6-6"/></svg>'};
 function ingRows(items){
   let sec=null,h='';
   items.forEach((i)=>{
@@ -730,46 +900,105 @@ function ingRows(items){
   });
   return h;
 }
-function render(scroll){
-  if(!recipe)parseNow();
+function build(){
   recipe.yield=Math.max(1,+$('#yield').value||recipe.yield);
-  const want=Math.max(1,+$('#want').value||1), out=$('#out'), sh=$('#sheet');
+  const want=Math.max(1,+$('#want').value||1), sh=$('#sheet');
+  $('#sTitle').textContent=recipe.title;
   let h='';
   if(mode==='batch'){
-    const p=E.batchDay(recipe,want);
-    h+=`<div class="stats"><div class="stat rise"><b class="num" data-n="${want}">${want}</b><span>meals</span></div><div class="stat rise"><b class="num" data-n="${fmtX(p.factor)}" data-x>${fmtX(p.factor)}×</b><span>the recipe</span></div><div class="stat rise"><b class="num" data-n="${Math.round(p.totalMin/5)*5}" data-m>${Math.round(p.totalMin/5)*5}</b><span>minutes, about</span></div></div>`;
-    p.notes.forEach((n)=>h+=`<div class="note rise">${esc(n)}</div>`);
-    h+=`<div class="grid">`;
-    h+=`<div class="box rise"><h3>Shopping amounts</h3><table class="tbl">${ingRows(p.items)}</table></div>`;
-    h+=`<div class="box rise"><h3>Cook order</h3><ol class="order">${p.order.map((o)=>`<li><div>${esc(o.t)}<small>${esc(o.d)}</small></div><span class="t num">${o.min?o.min+' min':''}</span></li>`).join('')}</ol></div>`;
-    if(p.pots.length)h+=`<div class="box rise wide"><h3>Pots and pans</h3><ul class="plain">${p.pots.map((x)=>`<li>${esc(x)}</li>`).join('')}</ul></div>`;
-    h+=`<div class="box rise wide"><h3>Where it all goes</h3><div class="split"><div><h4>Freezer</h4><p>${esc(p.split.freezer.join(' ')||'Nothing this time.')}</p></div><div><h4>Fridge</h4><p>${esc(p.split.fridge.join(' '))}</p></div><div><h4>Fresh at serving</h4><p>${esc(p.split.fresh.join(', ')||'Nothing extra.')}</p></div></div></div>`;
+    const p=E.batchDay(recipe,want);plan={mode,p,want};
+    const mins=Math.round(p.totalMin/5)*5;
+    h+=`<div class="stats"><div class="stat"><b class="num" data-n="${want}">${want}</b><span>meals</span></div><div class="stat"><b class="num" data-n="${fmtX(p.factor)}" data-x>${fmtX(p.factor)}×</b><span>the recipe</span></div><div class="stat"><b class="num" data-n="${mins}">${mins}</b><span>minutes, about</span></div></div>`;
+    p.notes.forEach((n)=>h+=`<div class="note">${esc(n)}</div>`);
+    h+=`<div class="seg tabs noprint" id="tabs" role="tablist"><span class="pill"></span><button role="tab" data-tab="shop">Shop</button><button role="tab" data-tab="cook">Cook</button><button role="tab" data-tab="store">Store</button></div>`;
+    // shop
     const list=p.grocery.map((g)=>g.amt==='for serving'?`${g.name} (for serving)`:`${g.amt?g.amt+' ':''}${g.name}`).join('\n');
-    h+=`<div class="box rise wide"><h3>Grocery list <span class="row noprint"><button class="link" data-copy>Copy</button><button class="link" data-print>Print</button></span></h3><ul class="plain">${p.grocery.map((g)=>g.amt==='for serving'?`<li>${esc(g.name)} <span style="color:var(--ink2)">for serving</span></li>`:`<li><span class="num">${esc(g.amt)}</span> ${esc(g.name)}</li>`).join('')}</ul><textarea hidden id="glist">${esc(list)}</textarea></div>`;
+    h+=`<div data-panel="shop"><div class="card rise"><h3>Grocery list <span class="tools noprint"><button class="link" data-copy>Copy</button><button class="link" data-print>Print</button></span></h3><ul class="checks">${p.grocery.map((g)=>`<li><label><input type="checkbox"><span>${g.amt==='for serving'?`${esc(g.name)} <span class="muted">for serving</span>`:`<b class="num">${esc(g.amt)}</b> ${esc(g.name)}`}</span></label></li>`).join('')}</ul><textarea hidden id="glist">${esc(list)}</textarea></div></div>`;
+    // cook
+    h+=`<div data-panel="cook">`;
+    if(p.pots.length)h+=`<div class="card rise"><h3>Pots and pans</h3><ul class="plain">${p.pots.map((x)=>`<li>${esc(x)}</li>`).join('')}</ul></div>`;
+    h+=`<div class="card rise"><h3>Cook order</h3><ol class="order">${p.order.map((o)=>`<li><div>${esc(o.t)}<small>${esc(o.d)}</small></div><span class="t num">${o.min?o.min+' min':''}</span></li>`).join('')}</ol></div>`;
+    h+=`<div class="card rise"><h3>Amounts <span class="muted" style="font-size:13px;font-weight:400">original on the right</span></h3><table class="tbl">${ingRows(p.items)}</table></div>`;
+    if(recipe.steps.length)h+=`<div class="card rise"><h3>Original steps</h3><ol class="osteps">${recipe.steps.map((s)=>`<li>${esc(s.text)}</li>`).join('')}</ol></div>`;
     h+=`</div>`;
+    // store
+    h+=`<div data-panel="store"><div class="card rise"><h3>Where it all goes</h3><div class="split"><div><h4>${IC.freezer}Freezer</h4><p>${esc(p.split.freezer.join(' ')||'Nothing this time.')}</p></div><div><h4>${IC.fridge}Fridge</h4><p>${esc(p.split.fridge.join(' '))}</p></div><div><h4>${IC.fresh}Fresh at serving</h4><p>${esc(p.split.fresh.join(', ')||'Nothing extra.')}</p></div></div></div></div>`;
   }else{
-    const s=E.scaleAll(recipe,want);
-    if(recipe.baking&&s.factor>2)h+=`<div class="note rise">Baking doesn't scale well past 2×. Make ${Math.ceil(s.factor/2)} batches instead of one big one.</div>`;
-    h+=`<div class="stats" style="grid-template-columns:1fr 1fr"><div class="stat rise"><b class="num" data-n="${want}">${want}</b><span>servings</span></div><div class="stat rise"><b class="num" data-n="${fmtX(s.factor)}" data-x>${fmtX(s.factor)}×</b><span>the recipe</span></div></div>`;
-    h+=`<div class="box rise"><h3>Scaled ingredients <span class="noprint"><button class="link" data-print>Print</button></span></h3><table class="tbl">${ingRows(s.items)}</table></div>`;
+    const s=E.scaleAll(recipe,want);plan={mode,s,want};
+    h+=`<div class="stats" style="grid-template-columns:1fr 1fr"><div class="stat"><b class="num" data-n="${want}">${want}</b><span>servings</span></div><div class="stat"><b class="num" data-n="${fmtX(s.factor)}" data-x>${fmtX(s.factor)}×</b><span>the recipe</span></div></div>`;
+    if(recipe.baking&&s.factor>2)h+=`<div class="note">Baking doesn't scale well past 2×. Make ${Math.ceil(s.factor/2)} batches instead of one big one.</div>`;
+    h+=`<div class="card rise"><h3>Ingredients <span class="tools noprint"><button class="link" data-print>Print</button></span></h3><table class="tbl">${ingRows(s.items)}</table></div>`;
+    if(recipe.steps.length)h+=`<div class="card rise"><h3>Steps</h3><ol class="osteps">${recipe.steps.map((x)=>`<li>${esc(x.text)}</li>`).join('')}</ol></div>`;
   }
-  if(recipe.steps.length)h+=`<details class="rise"><summary>Original steps</summary><ol class="steps">${recipe.steps.map((s)=>`<li>${esc(s.text)}</li>`).join('')}</ol></details>`;
-  sh.innerHTML=h;out.classList.remove('hidden');
-  sh.querySelectorAll('.rise').forEach((el,k)=>watch(el,Math.min(k,8)*50));
+  sh.innerHTML=h;
+  sh.querySelectorAll('.rise').forEach((el,k)=>watch(el,Math.min(k,4)*60));
   sh.querySelectorAll('[data-print]').forEach((b)=>b.onclick=()=>{try{print()}catch(e){}});
-  const cp=sh.querySelector('[data-copy]');if(cp)cp.onclick=()=>{navigator.clipboard.writeText($('#glist').value).then(()=>{cp.textContent='Copied';setTimeout(()=>cp.textContent='Copy',1600)})};
-  if(scroll){count(sh);out.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'})}
+  const cp=sh.querySelector('[data-copy]');if(cp)cp.onclick=()=>{navigator.clipboard.writeText($('#glist').value).then(()=>{cp.textContent='Copied';setTimeout(()=>cp.textContent='Copy',1600)},()=>{cp.textContent='Copy failed'})};
+  sh.querySelectorAll('[data-tab]').forEach((b)=>b.onclick=()=>setTab(b.dataset.tab));
+  setTab('shop',true);
+  counted=false;
 }
-function count(sh){
-  if(reduce)return;
-  sh.querySelectorAll('[data-n]').forEach((b)=>{const end=parseFloat(b.dataset.n),x=b.hasAttribute('data-x'),t0=performance.now(),dur=700;
-    (function tick(t){const k=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-k,3),v=end*e;b.textContent=(x?fmtX(v)+'×':Math.round(v));if(k<1)requestAnimationFrame(tick)})(t0)});
+function setTab(t,quiet){
+  tab=t;$$('#tabs [data-tab]').forEach((b)=>{const on=b.dataset.tab===t;b.setAttribute('aria-pressed',on);b.setAttribute('aria-selected',on)});
+  $$('[data-panel]').forEach((p)=>{const on=p.dataset.panel===t;p.classList.toggle('hidden',!on);if(on&&!quiet){p.querySelectorAll('.rise').forEach((el,k)=>{el.classList.remove('in');el.style.transitionDelay=Math.min(k,4)*60+'ms';requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('in')))})}});
+  moveTabs();
+  if(!quiet){const tb=$('#tabs');if(tb&&tb.getBoundingClientRect().top<60)scrollTo({top:tb.offsetTop-70,behavior:reduce?'auto':'smooth'})}
 }
+function moveTabs(){const on=$('#tabs [aria-pressed=true]'),p=$('#tabs .pill');if(!on||!on.offsetWidth)return;p.style.width=on.offsetWidth+'px';p.style.transform=`translateX(${on.offsetLeft-3}px)`}
+
+let counted=false;
+function count(){
+  if(counted)return;counted=true;if(reduce)return;
+  $$('#sheet [data-n]').forEach((b)=>{const end=parseFloat(b.dataset.n),x=b.hasAttribute('data-x'),t0=performance.now(),dur=700;
+    (function tick(t){const k=Math.min(1,Math.max(0,(t-t0)/dur)),e=1-Math.pow(1-k,3),v=end*e;b.textContent=(x?fmtX(v)+'×':Math.round(v));if(k<1)requestAnimationFrame(tick)})(t0)});
+}
+
+/* reveal */
+const io=new IntersectionObserver((es)=>es.forEach((e)=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.05});
+function watch(el,delay){if(delay)el.style.transitionDelay=delay+'ms';io.observe(el)}
+
+/* cook mode */
+let cs=0, lock=null, csteps=[];
+async function wake(){try{if('wakeLock' in navigator&&document.visibilityState==='visible'){lock=await navigator.wakeLock.request('screen');$('#cAwake').textContent='Your screen stays on while you cook.'}else $('#cAwake').textContent=''}catch(e){$('#cAwake').textContent=''}}
+document.addEventListener('visibilitychange',()=>{if(!$('#cook').classList.contains('hidden')&&document.visibilityState==='visible')wake()});
+function openCook(){
+  if(!plan)return;
+  csteps=plan.mode==='batch'?plan.p.order.map((o)=>({t:o.t,d:o.d,min:o.min})):recipe.steps.map((s,k)=>({t:s.text,d:'',min:0}));
+  if(!csteps.length)csteps=[{t:'No steps found',d:'Add the steps on the Check page and try again.',min:0}];
+  cs=0;$('#cook').classList.remove('hidden');document.body.style.overflow='hidden';
+  history.pushState({v:view,cook:1},'');wake();drawStep(0);$('#cNext').focus();
+}
+function closeCook(fromPop){
+  $('#cook').classList.add('hidden');document.body.style.overflow='';
+  try{if(lock)lock.release()}catch(e){}lock=null;
+  if(!fromPop&&history.state&&history.state.cook)history.back();
+}
+function drawStep(dir){
+  const b=$('#cBody'),n=csteps.length;
+  b.className='body'+(dir>0?' go':dir<0?' back':'');
+  if(cs>=n){
+    b.className+=' done';
+    b.innerHTML=`<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="28"/><path d="M20 33l8 8 16-17"/></svg><h2>That’s the week, done.</h2><p>Label the bags with today’s date before they go in the freezer.</p>`;
+    $('#cStep').textContent='Done';$('#cProg').style.width='100%';$('#cNext').textContent='Close';$('#cBack').disabled=false;return;
+  }
+  const s=csteps[cs];
+  b.innerHTML=`<h2>${esc(s.t)}</h2>${s.d?`<p>${esc(s.d)}</p>`:''}${s.min?`<span class="time"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10" cy="11" r="7"/><path d="M10 7v4l2.5 2M8 2h4"/></svg>About ${s.min} min</span>`:''}`;
+  $('#cStep').textContent=`Step ${cs+1} of ${n}`;
+  $('#cProg').style.width=Math.round(cs/n*100)+'%';
+  $('#cBack').disabled=cs===0;$('#cNext').textContent=cs===n-1?'Finish':'Next';
+}
+$('#cNext').onclick=()=>{if(cs>=csteps.length){closeCook();return}cs++;drawStep(1)};
+$('#cBack').onclick=()=>{if(cs>0){cs--;drawStep(-1)}};
+$('#cClose').onclick=()=>closeCook();
+addEventListener('keydown',(e)=>{if($('#cook').classList.contains('hidden'))return;if(e.key==='ArrowRight')$('#cNext').click();else if(e.key==='ArrowLeft')$('#cBack').click();else if(e.key==='Escape')closeCook()});
+let tx=null;$('#cBody').addEventListener('touchstart',(e)=>{tx=e.touches[0].clientX},{passive:true});
+$('#cBody').addEventListener('touchend',(e)=>{if(tx==null)return;const dx=e.changedTouches[0].clientX-tx;tx=null;if(Math.abs(dx)>60){if(dx<0)$('#cNext').click();else $('#cBack').click()}},{passive:true});
+
 // signature moment: three little puffs of steam rise from the button
 function puff(el){
-  if(reduce)return;const r=el.getBoundingClientRect();
+  if(reduce||!el)return;const r=el.getBoundingClientRect();
   for(let k=0;k<3;k++){const d=document.createElement('span');d.className='puff';document.body.appendChild(d);
-    const x=r.left+r.width/2+(k-1)*14,y=r.top;d.style.left=x+'px';d.style.top=y+'px';
+    d.style.left=(r.left+r.width/2+(k-1)*14)+'px';d.style.top=r.top+'px';
     d.animate([{opacity:0,transform:'translateY(0) scale(.6)'},{opacity:.55,transform:'translateY(-14px) scale(1)'},{opacity:0,transform:'translateY(-36px) scale(1.6)'}],{duration:900,delay:k*90,easing:'cubic-bezier(.25,.1,.25,1)'}).onfinish=()=>d.remove()}
 }
 

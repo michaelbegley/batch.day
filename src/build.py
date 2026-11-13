@@ -10,8 +10,8 @@ open('site/.nojekyll','w').write('')
 import re, hashlib, base64
 h=open('site/index.html').read()
 hashes=["'sha256-"+base64.b64encode(hashlib.sha256(m.encode()).digest()).decode()+"'" for m in re.findall(r'<script>(.*?)</script>', h, re.S)]
-csp=("default-src 'self'; script-src "+' '.join(hashes)+" https://cdn.jsdelivr.net 'wasm-unsafe-eval'; worker-src blob: https://cdn.jsdelivr.net; "
-     "connect-src https://cdn.jsdelivr.net"+(" "+READER if READER else "")+"; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; "
+csp=("default-src 'self'; script-src 'self' "+' '.join(hashes)+" https://cdn.jsdelivr.net 'wasm-unsafe-eval'; worker-src blob: https://cdn.jsdelivr.net; "
+     "connect-src 'self' https://cdn.jsdelivr.net"+(" "+READER if READER else "")+"; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; "
      "base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests")
 h=h.replace('<meta charset="utf-8">','<meta charset="utf-8">\n<meta http-equiv="Content-Security-Policy" content="'+csp+'">\n<meta name="referrer" content="strict-origin-when-cross-origin">',1)
 open('site/index.html','w').write(h)

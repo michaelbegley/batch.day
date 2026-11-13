@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-fUd94LlaZpBiHQ6fiP2a5mbfnAegN3IiuFkj0qbeG/s=' 'sha256-QvzMdZR1QK9Yfc1v3z8P+E1gfftV6mCXeSkf4JhO+HI=' 'sha256-2kzmRv0ONC9G2y+mUs8RSviNzJNx9ezPJzyr+SvS9xU=' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; worker-src blob: https://cdn.jsdelivr.net; connect-src https://cdn.jsdelivr.net https://michbegl-batch-day-reader.hf.space; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-fUd94LlaZpBiHQ6fiP2a5mbfnAegN3IiuFkj0qbeG/s=' 'sha256-OES8gBnv7NH17ImQPPCckyxSTllY9mqNcOWbHvO6JSA=' 'sha256-QvzMdZR1QK9Yfc1v3z8P+E1gfftV6mCXeSkf4JhO+HI=' 'sha256-yX6mus/kFO9swWZtjUcQ/YX22tvGBDtmEjIpwxsSbxw=' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; worker-src blob: https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net https://michbegl-batch-day-reader.hf.space; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>batch.recipes: cook once, eat all week</title>
@@ -21,6 +21,7 @@
 <meta property="og:url" content="https://batch.recipes/">
 <meta name="twitter:card" content="summary_large_image">
 <script>try{var t=localStorage.getItem('bd-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};if(/(^|\.)batch\.recipes$|\.vercel\.app$/.test(location.hostname)){var s=document.createElement('script');s.defer=true;s.src='/_vercel/insights/script.js';document.head.appendChild(s)}</script>
 <style>
 :root{
   --bg:#fff;--bg2:#f5f5f7;--raise:#fff;--ink:#1d1d1f;--ink2:#6e6e73;--line:rgba(0,0,0,.08);
@@ -801,7 +802,9 @@ ul.plain li{margin:8px 0}
 'use strict';
 const $=(s)=>document.querySelector(s), $$=(s)=>[...document.querySelectorAll(s)], E=window.BatchEngine;
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-let recipe=null, mode='batch', view='add', plan=null, tab='shop', shots=[];
+let recipe=null, mode='batch', view='add', plan=null, tab='shop', shots=[], from='paste';
+// anonymous, cookie-free counts for the go/no-go test (Vercel Web Analytics)
+function track(name,data){try{window.va('event',data?{name,data}:{name})}catch(e){}}
 const READER='https://michbegl-batch-day-reader.hf.space';
 function esc(s){return String(s).replace(/[&<>"]/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function fmtX(f){return (Math.round(f*10)/10).toString().replace(/\.0$/,'')}
@@ -836,7 +839,7 @@ history.replaceState({v:'add'},'',location.pathname+location.search);
 
 function dock(){
   const d=$('#dock'),i=$('#dockIn');
-  if(view==='check'){i.innerHTML=`<button class="btn" id="dGo">Plan my ${mode==='batch'?'batch day':'recipe'}</button>`;$('#dGo').onclick=(e)=>{plan=null;build();puff(e.currentTarget);show('sheet',true)}}
+  if(view==='check'){i.innerHTML=`<button class="btn" id="dGo">Plan my ${mode==='batch'?'batch day':'recipe'}</button>`;$('#dGo').onclick=(e)=>{plan=null;build();puff(e.currentTarget);show('sheet',true);track('Plan',{mode,from})}}
   else if(view==='sheet'){i.innerHTML=`<button class="btn soft" id="dEdit">Edit</button><button class="btn" id="dCook">Start cooking</button>`;$('#dEdit').onclick=()=>show('check',true);$('#dCook').onclick=openCook}
   else i.innerHTML='';
   d.classList.toggle('on',view!=='add');
@@ -853,8 +856,8 @@ document.addEventListener('paste',(e)=>{if(view!=='add')return;const imgs=[...((
 const paste=$('#paste');
 $('#pasteToggle').onclick=()=>{const open=$('#pastebox').classList.toggle('hidden');$('#pick').classList.toggle('hidden',!open);$('#reading').classList.add('hidden');$('#pasteToggle').textContent=open?'Paste text instead':'Use screenshots instead';if(!open)paste.focus()};
 paste.addEventListener('input',()=>$('#usePaste').disabled=!paste.value.trim());
-$('#usePaste').onclick=()=>load(paste.value);
-$('#sample').onclick=()=>load(SAMPLE);
+$('#usePaste').onclick=()=>{from='paste';load(paste.value)};
+$('#sample').onclick=()=>{from='sample';load(SAMPLE)};
 
 function setStatus(s,err){const el=$('#status');el.textContent=s;el.classList.toggle('err',!!err)}
 function prog(p){$('#prog').firstElementChild.style.width=Math.round(p*100)+'%'}
@@ -881,7 +884,7 @@ function prepImage(f){
 function resetPick(){$('#pick').classList.remove('hidden');$('#reading').classList.add('hidden')}
 async function handleFiles(list){
   list=list.filter((f)=>f&&f.type.startsWith('image/'));if(!list.length)return;
-  shots=list;
+  shots=list;from='screenshots';
   $('#pastebox').classList.add('hidden');$('#pasteToggle').textContent='Paste text instead';
   $('#pick').classList.add('hidden');$('#reading').classList.remove('hidden');
   const th=$('#thumbs');th.innerHTML='';
@@ -964,7 +967,7 @@ function shrink(f){return new Promise((ok,no)=>{const img=new Image();img.onerro
   const w=Math.min(1000,img.width),h=Math.round(img.height*w/img.width),c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);
   let q=.85,d=c.toDataURL('image/jpeg',q);while(d.length>1.8e6&&q>.4){q-=.15;d=c.toDataURL('image/jpeg',q)}URL.revokeObjectURL(img.src);ok(d)};img.src=URL.createObjectURL(f)})}
 $('#aiGo').onclick=async()=>{
-  const b=$('#aiGo');if(b.disabled||!shots.length)return;b.disabled=true;b.textContent='Reading…';
+  const b=$('#aiGo');if(b.disabled||!shots.length)return;b.disabled=true;b.textContent='Reading…';track('Read with AI');
   try{
     const images=await Promise.all(shots.slice(0,6).map(shrink));
     const r=await fetch(READER+'/read',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({images})});
@@ -1073,7 +1076,7 @@ const X_IC='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-wi
 function renderSaved(){
   const a=allB();$('#mine').classList.toggle('hidden',!a.length);
   $('#savedList').innerHTML=a.map((r)=>`<li><button class="open" data-id="${esc(r.id)}"><b>${esc(r.title||'Recipe')}</b><span class="num">${r.m==='scale'?`${r.w} servings`:`${r.w} meals`} · ${new Date(r.at).toLocaleDateString(undefined,{month:'short',day:'numeric'})}</span></button><button class="rm" data-rm="${esc(r.id)}" aria-label="Remove ${esc(r.title||'recipe')}">${X_IC}</button></li>`).join('');
-  $$('#savedList .open').forEach((b)=>b.onclick=()=>{const r=allB().find((x)=>x.id===b.dataset.id);if(r)openRec(r)});
+  $$('#savedList .open').forEach((b)=>b.onclick=()=>{const r=allB().find((x)=>x.id===b.dataset.id);if(r){from='saved';openRec(r);track('Reopen saved')}});
   $$('#savedList .rm').forEach((b)=>b.onclick=()=>{const all=allB(),i=all.findIndex((x)=>x.id===b.dataset.rm);if(i<0)return;const gone=all.splice(i,1)[0];putB(all);renderSaved();
     toast(`Removed ${gone.title||'recipe'}`,()=>{const now=allB();now.splice(Math.min(i,now.length),0,gone);putB(now);renderSaved()})});
   let dismissed=false;try{dismissed=localStorage.getItem('bd-tip')==='1'}catch(e){}
@@ -1108,6 +1111,7 @@ async function decode(code){
 }
 async function linkFor(){return location.origin+location.pathname+'#r='+await encode({v:1,t:$('#text').value,y:recipe.yield,w:plan.want,m:plan.mode})}
 async function copyLink(){
+  track('Share',{how:'link'});
   try{const u=await linkFor();await navigator.clipboard.writeText(u);toast('Link copied. It opens this exact sheet.')}catch(e){toast("Couldn't copy the link.")}
 }
 function plainText(){
@@ -1128,13 +1132,14 @@ function plainText(){
   return L.join('\n');
 }
 async function shareIt(){
+  track('Share',{how:'send'});
   let url='';try{url=await linkFor()}catch(e){}
   const text=plainText()+(url?`\n\nOpen in batch.recipes:\n${url}`:'');
   try{await navigator.share({title:recipe.title,text})}catch(e){if(e&&e.name==='AbortError')return;try{await navigator.clipboard.writeText(text);toast('Copied. Paste it into Notes.')}catch(e2){}}
 }
 async function openFromHash(h){
   const m=h.match(/^#r=([\w-]+)$/);if(!m)return;
-  try{const o=await decode(m[1]);if(!o||typeof o.t!=='string')throw 0;openRec({text:o.t,y:o.y,w:o.w,m:o.m==='scale'?'scale':'batch'},true)}
+  try{const o=await decode(m[1]);if(!o||typeof o.t!=='string')throw 0;from='link';track('Open shared link');openRec({text:o.t,y:o.y,w:o.w,m:o.m==='scale'?'scale':'batch'},true)}
   catch(e){toast("That link didn't open. It may have been cut off.")}
 }
 
@@ -1146,6 +1151,7 @@ function openCook(){
   if(!plan)return;
   csteps=plan.mode==='batch'?plan.p.order.map((o)=>({t:o.t,d:o.d,min:o.min,use:o.use||[]})):recipe.steps.map((s,k)=>({t:s.text,d:'',min:0}));
   if(!csteps.length)csteps=[{t:'No steps found',d:'Add the steps on the Check page and try again.',min:0}];
+  track('Cook mode');
   cs=0;$('#cook').classList.remove('hidden');document.body.style.overflow='hidden';
   history.pushState({v:view,cook:1},'');wake();drawStep(0);$('#cNext').focus();
 }
@@ -1223,6 +1229,7 @@ Directions
 6. Pour in the broth, coconut milk and soy sauce. Simmer a few minutes.
 7. Add the chicken back and simmer until cooked through. Add bok choy until just tender.
 8. Spoon rice into bowls, ladle the broth over, and finish with green onion, lime and chili oil.`;
+if(allB().length)track('Returning visit');
 renderSaved();
 if(/^#r=/.test(startHash))openFromHash(startHash);
 addEventListener('hashchange',()=>{if(/^#r=/.test(location.hash)){const h=location.hash;history.replaceState({v:view},'',location.pathname+location.search);openFromHash(h)}});

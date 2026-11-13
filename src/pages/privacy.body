@@ -17,6 +17,7 @@
 <li><b>Vercel</b> hosts the site. Like any web host, it handles basic request information such as your IP address so the page can load.</li>
 <li><b>jsDelivr</b> serves the free screenshot reader the first time you add a screenshot.</li>
 <li><b>Hugging Face</b> runs the optional AI reader described above.</li>
+<li><b>Vercel Web Analytics</b> counts visits and a few anonymous actions, like planning a batch or opening cook mode. It uses no cookies and stores no personal information. We use it to see whether the site is worth keeping.</li>
 </ul>
 
 <h2>Advertising</h2>

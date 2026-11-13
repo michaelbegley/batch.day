@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-fUd94LlaZpBiHQ6fiP2a5mbfnAegN3IiuFkj0qbeG/s=' 'sha256-OES8gBnv7NH17ImQPPCckyxSTllY9mqNcOWbHvO6JSA=' 'sha256-QvzMdZR1QK9Yfc1v3z8P+E1gfftV6mCXeSkf4JhO+HI=' 'sha256-U9/tAwyRzd5QnNT/hgMti1C4j8sWpfAculP2F0/Qemg=' https://cdn.jsdelivr.net 'wasm-unsafe-eval' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; worker-src blob: https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com https://michbegl-batch-day-reader.hf.space; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; fenced-frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-fUd94LlaZpBiHQ6fiP2a5mbfnAegN3IiuFkj0qbeG/s=' 'sha256-OES8gBnv7NH17ImQPPCckyxSTllY9mqNcOWbHvO6JSA=' 'sha256-B3Z9K5J0DOMiE9vpVQbKyZgkGvDNLTfXrHI41T/iWkM=' 'sha256-RyjCz9sZ81m4x/S85pgJo90GH/fVgZrfpwCbskt8Zc0=' https://cdn.jsdelivr.net 'wasm-unsafe-eval' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; worker-src blob: https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com https://michbegl-batch-day-reader.hf.space; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; fenced-frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="google-adsense-account" content="ca-pub-2427174040615956">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2427174040615956" crossorigin="anonymous"></script>
@@ -154,6 +154,8 @@ details.edit[open] summary{margin-bottom:8px}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center;margin:8px 0 20px}
 .stat b{display:block;font-size:36px;font-weight:600;letter-spacing:-.02em;line-height:1.1}
 .stat span{color:var(--ink2);font-size:13px}
+.stat{min-width:0}
+@media (max-width:300px){.stats{grid-template-columns:1fr 1fr!important;row-gap:12px}.stat b{font-size:28px}.dock .btn{font-size:15px;padding:0 12px;min-width:0}.dock .btn.soft{padding:0 14px}}
 .tabs{position:sticky;top:60px;z-index:5;margin-bottom:16px}
 .tbl{width:100%;border-collapse:collapse;font-size:16px}
 .tbl td{padding:12px 0;border-top:1px solid var(--line);vertical-align:top}
@@ -471,7 +473,9 @@ ul.plain li{margin:8px 0}
     const flag = suspicious(raw) || (/[%¥]|Y2/.test(raw) && /½/.test(line)) || /^\s*\$/.test(raw);
     let fixed = line.replace(/^(\d)([1-3])\/([2-4])\b/, (m, a, b, c) => (+b < +c ? `${a} ${b}/${c}` : m));
     let rest = fixed, qty = null, qtyHi = null, unit = null;
-    const m = rest.match(QTY_RE);
+    const sci = /^\d+(\.\d+)?e[+-]?\d+/i.test(rest);
+    const neg = /^[-−–]\s*\d/.test(rest);
+    const m = sci || neg ? null : rest.match(QTY_RE);
     if (m) {
       qty = numVal(m[1]);
       qtyHi = m[2] ? numVal(m[2]) : null;
@@ -489,7 +493,12 @@ ul.plain li{margin:8px 0}
     if (cm && cm[1].length > 2) { note = (cm[3] || '').replace(/\)$/, ''); name = cm[1]; }
     const toTaste = /to taste/i.test(line);
     const optional = /optional/i.test(line);
-    return { raw: line, qty, qtyHi, unit, name: name.trim(), note: note.trim(), toTaste, optional, flag };
+    if (qty === 0 && !qtyHi) qty = null;
+    let odd = sci || neg;
+    if (qty != null && unit && WT_OZ[unit] && qty * WT_OZ[unit] > 50 * 16) odd = true;
+    if (qty != null && !unit && qty > 500) odd = true;
+    if (qty != null && unit && VOL_TSP[unit] && qty * VOL_TSP[unit] > 48 * 40) odd = true;
+    return { raw: line, qty, qtyHi, unit, name: name.trim(), note: note.trim(), toTaste, optional, flag, odd };
   }
 
   // ---------- classify ----------
@@ -858,6 +867,7 @@ function show(v,push){
   const i=ORDER.indexOf(v);
   $$('#steps button').forEach((b,k)=>{b.dataset.on=k<i?'done':k===i?'now':'todo';b.disabled=k===i||(k===2&&!plan);b.setAttribute('aria-current',k===i?'step':'false')});
   dock();
+  try{if(v==='sheet'&&curId)sessionStorage.setItem('bd-open',curId);else sessionStorage.removeItem('bd-open')}catch(e){}
   if(push)history.pushState({v},'','#'+(v==='add'?'':v));
   scrollTo(0,0);
   if(v==='check')requestAnimationFrame(moveSeg);
@@ -964,6 +974,8 @@ function parse(groups){
   if(groups>1)al.push(`We found ${groups} recipes in your screenshots. This is the first one; the rest are in the text below.`);
   recipe.flags.filter((f)=>f.type==='cutoff').forEach(()=>al.push('The steps look cut off. If there’s another screenshot, add it too.'));
   if(recipe.baking)al.push('Baking doesn’t scale well past 2×. We switched to Just scale.');
+  const odd=recipe.ingredients.filter((i)=>i.odd);
+  if(odd.length)al.push(`Some amounts look off (${odd.slice(0,3).map((i)=>i.name||i.raw).join(', ')}). Check them in the text below.`);
   if(!recipe.ingredients.length)al.push('We couldn’t find any ingredients. Edit the text below, or try a clearer screenshot.');
   $('#alerts').innerHTML=al.map((a)=>`<div class="alert">${esc(a)}</div>`).join('');
   // ingredients
@@ -990,7 +1002,9 @@ function setMode(m,quiet){mode=m;$$('#mode button').forEach((b)=>b.setAttribute(
 $$('#mode button').forEach((b)=>b.onclick=()=>setMode(b.dataset.m));
 function moveSeg(){const on=$('#mode button[aria-pressed=true]'),p=$('#mode .pill');if(!on||!on.offsetWidth)return;p.style.width=on.offsetWidth+'px';p.style.transform=`translateX(${on.offsetLeft-3}px)`}
 addEventListener('resize',()=>{moveSeg();moveTabs()});
-$$('.step button').forEach((b)=>b.onclick=()=>{const i=$('#'+b.dataset.t);i.value=Math.max(1,(+i.value||1)+(+b.dataset.d));plan=null});
+$$('.step button').forEach((b)=>b.onclick=()=>{const i=$('#'+b.dataset.t);i.value=Math.max(1,Math.round(+i.value||1)+(+b.dataset.d));plan=null});
+function snapN(i,fb){const v=Math.round(+i.value);i.value=v>=1?Math.min(v,999):fb;return +i.value}
+['#yield','#want'].forEach((s)=>$(s).addEventListener('change',()=>{snapN($(s),s==='#yield'?(recipe?recipe.yield:4):14);plan=null}));
 ['yield','want'].forEach((id)=>$('#'+id).addEventListener('change',()=>{const i=$('#'+id);i.value=Math.max(1,Math.round(+i.value)||1);plan=null}));
 
 /* optional AI reading, only when the cook taps it */
@@ -1021,8 +1035,8 @@ function ingRows(items){
   return h;
 }
 function build(){
-  recipe.yield=Math.max(1,+$('#yield').value||recipe.yield);
-  const want=Math.max(1,+$('#want').value||1), sh=$('#sheet');
+  recipe.yield=snapN($('#yield'),recipe.yield||4);
+  const want=snapN($('#want'),mode==='batch'?14:recipe.yield), sh=$('#sheet');
   $('#sTitle').textContent=recipe.title;
   let h='';
   if(mode==='batch'){
@@ -1089,7 +1103,7 @@ function watch(el,delay){if(delay)el.style.transitionDelay=delay+'ms';io.observe
 
 /* saving: on this device, no account */
 const KEY='bd-batches';let curId=null;
-function allB(){try{return JSON.parse(localStorage.getItem(KEY))||[]}catch(e){return[]}}
+function allB(){try{const a=JSON.parse(localStorage.getItem(KEY));return Array.isArray(a)?a.filter((x)=>x&&typeof x==='object'&&typeof x.text==='string'&&x.id!=null).map((x)=>Object.assign(x,{id:String(x.id)})):[]}catch(e){return[]}}
 function putB(a){try{localStorage.setItem(KEY,JSON.stringify(a.slice(0,50)));return true}catch(e){return false}}
 function remember(want){
   const text=$('#text').value;
@@ -1188,7 +1202,7 @@ async function shareIt(){
   try{await navigator.share({title:recipe.title,text})}catch(e){if(e&&e.name==='AbortError')return;try{await navigator.clipboard.writeText(text);toast('Copied. Paste it into Notes.')}catch(e2){}}
 }
 async function openFromHash(h){
-  const m=h.match(/^#r=([\w-]+)$/);if(!m)return;
+  const m=h.match(/^#r=([\w-]+)$/);if(!m){if(/^#r=/.test(h))toast("That link didn't open. It may have been cut off.");return}
   try{const o=await decode(m[1]);if(!o||typeof o.t!=='string')throw 0;from='link';track('Open shared link');openRec({text:o.t,y:o.y,w:o.w,m:o.m==='scale'?'scale':'batch'},true)}
   catch(e){toast("That link didn't open. It may have been cut off.")}
 }
@@ -1282,6 +1296,7 @@ Directions
 if(allB().length)track('Returning visit');
 renderSaved();
 if(/^#r=/.test(startHash))openFromHash(startHash);
+else{let oid=null;try{oid=sessionStorage.getItem('bd-open')}catch(e){}const r=oid&&allB().find((x)=>x.id===oid);if(r&&startHash==='#sheet'){from='saved';openRec(r,false);history.replaceState({v:'sheet'},'','#sheet')}}
 addEventListener('hashchange',()=>{if(/^#r=/.test(location.hash)){const h=location.hash;history.replaceState({v:view},'',location.pathname+location.search);openFromHash(h)}});
 })();
 </script>

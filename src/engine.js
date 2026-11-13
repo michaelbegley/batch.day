@@ -73,7 +73,9 @@
     const flag = suspicious(raw) || (/[%¥]|Y2/.test(raw) && /½/.test(line)) || /^\s*\$/.test(raw);
     let fixed = line.replace(/^(\d)([1-3])\/([2-4])\b/, (m, a, b, c) => (+b < +c ? `${a} ${b}/${c}` : m));
     let rest = fixed, qty = null, qtyHi = null, unit = null;
-    const m = rest.match(QTY_RE);
+    const sci = /^\d+(\.\d+)?e[+-]?\d+/i.test(rest);
+    const neg = /^[-−–]\s*\d/.test(rest);
+    const m = sci || neg ? null : rest.match(QTY_RE);
     if (m) {
       qty = numVal(m[1]);
       qtyHi = m[2] ? numVal(m[2]) : null;
@@ -91,7 +93,12 @@
     if (cm && cm[1].length > 2) { note = (cm[3] || '').replace(/\)$/, ''); name = cm[1]; }
     const toTaste = /to taste/i.test(line);
     const optional = /optional/i.test(line);
-    return { raw: line, qty, qtyHi, unit, name: name.trim(), note: note.trim(), toTaste, optional, flag };
+    if (qty === 0 && !qtyHi) qty = null;
+    let odd = sci || neg;
+    if (qty != null && unit && WT_OZ[unit] && qty * WT_OZ[unit] > 50 * 16) odd = true;
+    if (qty != null && !unit && qty > 500) odd = true;
+    if (qty != null && unit && VOL_TSP[unit] && qty * VOL_TSP[unit] > 48 * 40) odd = true;
+    return { raw: line, qty, qtyHi, unit, name: name.trim(), note: note.trim(), toTaste, optional, flag, odd };
   }
 
   // ---------- classify ----------

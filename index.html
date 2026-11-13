@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-fUd94LlaZpBiHQ6fiP2a5mbfnAegN3IiuFkj0qbeG/s=' 'sha256-OES8gBnv7NH17ImQPPCckyxSTllY9mqNcOWbHvO6JSA=' 'sha256-QvzMdZR1QK9Yfc1v3z8P+E1gfftV6mCXeSkf4JhO+HI=' 'sha256-YlmK0rTKDQaBqqXAQyix57vC+njhQkRLcHCVeOxna3w=' https://cdn.jsdelivr.net 'wasm-unsafe-eval' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; worker-src blob: https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com https://michbegl-batch-day-reader.hf.space; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; fenced-frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-fUd94LlaZpBiHQ6fiP2a5mbfnAegN3IiuFkj0qbeG/s=' 'sha256-OES8gBnv7NH17ImQPPCckyxSTllY9mqNcOWbHvO6JSA=' 'sha256-QvzMdZR1QK9Yfc1v3z8P+E1gfftV6mCXeSkf4JhO+HI=' 'sha256-U9/tAwyRzd5QnNT/hgMti1C4j8sWpfAculP2F0/Qemg=' https://cdn.jsdelivr.net 'wasm-unsafe-eval' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; worker-src blob: https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com https://michbegl-batch-day-reader.hf.space; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; fenced-frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="google-adsense-account" content="ca-pub-2427174040615956">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2427174040615956" crossorigin="anonymous"></script>
@@ -202,6 +202,11 @@ ul.plain li{margin:8px 0}
 .tip{background:var(--bg2);border-radius:14px;padding:16px;font-size:14px;color:var(--ink2);margin-top:16px}
 .tip b{color:var(--ink);font-weight:600}
 .tip .link{min-height:32px;padding:0;margin-top:4px;display:block}
+.tip.inst{text-align:left;margin:16px 0}
+.tip .ic{width:16px;height:16px;vertical-align:-3px;color:var(--accent)}
+.instrow{display:flex;align-items:center;gap:16px;margin-top:12px}
+.instrow .link{margin:0;display:inline}
+.pillb.acc{background:var(--accent);color:var(--accent-ink)}
 .acts{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:0 0 8px}
 .pillb{min-height:44px;padding:0 16px;border-radius:980px;border:0;background:var(--bg2);font-size:15px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:transform .15s var(--ease)}
 .pillb:active{transform:scale(.96)}
@@ -1033,11 +1038,12 @@ function build(){
   setTab('shop',true);
   counted=false;
   remember(want);
+  sh.querySelectorAll('[data-inst]').forEach(fillInst);
 }
 const SHARE_IC='<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13V3M6 6.5L10 3l4 3.5"/><path d="M5 10H4v7h12v-7h-1"/></svg>';
 const LINK_IC='<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8.5 11.5a3.5 3.5 0 0 0 5 0l2.5-2.5a3.5 3.5 0 0 0-5-5l-1 1"/><path d="M11.5 8.5a3.5 3.5 0 0 0-5 0L4 11a3.5 3.5 0 0 0 5 5l1-1"/></svg>';
 const PRINT_IC='<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6 8V3h8v5M6 14H3V8h14v6h-3"/><path d="M6 11h8v6H6z"/></svg>';
-const ACTS=`<div class="acts noprint">${navigator.share?`<button class="pillb" data-share>${SHARE_IC}Send</button>`:''}<button class="pillb" data-link>${LINK_IC}Copy link</button><button class="pillb" data-print>${PRINT_IC}Print</button></div><p class="savednote noprint">Saved to My batches on this phone.</p>`;
+const ACTS=`<div class="acts noprint">${navigator.share?`<button class="pillb" data-share>${SHARE_IC}Send</button>`:''}<button class="pillb" data-link>${LINK_IC}Copy link</button><button class="pillb" data-print>${PRINT_IC}Print</button></div><p class="savednote noprint">Saved to My batches on this phone.</p><div class="tip inst noprint hidden" data-inst></div>`;
 function setTab(t,quiet){
   tab=t;$$('#tabs [data-tab]').forEach((b)=>{const on=b.dataset.tab===t;b.setAttribute('aria-pressed',on);b.setAttribute('aria-selected',on)});
   $$('[data-panel]').forEach((p)=>{const on=p.dataset.panel===t;p.classList.toggle('hidden',!on);if(on&&!quiet){p.querySelectorAll('.rise').forEach((el,k)=>{el.classList.remove('in');el.style.transitionDelay=Math.min(k,4)*60+'ms';requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('in')))})}});
@@ -1085,6 +1091,24 @@ function renderSaved(){
   const ios=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
   const home=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
   $('#tip').classList.toggle('hidden',!(a.length&&ios&&!home&&!dismissed));
+}
+/* use it like an app: one-time Home Screen prompt on the cook sheet */
+let bip=null;
+addEventListener('beforeinstallprompt',(e)=>{e.preventDefault();bip=e;$$('[data-inst]').forEach(fillInst)});
+addEventListener('appinstalled',()=>{try{localStorage.setItem('bd-tip','1')}catch(e){}$$('[data-inst]').forEach((x)=>x.classList.add('hidden'));track('Installed')});
+function fillInst(el){
+  let off=false;try{off=localStorage.getItem('bd-tip')==='1'}catch(e){}
+  const ios=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  const home=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+  if(off||home||!(ios||bip)){el.classList.add('hidden');return}
+  el.innerHTML=ios
+    ?`<b>Use it like an app.</b> Tap ${SHARE_IC.replace('<svg','<svg class="ic" aria-label="Share"')} Share, then <b>Add to Home Screen</b>. It opens full screen, and Safari won't clear your batches.<button class="link" data-no>Got it</button>`
+    :`<b>Use it like an app.</b> Add batch.recipes to your Home Screen. It opens full screen, like an app.<span class="instrow"><button class="pillb acc" data-yes>Add to Home Screen</button><button class="link" data-no>Not now</button></span>`;
+  el.classList.remove('hidden');
+  const done=()=>{try{localStorage.setItem('bd-tip','1')}catch(e){}$$('[data-inst]').forEach((x)=>x.classList.add('hidden'))};
+  el.querySelector('[data-no]').onclick=done;
+  const y=el.querySelector('[data-yes]');
+  if(y)y.onclick=async()=>{if(!bip)return;bip.prompt();const r=await bip.userChoice.catch(()=>null);bip=null;track('Install prompt',{choice:r&&r.outcome||'unknown'});done()};
 }
 $('#tipX').onclick=()=>{try{localStorage.setItem('bd-tip','1')}catch(e){}$('#tip').classList.add('hidden')};
 

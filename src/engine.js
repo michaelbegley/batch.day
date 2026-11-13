@@ -379,6 +379,26 @@
     }
     plan.totalMin = plan.order.reduce((s, o) => s + o.min, 0);
 
+    // what goes in at each step, with batch amounts
+    if (!baking) {
+      const used = new Set();
+      const sc = plan.items;
+      const take = (fn) => sc.filter((i) => !used.has(i) && fn(i)).map((i) => { used.add(i); return { amt: i.scaled || '', name: i.name }; });
+      const pSec = protein.length ? protein[0].section : null;
+      const isTender = (i) => /bok choy|spinach|kale|greens/i.test(i.name);
+      const hasSec = (re) => sc.some((i) => re.test(i.section || ''));
+      plan.order.forEach((o) => {
+        let u = [];
+        if (/^Start the rice/.test(o.t)) u = take((i) => i.cls === 'grain');
+        else if (/^Season the/.test(o.t)) u = take((i) => i.cls !== 'oil' && i.cls !== 'finisher' && (pSec ? i.section === pSec : (i.cls === 'protein' || i.cls === 'salt')));
+        else if (/^Sear/.test(o.t)) u = take((i) => i.cls === 'oil');
+        else if (/^Aromatics/.test(o.t)) u = take((i) => i.cls !== 'finisher' && (hasSec(/aromatic/i) ? /aromatic/i.test(i.section || '') : i.cls === 'aromatic' || i.cls === 'spice'));
+        else if (/^Bloom/.test(o.t)) u = take((i) => /paste/i.test(i.name));
+        else if (/^Liquids/.test(o.t)) { const ls = liquid.length ? liquid[0].section : null; u = take((i) => i.cls === 'liquid' || (ls && i.section === ls && i.cls !== 'finisher' && !isTender(i))); }
+        if (u.length) o.use = u;
+      });
+    }
+
     // split
     const fridgeMeals = Math.min(meals, opts.fridgeMeals || 4);
     if (!baking) {

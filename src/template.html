@@ -206,6 +206,10 @@ footer{color:var(--ink2);font-size:13px;text-align:center;padding:32px 24px 0}
 .cook .body.back{animation:stepBack .35s var(--ease) both}
 @keyframes stepIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
 @keyframes stepBack{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:none}}
+.uses{list-style:none;margin:24px 0 0;padding:0;font-size:19px}
+.uses li{display:grid;grid-template-columns:minmax(96px,auto) 1fr;gap:16px;padding:12px 0;border-top:1px solid var(--line)}
+.uses li:first-child{border-top:0}
+.uses b{font-weight:600}
 .done{text-align:center;align-items:center}
 .done svg{width:64px;height:64px;color:var(--accent);margin-bottom:16px}
 
@@ -552,7 +556,7 @@ async function wake(){try{if('wakeLock' in navigator&&document.visibilityState==
 document.addEventListener('visibilitychange',()=>{if(!$('#cook').classList.contains('hidden')&&document.visibilityState==='visible')wake()});
 function openCook(){
   if(!plan)return;
-  csteps=plan.mode==='batch'?plan.p.order.map((o)=>({t:o.t,d:o.d,min:o.min})):recipe.steps.map((s,k)=>({t:s.text,d:'',min:0}));
+  csteps=plan.mode==='batch'?plan.p.order.map((o)=>({t:o.t,d:o.d,min:o.min,use:o.use||[]})):recipe.steps.map((s,k)=>({t:s.text,d:'',min:0}));
   if(!csteps.length)csteps=[{t:'No steps found',d:'Add the steps on the Check page and try again.',min:0}];
   cs=0;$('#cook').classList.remove('hidden');document.body.style.overflow='hidden';
   history.pushState({v:view,cook:1},'');wake();drawStep(0);$('#cNext').focus();
@@ -571,7 +575,7 @@ function drawStep(dir){
     $('#cStep').textContent='Done';$('#cProg').style.width='100%';$('#cNext').textContent='Close';$('#cBack').disabled=false;return;
   }
   const s=csteps[cs];
-  b.innerHTML=`<h2>${esc(s.t)}</h2>${s.d?`<p>${esc(s.d)}</p>`:''}${s.min?`<span class="time"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10" cy="11" r="7"/><path d="M10 7v4l2.5 2M8 2h4"/></svg>About ${s.min} min</span>`:''}`;
+  b.innerHTML=`<h2>${esc(s.t)}</h2>${s.d?`<p>${esc(s.d)}</p>`:''}${s.use&&s.use.length?`<ul class="uses">${s.use.map((u)=>`<li><b class="num">${esc(u.amt)}</b><span>${esc(u.name)}</span></li>`).join('')}</ul>`:''}${s.min?`<span class="time"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10" cy="11" r="7"/><path d="M10 7v4l2.5 2M8 2h4"/></svg>About ${s.min} min</span>`:''}`;
   $('#cStep').textContent=`Step ${cs+1} of ${n}`;
   $('#cProg').style.width=Math.round(cs/n*100)+'%';
   $('#cBack').disabled=cs===0;$('#cNext').textContent=cs===n-1?'Finish':'Next';

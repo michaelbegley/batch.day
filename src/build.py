@@ -6,12 +6,13 @@ open('site/favicon.svg','w').write('''<svg xmlns="http://www.w3.org/2000/svg" vi
 open('site/404.html','w').write('<!DOCTYPE html><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=/"><title>batch.recipes</title>')
 open('site/CNAME','w').write('batch.recipes\n')
 open('site/.nojekyll','w').write('')
+G='https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com'
 # CSP with script hashes (recompute on every build)
 import re, hashlib, base64
 h=open('site/index.html').read()
 hashes=["'sha256-"+base64.b64encode(hashlib.sha256(m.encode()).digest()).decode()+"'" for m in re.findall(r'<script>(.*?)</script>', h, re.S)]
-csp=("default-src 'self'; script-src 'self' "+' '.join(hashes)+" https://cdn.jsdelivr.net 'wasm-unsafe-eval'; worker-src blob: https://cdn.jsdelivr.net; "
-     "connect-src 'self' https://cdn.jsdelivr.net"+(" "+READER if READER else "")+"; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; "
+csp=("default-src 'self'; script-src 'self' "+' '.join(hashes)+" https://cdn.jsdelivr.net 'wasm-unsafe-eval' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; worker-src blob: https://cdn.jsdelivr.net; "
+     "connect-src 'self' https://cdn.jsdelivr.net "+G+(" "+READER if READER else "")+"; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: "+G+"; frame-src "+G+"; fenced-frame-src "+G+"; font-src 'self'; "
      "base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests")
 h=h.replace('<meta charset="utf-8">','<meta charset="utf-8">\n<meta http-equiv="Content-Security-Policy" content="'+csp+'">\n<meta name="referrer" content="strict-origin-when-cross-origin">',1)
 open('site/index.html','w').write(h)

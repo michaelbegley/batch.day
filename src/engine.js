@@ -9,6 +9,7 @@
   function cleanLine(s) {
     return s
       .replace(/[\u2012-\u2015\u2212]/g, '-')
+      .replace(/(?:\s+#[\w-]+)+\s*$/u, '')                              // trailing TikTok hashtags
       .replace(/^\s*(?:[\[|][ _|\]]{0,3}|[☐☑✓✔])\s*/u, '')          // checkboxes (incl. OCR forms)
       .replace(/^\s*(?:[•●◦▪\-–*·°©®¢«»eE]{1,3})\s+(?=\S)/u, '')            // bullets (incl. OCR forms)
       .replace(/(\d)\s?%(?=[\s-])/g, '$1½').replace(/(^|\s)%(?=\s)/g, '$1½')  // OCR: ½ read as %
@@ -141,7 +142,7 @@
       if (/^(instructions|directions|method|steps|preparation)\s*:?$/i.test(line)) { mode = 'step'; pushStep(); continue; }
       if (/^(ingredients)\s*:?$/i.test(line)) { mode = 'ing'; continue; }
       const sn = stepNumber(raw.trim());
-      if (sn) { mode = 'step'; pushStep(); stepBuf = { n: sn.n, text: sn.rest }; continue; }
+      if (sn) { mode = 'step'; pushStep(); stepBuf = { n: sn.n, text: sn.rest.replace(/(?:\s+#[\w-]+)+\s*$/u, '') }; continue; }
       if (mode === 'step') {
         if (stepBuf) stepBuf.text += ' ' + line; else stepBuf = { n: r.steps.length + 1, text: line };
         if (/[.!]$/.test(line) && !/^\d/.test(line)) { /* keep merging until next number */ }

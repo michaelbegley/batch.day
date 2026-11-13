@@ -29,6 +29,7 @@ PROMPT = (
     "- Then the steps, numbered 1. 2. 3.\n"
     "- Merge overlapping screenshots and drop repeated lines.\n"
     "- If the screenshots hold more than one recipe, put a line of three dashes (---) between recipes.\n"
+    "- Leave out hashtags, @mentions and captions that are not part of the recipe.\n"
     "- Do not add, guess or change anything. No commentary.\n"
     "- If there is no recipe, reply with exactly NO_RECIPE."
 )

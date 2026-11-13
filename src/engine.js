@@ -13,7 +13,7 @@
       .replace(/^\s*(?:[•●◦▪\-–*·°©®¢«»eE]{1,3})\s+(?=\S)/u, '')            // bullets (incl. OCR forms)
       .replace(/(\d)\s?%(?=[\s-])/g, '$1½').replace(/(^|\s)%(?=\s)/g, '$1½')  // OCR: ½ read as %
       .replace(/(^|\s)[¥]?Y[2z](?=\s)/g, '$1½')
-      .replace(/\btosp\b/g, 'tbsp').replace(/\s#\w+/g, '')
+      .replace(/\btosp\b/g, 'tbsp').replace(/(\d\s*)Ibs?\b/g, '$1lbs').replace(/(\d\s*)0z\b/g, '$1oz').replace(/\s#\w+/g, '')
       .replace(/\s+/g, ' ')
       .trim();
   }

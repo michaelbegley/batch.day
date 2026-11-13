@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-fUd94LlaZpBiHQ6fiP2a5mbfnAegN3IiuFkj0qbeG/s=' 'sha256-Ka50qlkieAvt+B6Qj7+chYVssqD/1UhXgK90Ee4BsKs=' 'sha256-sF0xQSebP8rzlNYzGh2q2v6Ml6JyRWs5CTgZrAVReNs=' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; worker-src blob: https://cdn.jsdelivr.net; connect-src https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-fUd94LlaZpBiHQ6fiP2a5mbfnAegN3IiuFkj0qbeG/s=' 'sha256-jfnDZlEESVCSnwN3sJAEkkWM8hfMhpFMLslSPepkKhI=' 'sha256-sF0xQSebP8rzlNYzGh2q2v6Ml6JyRWs5CTgZrAVReNs=' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; worker-src blob: https://cdn.jsdelivr.net; connect-src https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>batch.day: cook once, eat all week</title>
@@ -221,7 +221,7 @@ footer{color:var(--ink2);font-size:13px;text-align:center;padding:48px 24px 64px
       .replace(/^\s*(?:[•●◦▪\-–*·°©®¢«»eE]{1,3})\s+(?=\S)/u, '')            // bullets (incl. OCR forms)
       .replace(/(\d)\s?%(?=[\s-])/g, '$1½').replace(/(^|\s)%(?=\s)/g, '$1½')  // OCR: ½ read as %
       .replace(/(^|\s)[¥]?Y[2z](?=\s)/g, '$1½')
-      .replace(/\btosp\b/g, 'tbsp').replace(/\s#\w+/g, '')
+      .replace(/\btosp\b/g, 'tbsp').replace(/(\d\s*)Ibs?\b/g, '$1lbs').replace(/(\d\s*)0z\b/g, '$1oz').replace(/\s#\w+/g, '')
       .replace(/\s+/g, ' ')
       .trim();
   }

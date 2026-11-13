@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-fUd94LlaZpBiHQ6fiP2a5mbfnAegN3IiuFkj0qbeG/s=' 'sha256-XfI97RPZ/WY+ZRdjDaK2vTwb3OnZmKmPiGe3IGYAdFg=' 'sha256-BB665VyuDFdkNQREAfctZINvX7xren9oRLa/uC/5Z+g=' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; worker-src blob: https://cdn.jsdelivr.net; connect-src https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-fUd94LlaZpBiHQ6fiP2a5mbfnAegN3IiuFkj0qbeG/s=' 'sha256-XfI97RPZ/WY+ZRdjDaK2vTwb3OnZmKmPiGe3IGYAdFg=' 'sha256-TPv3tNBtaZUiLecizaaEWm5yTJQkaMVd1mcNYJVTXD8=' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; worker-src blob: https://cdn.jsdelivr.net; connect-src https://cdn.jsdelivr.net https://michbegl-batch-day-reader.hf.space; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>batch.day: cook once, eat all week</title>
@@ -798,7 +798,7 @@ footer{color:var(--ink2);font-size:13px;text-align:center;padding:32px 24px 0}
 const $=(s)=>document.querySelector(s), $$=(s)=>[...document.querySelectorAll(s)], E=window.BatchEngine;
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 let recipe=null, mode='batch', view='add', plan=null, tab='shop', shots=[];
-const READER='';
+const READER='https://michbegl-batch-day-reader.hf.space';
 function esc(s){return String(s).replace(/[&<>"]/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function fmtX(f){return (Math.round(f*10)/10).toString().replace(/\.0$/,'')}
 

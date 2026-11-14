@@ -196,6 +196,7 @@ ul.plain li:last-child{margin-bottom:0}
 .split h4{margin:0 0 4px;font-size:16px;font-weight:600;display:flex;gap:8px;align-items:center}
 .split h4 svg{width:20px;height:20px;color:var(--accent)}
 .split p{margin:0;font-size:15px;color:var(--ink2)}
+.ad{margin:24px 0 8px;text-align:center}.adlab{display:block;font-size:12px;color:var(--ink-2);margin-bottom:6px;letter-spacing:.02em}
 .note{background:var(--warn-bg);border-radius:16px;padding:16px;font-size:15px;margin-bottom:16px}
 .osteps{font-size:15px;color:var(--ink2);padding-left:20px;margin:0}
 .osteps li{margin:8px 0}
@@ -427,6 +428,7 @@ details.edit[open] summary{margin-bottom:8px}
       </details>
     </div>
     <div class="tip inst noprint hidden" data-inst></div>
+    <aside class="ad noprint hidden" id="adBox" aria-label="Advertisement"><span class="adlab">Advertisement</span></aside>
     <p class="savednote noprint hidden" id="savedNote">Saved on this device</p>
   </div>
 </main>
@@ -481,6 +483,19 @@ syncSwitch();
 sw.onclick=()=>{const t=curTheme()==='dark'?'light':'dark';root.dataset.theme=t;try{localStorage.setItem('bd-theme',t)}catch(e){};syncSwitch()};
 
 /* views: add, then the recipe */
+/* ads: only on the recipe page, one unit, below everything; never on the home, reading or cook screens.
+   AD_SLOT stays empty until the AdSense unit exists (create it in AdSense after approval; keep Auto ads off). */
+const AD_SLOT='';
+let adDone=false;
+function placeAd(){
+  if(adDone||!AD_SLOT)return;adDone=true;
+  const box=$('#adBox'),ins=document.createElement('ins');
+  ins.className='adsbygoogle';ins.style.display='block';
+  ins.setAttribute('data-ad-client','ca-pub-2427174040615956');ins.setAttribute('data-ad-slot',AD_SLOT);
+  ins.setAttribute('data-ad-format','auto');ins.setAttribute('data-full-width-responsive','true');
+  box.appendChild(ins);box.classList.remove('hidden');
+  try{(window.adsbygoogle=window.adsbygoogle||[]).push({})}catch(e){box.classList.add('hidden')}
+}
 function show(v,push){
   if(v!=='sheet'||!plan)v='add';
   view=v;
@@ -489,7 +504,7 @@ function show(v,push){
   try{if(v==='sheet'&&curId)sessionStorage.setItem('bd-open',curId);else sessionStorage.removeItem('bd-open')}catch(e){}
   if(push){const rd=history.state&&history.state.reading;history[rd?'replaceState':'pushState']({v},'','#'+(v==='add'?'':v))} // the reading screen's entry becomes the recipe's
   scrollTo(0,0);
-  if(v==='sheet'){if(full)remember(plan.want);$('#sTitle').focus({preventScroll:true});requestAnimationFrame(()=>{moveSeg();moveTabs()})}
+  if(v==='sheet'){placeAd();if(full)remember(plan.want);$('#sTitle').focus({preventScroll:true});requestAnimationFrame(()=>{moveSeg();moveTabs()})}
 }
 addEventListener('popstate',(e)=>{
   const toCook=()=>setTimeout(()=>$('#dCook').focus({preventScroll:true}),0); // a history step can drop focus, so set it after

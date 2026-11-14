@@ -474,7 +474,10 @@ let recipe=null, mode='batch', userMode='batch', view='add', plan=null, tab='sho
 let parts=[], pick=0, src='', srcWhy='', touched=false, yieldSet=false, skipped=0, wants={batch:14,scale:4};
 const have=new Set();
 // anonymous, cookie-free counts for the go/no-go test (Vercel Web Analytics)
-function track(name,data){try{window.va('event',data?{name,data}:{name})}catch(e){}try{window.umami&&window.umami.track(name,data)}catch(e){}} // Vercel + Umami (live view)
+/* where this visit came from: ?utm_source=tiktok on the post links, else the referring site; kept for the session and sent with every event
+   (Vercel's own UTM breakdown is a paid add-on, so the source rides along as event data) */
+const SRC=(()=>{let s='';try{s=sessionStorage.getItem('bd-src')||''}catch(e){}if(!s){try{const u=new URLSearchParams(location.search).get('utm_source');const r=document.referrer?new URL(document.referrer).hostname.replace(/^www\./,''):'';s=(u||(r&&!/(^|\.)batch\.recipes$/.test(r)?r:'')||'direct').toLowerCase().replace(/[^a-z0-9.-]/g,'').slice(0,40)||'direct'}catch(e){s='direct'}try{sessionStorage.setItem('bd-src',s)}catch(e){}}return s})();
+function track(name,data){data=Object.assign({src:SRC},data||{});try{window.va('event',{name,data})}catch(e){}try{window.umami&&window.umami.track(name,data)}catch(e){}} // Vercel + Umami (live view)
 const READER='/*READER*/';
 const SPLIT=/\n-{3,}\n/;
 function esc(s){return String(s).replace(/[&<>"]/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
@@ -1082,7 +1085,7 @@ Directions
 7. Add the chicken back and simmer until cooked through. Add bok choy until just tender.
 8. Spoon rice into bowls, ladle the broth over, and finish with green onion, lime and chili oil.`;
 // once per browser session, and never in the session that made the first batch
-{let seen=false;try{seen=sessionStorage.getItem('bd-rv')==='1';sessionStorage.setItem('bd-rv','1')}catch(e){}if(!seen&&allB().length)track('Returning visit')}
+{let seen=false;try{seen=sessionStorage.getItem('bd-rv')==='1';sessionStorage.setItem('bd-rv','1')}catch(e){}if(!seen){track('Visit');if(allB().length)track('Returning visit')}} // Visit: once per session, carries src
 renderSaved();
 if(/^#r=/.test(startHash))openFromHash(startHash);
 else{let oid=null;try{oid=sessionStorage.getItem('bd-open')}catch(e){}const r=oid&&allB().find((x)=>x.id===oid);if(r&&startHash==='#sheet'){from='saved';openRec(r,false);history.replaceState({v:'sheet'},'','#sheet')}}

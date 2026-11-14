@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-fUd94LlaZpBiHQ6fiP2a5mbfnAegN3IiuFkj0qbeG/s=' 'sha256-OES8gBnv7NH17ImQPPCckyxSTllY9mqNcOWbHvO6JSA=' 'sha256-SaqStlWFzMv5uwR1kzZgbVBjVVMo8K0/b7llOIehR9s=' 'sha256-nl1tIojTu49huv8Ahb40eRllkhbUe1VqyRm7OiD73n8=' https://cdn.jsdelivr.net 'wasm-unsafe-eval' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; worker-src blob: https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com https://michbegl-batch-day-reader.hf.space; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; fenced-frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-fUd94LlaZpBiHQ6fiP2a5mbfnAegN3IiuFkj0qbeG/s=' 'sha256-OES8gBnv7NH17ImQPPCckyxSTllY9mqNcOWbHvO6JSA=' 'sha256-sxYkY4fSdQuZzxmdq2Cat9y/BFF47dCQamvjAbU6rZg=' 'sha256-OzA5UrZR3Ab2DehKhzDXsqQapMGvdGAg1CGGEApeX30=' https://cdn.jsdelivr.net 'wasm-unsafe-eval' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; worker-src blob: https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com https://michbegl-batch-day-reader.hf.space; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; fenced-frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="google-adsense-account" content="ca-pub-2427174040615956">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2427174040615956" crossorigin="anonymous"></script>
@@ -47,7 +47,9 @@ button,input,textarea{font:inherit;color:inherit}
 button{-webkit-tap-highlight-color:transparent}
 :focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:2px}
 .num{font-variant-numeric:tabular-nums}
-.hidden{display:none!important}
+.hidden,[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+h2:focus,h3:focus{outline:none}
 .muted{color:var(--ink2)}
 .printonly{display:none}
 
@@ -64,7 +66,7 @@ button{-webkit-tap-highlight-color:transparent}
 .switch svg{width:13px;height:13px}
 
 /* layout */
-main{max-width:640px;margin:0 auto;padding:0 16px 48px}
+main{max-width:640px;margin:0 auto;padding:0 16px 48px;overflow-wrap:break-word}
 main.docked{padding-bottom:calc(var(--dock) + env(safe-area-inset-bottom) + 48px)}
 .view{animation:viewIn .45s var(--ease) both}
 @keyframes viewIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
@@ -123,6 +125,7 @@ h3{margin:0 0 8px;font-size:19px;font-weight:600;letter-spacing:-.01em}
 .reading[data-state=fail] .wait{display:none}
 .reading:not([data-state=fail]) .failed{display:none}
 .failed{margin-top:32px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.failed div{display:flex;flex-wrap:wrap;justify-content:center;gap:0 24px}
 
 /* paste */
 textarea{width:100%;min-height:200px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);padding:16px;resize:vertical;font-size:16px;line-height:1.5;outline:none;transition:box-shadow .2s var(--fade);display:block}
@@ -153,7 +156,7 @@ textarea:focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transpar
 .seg button{flex:1;min-width:0;border:0;background:none;min-height:40px;border-radius:980px;cursor:pointer;font-size:15px;position:relative;z-index:1;color:var(--ink2);transition:color .2s var(--fade);padding:0 4px}
 .seg button:before{content:"";position:absolute;inset:-4px 0}
 .seg button[aria-pressed=true]{color:var(--ink);font-weight:600}
-.seg .pill{position:absolute;top:4px;bottom:4px;left:4px;border-radius:980px;background:var(--pill);box-shadow:0 1px 3px rgba(0,0,0,.12);transition:transform .35s var(--ease),width .35s var(--ease)}
+.seg .pill{position:absolute;top:4px;bottom:4px;left:4px;border-radius:980px;background:var(--pill);box-shadow:0 1px 3px rgba(0,0,0,.12);transition:transform .35s var(--ease),width .35s var(--ease),height .35s var(--ease)}
 .step{display:inline-flex;align-items:center;gap:4px;background:var(--bg2);border-radius:980px;padding:4px;flex:none}
 .step button{width:44px;height:44px;border-radius:50%;border:0;background:none;cursor:pointer;font-size:22px;line-height:1;color:var(--accent);transition:transform .15s var(--ease)}
 .step button:active{transform:scale(.88)}
@@ -266,7 +269,8 @@ details.edit[open] summary{margin-bottom:8px}
 .x{width:44px;height:44px;border-radius:50%;border:0;background:var(--bg2);cursor:pointer;display:grid;place-items:center}
 .x svg{width:16px;height:16px}
 .cook .prog{max-width:none;margin:0 20px;border-radius:2px}
-.cook .body{flex:1;overflow:auto;padding:32px 24px;max-width:720px;width:100%;margin:0 auto;display:flex;flex-direction:column;justify-content:center}
+.cook .body{flex:1;overflow:auto;padding:32px 24px;max-width:720px;width:100%;margin:0 auto;display:flex;flex-direction:column}
+.cook .body>:first-child{margin-top:auto}.cook .body>:last-child{margin-bottom:auto} /* centred, but a long step still scrolls from its first line */
 .cook h2{font-size:clamp(30px,7vw,44px);text-wrap:balance;overflow-wrap:anywhere}
 .cook p{font-size:21px;line-height:1.4;color:var(--ink2);margin:16px 0 0}
 .cook .time{display:inline-flex;align-items:center;gap:8px;margin-top:24px;background:var(--bg2);border-radius:980px;padding:8px 16px;font-size:17px;font-weight:600;align-self:flex-start}
@@ -290,7 +294,16 @@ details.edit[open] summary{margin-bottom:8px}
 .rise.in{opacity:1;transform:none;transition:opacity .7s var(--fade),transform .7s var(--ease)}
 @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01s!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:opacity .2s linear!important}.rise{transform:none}.pot .steam path{stroke-dashoffset:0;opacity:1}.th.scan:after{display:none}}
 
-@media (max-width:300px){h1{font-size:32px}.set{flex-wrap:wrap}.flow{grid-template-columns:1fr;gap:16px}.flow li+li:before{display:none}}
+@media (max-width:300px){
+  h1{font-size:32px}h2,.reading h2{font-size:24px}.mark{font-size:17px}.set{flex-wrap:wrap}.flow{grid-template-columns:1fr;gap:16px}.flow li+li:before{display:none}
+  .tabs{flex-wrap:wrap;border-radius:24px}.tabs button{flex:0 0 50%}
+  ol.order li{grid-template-columns:28px 1fr}ol.order .t{grid-column:2;white-space:normal}
+  .tbl,.tbl tbody,.tbl tr,.tbl td{display:block}.tbl td,.tbl tr:first-child td,.tbl .sec td{border:0;padding:0;width:auto}.tbl tr{padding:12px 0;border-top:1px solid var(--line)}.tbl tr:first-child{border-top:0;padding-top:4px}
+  .uses li{grid-template-columns:1fr;gap:0}.cook .body{padding:16px}.cook h2{font-size:24px}.cook p{font-size:17px}
+  .cook .nav .btn{min-width:0;padding:0 12px;font-size:15px}.cook .nav .btn.soft{flex:0 1 auto}
+  .dock .btn{white-space:normal;line-height:1.2;padding:0 8px}.dock .btn.soft span{display:none}.dock .btn.soft{padding:0 16px}
+  .links{flex-wrap:wrap;gap:0 24px}.toast{white-space:normal}
+}
 @media (max-width:340px){.dock .btn{font-size:15px;padding:0 12px}.dock .btn.soft{padding:0 16px}.seg button{font-size:14px}.tbl .o{display:none}}
 @media (min-width:721px){
   .hero{padding:72px 0 40px}.sub{font-size:21px}.card{padding:32px}#editCard{padding:20px 32px}#ctl{padding:24px 32px}
@@ -350,7 +363,7 @@ details.edit[open] summary{margin-bottom:8px}
       </ol>
 
       <div class="card mine hidden" id="mine">
-        <h3>My batches</h3>
+        <h3 id="mineH" tabindex="-1">My batches</h3>
         <ul class="saved" id="savedList"></ul>
         <div class="tip hidden" id="tip"><b>Keep these for good.</b> Safari can clear them after a week away. Tap Share, then Add to Home Screen.<button class="link" id="tipX">Got it</button></div>
       </div>
@@ -369,7 +382,7 @@ details.edit[open] summary{margin-bottom:8px}
 
     <section class="reading hidden" id="reading" data-state="read" aria-labelledby="rdTitle">
       <div class="thumbs" id="thumbs"></div>
-      <h2 id="rdTitle">Reading your recipe</h2>
+      <h2 id="rdTitle" tabindex="-1">Reading your recipe</h2>
       <p class="status" id="status" role="status" aria-live="polite"></p>
       <div class="wait">
         <div class="prog" id="prog"><i></i></div>
@@ -381,7 +394,7 @@ details.edit[open] summary{margin-bottom:8px}
       </div>
       <div class="failed">
         <button class="btn" id="rdAgain">Choose other screenshots</button>
-        <button class="link" id="rdPaste">Paste text</button>
+        <div><button class="link" id="rdPaste">Paste text</button><button class="link hidden" id="rdOther">Choose other screenshots</button></div>
       </div>
     </section>
   </div>
@@ -389,9 +402,10 @@ details.edit[open] summary{margin-bottom:8px}
   <!-- 2. the recipe -->
   <div class="view hidden" id="v-sheet">
     <button class="link back noprint" id="newRec"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>New recipe</button>
-    <div class="head"><h2 id="sTitle"></h2><p class="noprint num" id="sMeta"></p></div>
+    <div class="head"><h2 id="sTitle" tabindex="-1" dir="auto"></h2><p class="noprint num" id="sMeta"></p></div>
     <p class="printonly" id="pSum"></p>
     <div class="noprint" id="alerts"></div>
+    <div class="alert noprint hidden" id="fullNote"><div>My batches is full. Remove a few to save this one.<button class="link" id="fullGo">My batches</button></div></div>
     <div class="which noprint hidden" id="which"></div>
 
     <div class="card noprint" id="ctl">
@@ -421,7 +435,7 @@ details.edit[open] summary{margin-bottom:8px}
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="dock noprint" id="dock"><div class="in" id="dockIn">
-  <button class="btn soft" id="dShare"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13V3M6 6.5L10 3l4 3.5"/><path d="M5 10H4v7h12v-7h-1"/></svg>Share</button>
+  <button class="btn soft" id="dShare" aria-label="Share"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13V3M6 6.5L10 3l4 3.5"/><path d="M5 10H4v7h12v-7h-1"/></svg><span>Share</span></button>
   <button class="btn" id="dCook">Start cooking</button>
 </div></div>
 
@@ -439,6 +453,7 @@ details.edit[open] summary{margin-bottom:8px}
   <div class="prog"><i id="cProg"></i></div>
   <div class="body" id="cBody"></div>
   <div class="awake" id="cAwake"></div>
+  <p class="sr" id="cLive" aria-live="polite"></p>
   <div class="nav"><button class="btn soft" id="cBack">Back</button><button class="btn" id="cNext">Next</button></div>
 </div>
 
@@ -612,7 +627,7 @@ details.edit[open] summary{margin-bottom:8px}
         if (!r.sections.includes(section)) r.sections.push(section);
         continue;
       }
-      if (/recipe/i.test(line) && !QTY_RE.test(line) && !r.title) { r.title = line.replace(/\s*recipe.*$/i, '').replace(/[^\w\s'&-]/g, '').trim(); continue; }
+      if (/recipe/i.test(line) && !QTY_RE.test(line) && !r.title) { r.title = line.replace(/\s*recipe.*$/i, '').replace(/[^\p{L}\p{M}\p{N}\s'&-]/gu, '').trim(); continue; }
       const prev = r.ingredients[r.ingredients.length - 1];
       if (prev && !QTY_RE.test(line) && (/^[a-z(]/.test(line) || /^[A-Za-z ]{1,20}\)$/.test(line))) { prev.note = (prev.note + ' ' + line).trim(); continue; }
       const ing = parseIngredient(line);
@@ -888,7 +903,7 @@ details.edit[open] summary{margin-bottom:8px}
 const $=(s)=>document.querySelector(s), $$=(s)=>[...document.querySelectorAll(s)], E=window.BatchEngine;
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 let recipe=null, mode='batch', userMode='batch', view='add', plan=null, tab='shop', shots=[], extra=0, from='paste';
-let parts=[], pick=0, src='', srcWhy='', touched=false, yieldSet=false;
+let parts=[], pick=0, src='', srcWhy='', touched=false, yieldSet=false, skipped=0, wants={batch:14,scale:4};
 const have=new Set();
 // anonymous, cookie-free counts for the go/no-go test (Vercel Web Analytics)
 function track(name,data){try{window.va('event',data?{name,data}:{name})}catch(e){}}
@@ -911,14 +926,17 @@ function show(v,push){
   ['add','sheet'].forEach((k)=>{const el=$('#v-'+k);const on=k===v;el.classList.toggle('hidden',!on);if(on){el.style.animation='none';el.offsetHeight;el.style.animation=''}});
   $('#dock').classList.toggle('on',v==='sheet');$('#main').classList.toggle('docked',v==='sheet');
   try{if(v==='sheet'&&curId)sessionStorage.setItem('bd-open',curId);else sessionStorage.removeItem('bd-open')}catch(e){}
-  if(push)history.pushState({v},'','#'+(v==='add'?'':v));
+  if(push){const rd=history.state&&history.state.reading;history[rd?'replaceState':'pushState']({v},'','#'+(v==='add'?'':v))} // the reading screen's entry becomes the recipe's
   scrollTo(0,0);
-  if(v==='sheet')requestAnimationFrame(()=>{moveSeg();moveTabs()});
+  if(v==='sheet'){if(full)remember(plan.want);$('#sTitle').focus({preventScroll:true});requestAnimationFrame(()=>{moveSeg();moveTabs()})}
 }
 addEventListener('popstate',(e)=>{
-  if(!$('#cook').classList.contains('hidden')){closeCook(true);return}
-  closeMenu();stopRead();show((e.state&&e.state.v)||'add',false);
+  const toCook=()=>setTimeout(()=>$('#dCook').focus({preventScroll:true}),0); // a history step can drop focus, so set it after
+  if(!$('#cook').classList.contains('hidden')){closeCook(true);toCook();return}
+  if(quiet){quiet=false;toCook();return} // our own history.back() after closing cook mode
+  closeMenu();stopRead();addState('pick');show((e.state&&e.state.v)||'add',false); // Back while reading is Cancel
 });
+let quiet=false;
 const startHash=location.hash;
 history.replaceState({v:'add'},'',location.pathname+location.search);
 $('#newRec').onclick=()=>{addState('pick');show('add',true)};
@@ -959,7 +977,11 @@ function stopRead(){
   try{if(run.worker)run.worker.terminate()}catch(e){}
   addState('pick');
 }
-function fail(title,line){stopClock();job=null;scanAll(false);$('#rdTitle').textContent=title;setStatus(line);addState('fail')}
+function fail(title,line,retry){
+  stopClock();job=null;scanAll(false);$('#rdTitle').textContent=title;setStatus(line);
+  const b=$('#rdAgain');b.textContent=retry?'Try again':'Choose other screenshots';b.dataset.retry=retry?'1':'';$('#rdOther').classList.toggle('hidden',!retry);
+  addState('fail');$('#rdTitle').focus({preventScroll:true});
+}
 function coded(c){const e=new Error(c);e.code=c;return e}
 
 // make a screenshot small enough to send
@@ -968,7 +990,7 @@ function shrink(f){return new Promise((ok,no)=>{const img=new Image();img.onerro
   let q=.85,d=c.toDataURL('image/jpeg',q);while(d.length>1.8e6&&q>.4){q-=.15;d=c.toDataURL('image/jpeg',q)}URL.revokeObjectURL(img.src);ok(d)};img.src=URL.createObjectURL(f)})}
 async function aiRead(list,run){
   let images;
-  try{images=await Promise.all(list.map(shrink))}catch(e){throw coded('error')}
+  try{images=await Promise.all(list.map(shrink))}catch(e){throw coded('badfile')}
   if(run.dead)throw coded('cancel');
   run.ctrl=new AbortController();
   const to=setTimeout(()=>{run.late=true;run.ctrl.abort()},TIMEOUT);
@@ -1024,12 +1046,26 @@ async function deviceRead(list,run){
   return E.stitch(texts).map((g)=>g.text.trim()).join('\n\n---\n\n');
 }
 
-function handleFiles(list){
+// can the browser open this file as a picture?
+function canOpen(f){return new Promise((ok)=>{if(!f.size){ok(false);return}const i=new Image(),u=URL.createObjectURL(f);i.onload=()=>{URL.revokeObjectURL(u);ok(i.naturalWidth>0)};i.onerror=()=>{URL.revokeObjectURL(u);ok(false)};i.src=u})}
+function files(n){return n===1?'1 file':n+' files'}
+let picks=0;
+async function handleFiles(list){
   list=list.filter((f)=>f&&f.type.startsWith('image/'));
   if(!list.length){toast('Add pictures of a recipe');return}
-  extra=Math.max(0,list.length-6);shots=list.slice(0,6);from='screenshots';
+  if(job)stopRead();
+  const my=++picks,okv=await Promise.all(list.map(canOpen));
+  if(my!==picks)return;
+  const good=list.filter((f,k)=>okv[k]);
+  skipped=list.length-good.length;extra=Math.max(0,good.length-6);shots=good.slice(0,6);from='screenshots';
+  if(!good.length){ // nothing to send, so the AI is never called
+    track('AI read',{shots:list.length,result:'badfile'});
+    $('#thumbs').innerHTML='';pasteMode(false);enterReading();
+    fail("Those files couldn't be opened",'Choose screenshots (PNG or JPG).');return;
+  }
   readShots(false);
 }
+function enterReading(){if(!(history.state&&history.state.reading))history.pushState({v:'add',reading:1},'');if(view!=='add')show('add',false)}
 // again = the cook asked for a second AI try from the recipe page
 async function readShots(again){
   if(job)stopRead();
@@ -1038,27 +1074,29 @@ async function readShots(again){
   const th=$('#thumbs');th.innerHTML='';th.classList.toggle('many',list.length>4);
   list.forEach((f,k)=>{const d=document.createElement('div'),i=new Image();d.className='th scan';d.style.animationDelay=k*120+'ms';i.src=URL.createObjectURL(f);i.alt='';i.onload=()=>URL.revokeObjectURL(i.src);d.appendChild(i);th.appendChild(d)});
   $('#rdTitle').textContent='Reading your recipe';$('#rdDevice').classList.add('hidden');
-  setStatus('Getting your screenshots ready');setNote(extra?'Reading the first 6':'');prog(.02);
-  addState('read');if(view!=='add')show('add',false);
+  setStatus('Getting your screenshots ready');setNote(skipped?`${files(skipped)} couldn't be opened`:extra?'Reading the first 6':'');prog(.02);
+  addState('read');if(again){if(view!=='add')show('add',false)}else enterReading();
+  $('#rdTitle').focus({preventScroll:true});
   const back=()=>{job=null;addState('pick');show('sheet',false)};
+  const none=()=>{if(again){back();toast('No recipe found')}else fail('No recipe found','Try screenshots that show the ingredients.')};
   let text=null,why='';
   if(!READER)why='off';
   else if(navigator.onLine===false)why='offline';
   else{
     try{text=await aiRead(list,run)}catch(e){why=typeof e.code==='string'?e.code:'error'}
-    if(run!==job)return;
-    track('AI read',{shots:list.length,result:text!=null?'ok':why});
-    if(why==='cancel')return;
-    if(why==='none'){if(again){back();toast('No recipe found')}else fail('No recipe found','Try screenshots that show the ingredients.');return}
+    if(run!==job||why==='cancel')return;
+    if(text==null)track('AI read',{shots:list.length,result:why});
+    if(why==='none'){none();return}
+    if(why==='badfile'){if(again)back();else fail("Those files couldn't be opened",'Choose screenshots (PNG or JPG).');return}
   }
   if(text!=null){
     prog(1);scanAll(false);
     await new Promise((r)=>setTimeout(r,reduce?0:350));
     if(run!==job)return;
-    src='ai';srcWhy='';job=null;
-    if(load(text,again))addState('pick');
-    else if(again){back();toast('No recipe found')}
-    else fail('No recipe found','Try screenshots that show the ingredients.');
+    const was=[src,srcWhy];src='ai';srcWhy='';job=null;
+    const ok=load(text,again);
+    track('AI read',{shots:list.length,result:ok?'ok':'none'}); // what the cook ended up seeing
+    if(ok)addState('pick');else{[src,srcWhy]=was;none()}
     return;
   }
   if(again){back();if(why!=='choice')toast(WHY[why]||WHY.error);return}
@@ -1067,24 +1105,32 @@ async function readShots(again){
   let ok=false;
   try{text=await deviceRead(list,run);ok=true}catch(e){if(run!==job)return}
   if(run!==job)return;
-  if(why!=='off')track('Device read',{why,ok:ok?'yes':'no'});
   src='device';srcWhy=why;job=null;
-  if(ok&&load(text)){addState('pick');return}
-  fail("Couldn't read those",navigator.onLine===false?"You're offline. Paste the text instead.":'Try clearer screenshots, or paste the text.');
+  ok=ok&&load(text);
+  if(why!=='off')track('Device read',{why,ok:ok?'yes':'no'});
+  if(ok){addState('pick');return}
+  if(navigator.onLine===false)fail("Couldn't read those","You're offline.",true);
+  else fail("Couldn't read those",'Try clearer screenshots, or paste the text.');
 }
-$('#rdCancel').onclick=()=>{const run=job;if(run&&!run.worker&&run.ctrl)track('AI read',{shots:shots.length,result:'cancel'});const wasSheet=!!plan&&history.state&&history.state.v==='sheet';stopRead();if(wasSheet)show('sheet',false)};
+$('#rdCancel').onclick=()=>{const run=job;if(run&&!run.worker&&run.ctrl)track('AI read',{shots:shots.length,result:'cancel'});const st=history.state||{};stopRead();if(st.reading)history.back();else if(plan&&st.v==='sheet')show('sheet',false)};
 $('#rdDevice').onclick=()=>{if(job&&job.ctrl){job.skip=true;job.ctrl.abort()}};
-$('#rdAgain').onclick=()=>{addState('pick');file.click()};
+$('#rdAgain').onclick=()=>{if($('#rdAgain').dataset.retry&&shots.length){readShots(false);return}addState('pick');file.click()};
+$('#rdOther').onclick=()=>{addState('pick');file.click()};
 $('#rdPaste').onclick=()=>{addState('pick');pasteMode(true)};
 
 /* 2. the recipe */
 function guessTitle(raw){
   const first=(raw.split('\n').find((l)=>l.trim())||'').trim();
-  if(first.length&&first.length<48&&!/^[\d½¼¾⅓⅔]/.test(first)&&!/serves|servings|ingredients/i.test(first))return first.replace(/[^\w\s'&,-]/g,'').trim();
+  // keep every script (Chinese, Arabic, accents); drop only hashtags and control characters
+  if(first.length&&first.length<48&&!/^[\d½¼¾⅓⅔]/.test(first)&&!/serves|servings|ingredients/i.test(first)){const t=first.replace(/#[^\s#]+/g,' ').replace(/[\u0000-\u001f\u007f-\u009f]/g,'').replace(/\s+/g,' ').trim();if(t)return t}
   return 'Your recipe';
 }
 const FRIENDLY={range:'Range given, using the middle',noamount:'No amount given, estimated',amount:'May be misread'};
-function defWant(m){return m==='batch'?14:Math.max(1,(recipe?recipe.yield:4)*2)}
+function defWant(m){return m==='batch'?14:Math.max(1,Math.round(recipe?recipe.yield:4))}
+// amounts nobody cooks with: negative, 1e9, more than 50 lb
+function isOdd(i){return !!i.odd||/\d\s*e\s*[+-]?\d/i.test(i.raw||'')||/^\s*[-−–]\s*\d/.test(i.raw||'')||(i.qty!=null&&(i.qty<0||!isFinite(i.qty)||(i.unit==='lb'&&i.qty>50)||(i.unit==='kg'&&i.qty>23)))}
+// cut off = the last step stops on a comma or a joining word, not just a missing full stop
+function cutOff(){const s=recipe.steps[recipe.steps.length-1];return !!s&&recipe.flags.some((f)=>f.type==='cutoff')&&/([,;:\-–]|\b(and|or|with|the|a|an|to|of|in|on|for|until|then|into|over))\s*$/i.test(s.text.trim())}
 // a fresh recipe from screenshots, pasted text or the sample; false when there is nothing to cook
 function load(raw,replace){
   const ps=String(raw).split(SPLIT).map((s)=>s.trim()).filter((p)=>p&&E.parseRecipe(p).ingredients.length);
@@ -1092,7 +1138,7 @@ function load(raw,replace){
   parts=ps;pick=0;curId=null;touched=false;yieldSet=false;have.clear();tab='shop';
   $('#text').value=parts[0];$('#edit').open=false;
   parse();
-  $('#want').value=defWant(mode);
+  wants={batch:14,scale:defWant('scale')};$('#want').value=wants[mode];
   build(true);
   show('sheet',!replace);
   if(!replace)track('Plan',{mode,from});
@@ -1112,10 +1158,11 @@ function drawHead(){
   // alerts: only things the cook needs to act on
   const al=[];
   if(src==='device'&&shots.length)al.push([(WHY[srcWhy]?WHY[srcWhy]+' ':'')+'Read on this device, so check the amounts.',READER?'ai':'']);
+  if(skipped&&shots.length)al.push([`${files(skipped)} couldn't be opened.`]);
   if(extra&&shots.length)al.push(['Only the first 6 screenshots were read.']);
-  if(recipe.flags.some((f)=>f.type==='cutoff'))al.push(['The steps look cut off. Add the next screenshot too.']);
+  if(cutOff())al.push(['The steps look cut off. Add the next screenshot too.']);
   if(recipe.baking)al.push(['Baking doesn’t scale well past 2×, so this is set to Just scale.']);
-  const odd=recipe.ingredients.filter((i)=>i.odd);
+  const odd=recipe.ingredients.filter(isOdd);
   if(odd.length)al.push([`Some amounts look off (${odd.slice(0,3).map((i)=>i.name||i.raw).join(', ')}). Check them.`,'edit']);
   if(!recipe.ingredients.length)al.push(['No ingredients found.','edit']);
   $('#alerts').innerHTML=al.map((a)=>`<div class="alert"><div>${esc(a[0])}${a[1]==='ai'?'<button class="link" id="aiGo">Try AI again</button>':a[1]==='edit'?'<button class="link" data-edit>Edit the text</button>':''}</div></div>`).join('');
@@ -1124,7 +1171,7 @@ function drawHead(){
   // more than one recipe in the screenshots
   const w=$('#which');w.classList.toggle('hidden',parts.length<2);
   w.innerHTML=parts.length<2?'':`<p>${parts.length} recipes found</p><div>${parts.map((p,k)=>`<button class="chip" aria-pressed="${k===pick}" data-k="${k}">${esc(k===pick?recipe.title:(E.parseRecipe(p).title||guessTitle(p)))}</button>`).join('')}</div>`;
-  $$('#which .chip').forEach((b)=>b.onclick=()=>{const k=+b.dataset.k;if(k===pick)return;pick=k;curId=null;yieldSet=false;have.clear();$('#text').value=parts[k];parse();build(true)});
+  $$('#which .chip').forEach((b)=>b.onclick=()=>{const k=+b.dataset.k;if(k===pick)return;pick=k;curId=null;yieldSet=false;have.clear();$('#text').value=parts[k];parse();wants.scale=defWant('scale');if(mode==='scale')$('#want').value=wants.scale;build(true)});
 }
 $('#reparse').onclick=()=>{if(parts.length)parts[pick]=$('#text').value.split(SPLIT)[0];touched=true;parse();build();toast('Updated')};
 
@@ -1135,17 +1182,18 @@ function syncMode(){
 }
 function setMode(m){
   if(m===mode)return;
-  const w=$('#want');if(+w.value===defWant(mode))w.value=defWant(m);
+  const w=$('#want');wants[mode]=snapN(w,wants[mode]);w.value=wants[m]; // meals and servings are separate numbers
   mode=userMode=m;touched=true;syncMode();build();
 }
 $$('#mode button').forEach((b)=>b.onclick=()=>setMode(b.dataset.m));
-function slide(seg){const on=seg&&seg.querySelector('[aria-pressed=true]'),p=seg&&seg.querySelector('.pill');if(!on||!on.offsetWidth)return;p.style.width=on.offsetWidth+'px';p.style.transform=`translateX(${on.offsetLeft-4}px)`}
+function slide(seg){const on=seg&&seg.querySelector('[aria-pressed=true]'),p=seg&&seg.querySelector('.pill');if(!on||!on.offsetWidth)return;p.style.width=on.offsetWidth+'px';p.style.height=on.offsetHeight+'px';p.style.transform=`translate(${on.offsetLeft-4}px,${on.offsetTop-4}px)`}
 function moveSeg(){slide($('#mode'))}
 function moveTabs(){slide($('#tabs'))}
 addEventListener('resize',()=>{moveSeg();moveTabs()});
-function snapN(i,fb){const v=Math.round(+i.value);i.value=v>=1?Math.min(v,999):fb;return +i.value}
+// whole numbers 1 to 999; anything that isn't a plain number goes back to the last good value
+function snapN(i,fb){const s=i.value.trim();let v=/^[+-]?\d+(\.\d+)?$/.test(s)?Math.round(parseFloat(s)):fb;v=Math.min(999,Math.max(1,v||1));i.value=v;return v}
 function changed(id){if(!recipe)return;touched=true;if(id==='yield')yieldSet=true;build()}
-$$('.step button').forEach((b)=>b.onclick=()=>{const i=$('#'+b.dataset.t);i.value=Math.min(999,Math.max(1,(Math.round(+i.value)||1)+(+b.dataset.d)));changed(b.dataset.t)});
+$$('.step button').forEach((b)=>b.onclick=()=>{if(!recipe)return;const i=$('#'+b.dataset.t);i.value=Math.min(999,Math.max(1,snapN(i,b.dataset.t==='yield'?recipe.yield:(plan?plan.want:defWant(mode)))+(+b.dataset.d)));changed(b.dataset.t)});
 ['yield','want'].forEach((id)=>{const i=$('#'+id);i.addEventListener('change',()=>changed(id));i.addEventListener('focus',()=>i.select())});
 
 const IC={freezer:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M10 2v16M3 6l14 8M17 6L3 14"/></svg>',fridge:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="10" height="16" rx="2"/><path d="M5 8h10M8 5v1M8 11v2"/></svg>',fresh:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16C4 8 9 4 16 4c0 7-4 12-12 12z"/><path d="M4 16l6-6"/></svg>'};
@@ -1156,14 +1204,16 @@ function ingRows(items){
     if(i.section!==sec){sec=i.section;if(sec)h+=`<tr class="sec"><td colspan="3">${esc(sec)}</td></tr>`}
     const orig=i.qty==null?'':esc(i.raw.match(/^[^a-zA-Z]*[a-zA-Z]*/)[0].trim());
     const f=byLine[i.raw];
-    h+=`<tr><td class="q num">${esc(i.scaled||'')}</td><td>${esc(i.name)}${i.adjusted?'<span class="tag">eased back</span>':''}${i.estimated?'<span class="tag">estimate</span>':''}${f&&FRIENDLY[f.type]?`<small class="${f.type==='amount'?'w':''}">${FRIENDLY[f.type]}</small>`:''}</td><td class="o num">${orig}</td></tr>`;
+    h+=`<tr><td class="q num">${esc(i.scaled||'')}</td><td>${esc(i.name)}${i.adjusted?'<span class="tag">eased back</span>':''}${i.estimated?'<span class="tag">estimate</span>':''}${isOdd(i)?'<small class="w">Check this amount</small>':f&&FRIENDLY[f.type]?`<small class="${f.type==='amount'?'w':''}">${FRIENDLY[f.type]}</small>`:''}</td><td class="o num">${orig}</td></tr>`;
   });
   return h;
 }
 // builds the whole page from the recipe and the two numbers; runs on every change
 function build(fresh){
   recipe.yield=snapN($('#yield'),recipe.yield||4);
-  const want=snapN($('#want'),defWant(mode)), sh=$('#sheet'), R=fresh?' rise':'';
+  const want=snapN($('#want'),plan&&plan.mode===mode?plan.want:wants[mode]||defWant(mode)), sh=$('#sheet'), R=fresh?' rise':'';
+  wants[mode]=want;
+  const oddN=new Set(recipe.ingredients.filter(isOdd).map((i)=>i.name));
   drawHead();
   let h='';
   const steps=recipe.steps.length?`<div class="card${R}"><h3>Steps</h3><ol class="osteps">${recipe.steps.map((s)=>`<li>${esc(s.text)}</li>`).join('')}</ol></div>`:'';
@@ -1175,8 +1225,10 @@ function build(fresh){
     p.notes.forEach((n)=>h+=`<div class="note">${esc(n)}</div>`);
     h+=`<div class="seg tabs noprint" id="tabs" role="group" aria-label="Sections"><span class="pill"></span>${[['shop','Shop'],['cook','Cook'],['store','Store'],['recipe','Recipe']].map((t)=>`<button data-tab="${t[0]}">${t[1]}</button>`).join('')}</div>`;
     // shop
+    const seen={};p.grocery.forEach((g)=>{const n=seen[g.name]=(seen[g.name]||0)+1;g.key=n>1?g.name+' #'+n:g.name}); // "ginger paste" can be on the list twice
+    const names=new Set(p.grocery.map((g)=>g.key));[...have].forEach((k)=>{if(!names.has(k))have.delete(k)}); // a tick goes only when its item does
     const list=p.grocery.map((g)=>g.amt==='for serving'?`${g.name} (for serving)`:`${g.amt?g.amt+' ':''}${g.name}`).join('\n');
-    h+=`<div data-panel="shop"><div class="card${R}"><h3>Grocery list <button class="link noprint" data-copy>Copy</button></h3><ul class="checks">${p.grocery.map((g)=>`<li><label><input type="checkbox" data-k="${esc(g.name)}"${have.has(g.name)?' checked':''}><span>${g.amt==='for serving'?`${esc(g.name)} <span class="muted">for serving</span>`:`<b class="num">${esc(g.amt)}</b> ${esc(g.name)}`}</span></label></li>`).join('')}</ul><textarea hidden id="glist">${esc(list)}</textarea></div></div>`;
+    h+=`<div data-panel="shop"><div class="card${R}"><h3>Grocery list <button class="link noprint" data-copy>Copy</button></h3><ul class="checks">${p.grocery.map((g)=>`<li><label><input type="checkbox" data-k="${esc(g.key)}"${have.has(g.key)?' checked':''}><span>${g.amt==='for serving'?`${esc(g.name)} <span class="muted">for serving</span>`:`<b class="num">${esc(g.amt)}</b> ${esc(g.name)}`}${oddN.has(g.name)?'<span class="tag">check amount</span>':''}</span></label></li>`).join('')}</ul><textarea hidden id="glist">${esc(list)}</textarea></div></div>`;
     // cook
     h+=`<div data-panel="cook">`;
     if(p.pots.length)h+=`<div class="card${R}"><h3>Pots and pans</h3><ul class="plain">${p.pots.map((x)=>`<li>${esc(x)}</li>`).join('')}</ul></div>`;
@@ -1194,7 +1246,7 @@ function build(fresh){
   }
   sh.innerHTML=h;
   sh.querySelectorAll('.rise').forEach((el,k)=>watch(el,Math.min(k,4)*60));
-  sh.querySelectorAll('.checks input').forEach((c)=>c.onchange=()=>{have[c.checked?'add':'delete'](c.dataset.k)});
+  sh.querySelectorAll('.checks input').forEach((c)=>c.onchange=()=>{have[c.checked?'add':'delete'](c.dataset.k);touched=true;remember(plan.want)});
   const cp=sh.querySelector('[data-copy]');if(cp)cp.onclick=()=>{navigator.clipboard.writeText($('#glist').value).then(()=>{cp.textContent='Copied';setTimeout(()=>cp.textContent='Copy',1600)},()=>{cp.textContent='Copy failed'})};
   sh.querySelectorAll('[data-tab]').forEach((b)=>b.onclick=()=>setTab(b.dataset.tab));
   setTab(mode==='batch'?tab:'recipe',true);
@@ -1215,25 +1267,32 @@ const io=new IntersectionObserver((es)=>es.forEach((e)=>{if(e.isIntersecting){e.
 function watch(el,delay){if(delay)el.style.transitionDelay=delay+'ms';io.observe(el)}
 
 /* saving: on this device, no account */
-const KEY='bd-batches';let curId=null;
-function allB(){try{const a=JSON.parse(localStorage.getItem(KEY));return Array.isArray(a)?a.filter((x)=>x&&typeof x==='object'&&typeof x.text==='string'&&x.id!=null).map((x)=>Object.assign(x,{id:String(x.id)})):[]}catch(e){return[]}}
-function putB(a){try{localStorage.setItem(KEY,JSON.stringify(a.slice(0,50)));return true}catch(e){return false}}
+const KEY='bd-batches',CAP=200,MAXT=20000;let curId=null,full=false,junk=[];
+function okB(x){return !!x&&typeof x==='object'&&typeof x.text==='string'&&!!x.text.trim()&&(typeof x.id==='string'||typeof x.id==='number')&&(x.title==null||typeof x.title==='string')&&isFinite(+x.w)&&+x.w>0&&isFinite(+x.at)&&+x.at>0}
+// entries that can't be shown are skipped in the list but kept in storage; nothing is ever dropped here
+function allB(){junk=[];try{const a=JSON.parse(localStorage.getItem(KEY));if(!Array.isArray(a))return[];const ok=[];a.forEach((x)=>{if(okB(x))ok.push(Object.assign(x,{id:String(x.id),k:Array.isArray(x.k)?x.k.filter((s)=>typeof s==='string'):[]}));else junk.push(x)});return ok}catch(e){return[]}}
+function putB(a){try{localStorage.setItem(KEY,JSON.stringify(a.concat(junk)));return true}catch(e){return false}}
 function remember(want){
   const note=$('#savedNote');
-  if(from==='sample'&&!touched&&!curId){note.classList.add('hidden');return} // a look at the sample isn't a batch
-  const text=$('#text').value;
-  const rec={id:curId||Date.now().toString(36),title:recipe.title,text,y:recipe.yield,w:want,m:mode,at:Date.now()};
-  const a=allB().filter((x)=>x.id!==rec.id&&x.text!==text);a.unshift(rec);curId=rec.id;
+  if(from==='sample'&&!touched&&!curId){note.classList.add('hidden');full=false;$('#fullNote').classList.add('hidden');return} // a look at the sample isn't a batch
+  const text=$('#text').value,a0=allB();
+  const rec={id:curId||Date.now().toString(36),title:recipe.title,text,y:recipe.yield,w:want,m:mode,at:Date.now(),k:[...have]};
+  const a=a0.filter((x)=>x.id!==rec.id&&x.text!==text);
+  full=a.length===a0.length&&a0.length>=CAP; // a new batch and no room: keep it open, save nothing, drop nothing
+  $('#fullNote').classList.toggle('hidden',!full);
+  if(full){note.classList.add('hidden');return}
+  a.unshift(rec);curId=rec.id;
   note.textContent=putB(a)?'Saved on this device':"Couldn't save on this device. Share a link to keep it.";
   note.classList.remove('hidden');
   try{if(view==='sheet')sessionStorage.setItem('bd-open',curId)}catch(e){}
   renderSaved();
 }
 function openRec(r,push){
-  curId=r.id||null;parts=[];pick=0;shots=[];extra=0;src='';touched=false;yieldSet=true;have.clear();tab='shop';
+  curId=r.id||null;parts=[];pick=0;shots=[];extra=0;skipped=0;src='';touched=false;yieldSet=true;have.clear();(r.k||[]).forEach((k)=>have.add(k));tab='shop';plan=null;
   userMode=r.m==='scale'?'scale':'batch';
   $('#text').value=r.text;$('#edit').open=false;parse();
-  $('#yield').value=r.y||recipe.yield;$('#want').value=r.w||defWant(mode);
+  $('#yield').value=r.y||recipe.yield;snapN($('#yield'),recipe.yield);recipe.yield=+$('#yield').value;
+  wants={batch:14,scale:defWant('scale')};$('#want').value=r.w||wants[mode];wants[mode]=snapN($('#want'),wants[mode]);
   build(true);show('sheet',push!==false);
 }
 const X_IC='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13"/></svg>';
@@ -1244,7 +1303,9 @@ function renderSaved(){
   const a=allB();$('#mine').classList.toggle('hidden',!a.length);
   $('#savedList').innerHTML=a.map((r)=>`<li><button class="open" data-id="${esc(r.id)}"><b>${esc(r.title||'Recipe')}</b><span class="num">${r.m==='scale'?`${esc(r.w)} servings`:`${esc(r.w)} meals`} · ${new Date(r.at).toLocaleDateString(undefined,{month:'short',day:'numeric'})}</span></button><button class="rm" data-rm="${esc(r.id)}" aria-label="Remove ${esc(r.title||'recipe')}">${X_IC}</button></li>`).join('');
   $$('#savedList .open').forEach((b)=>b.onclick=()=>{const r=allB().find((x)=>x.id===b.dataset.id);if(r){from='saved';openRec(r);track('Reopen saved')}});
-  $$('#savedList .rm').forEach((b)=>b.onclick=()=>{const all=allB(),i=all.findIndex((x)=>x.id===b.dataset.rm);if(i<0)return;const gone=all.splice(i,1)[0];putB(all);renderSaved();
+  $$('#savedList .rm').forEach((b)=>b.onclick=()=>{const all=allB(),i=all.findIndex((x)=>x.id===b.dataset.rm);if(i<0)return;const gone=all.splice(i,1)[0];putB(all);
+    if(gone.id===curId){curId=null;plan=null;try{sessionStorage.removeItem('bd-open')}catch(e){}} // gone means gone: Forward must not bring it back
+    renderSaved();const rows=$$('#savedList .open');(rows[Math.min(i,rows.length-1)]||(rows.length?$('#mineH'):$('#choose'))).focus();
     toast(`Removed ${gone.title||'recipe'}`,()=>{const now=allB();now.splice(Math.min(i,now.length),0,gone);putB(now);renderSaved()})});
   $('#tip').classList.toggle('hidden',!(a.length&&isIOS()&&!isHome()&&!tipOff()));
 }
@@ -1265,6 +1326,7 @@ function fillInst(el){
   const y=el.querySelector('[data-yes]');
   if(y)y.onclick=async()=>{if(!bip)return;bip.prompt();const r=await bip.userChoice.catch(()=>null);bip=null;track('Install prompt',{choice:r&&r.outcome||'unknown'});done()};
 }
+$('#fullGo').onclick=()=>{addState('pick');show('add',true);const m=$('#mine');m.scrollIntoView({block:'start',behavior:reduce?'auto':'smooth'});$('#mineH').focus({preventScroll:true})};
 $('#tipX').onclick=()=>{try{localStorage.setItem('bd-tip','1')}catch(e){}$('#tip').classList.add('hidden')};
 
 let tt=null;
@@ -1287,13 +1349,18 @@ async function encode(o){
 }
 async function decode(code){
   const bytes=unb64u(code.slice(1));
-  if(code[0]==='z'){const st=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));return JSON.parse(await new Response(st).text())}
+  if(code[0]==='z'){ // stop inflating once it is clearly too big to be a recipe
+    const rd=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw')).getReader(),got=[];let n=0;
+    for(;;){const {done,value}=await rd.read();if(done)break;n+=value.length;if(n>MAXT*4){try{rd.cancel()}catch(e){}throw new Error('big')}got.push(value)}
+    return JSON.parse(await new Blob(got).text());
+  }
   return JSON.parse(new TextDecoder().decode(bytes));
 }
 async function linkFor(){return location.origin+location.pathname+'#r='+await encode({v:1,t:$('#text').value,y:recipe.yield,w:plan.want,m:plan.mode})}
 function keep(){if(!touched){touched=true;if(plan)remember(plan.want)}}
 async function copyLink(){
   track('Share',{how:'link'});keep();
+  if($('#text').value.length>MAXT){toast('Too long for a link');return}
   try{const u=await linkFor();await navigator.clipboard.writeText(u);toast('Link copied')}catch(e){toast("Couldn't copy the link")}
 }
 function plainText(){
@@ -1321,7 +1388,7 @@ async function shareIt(){
 }
 async function openFromHash(h){
   const m=h.match(/^#r=([\w-]+)$/);if(!m){if(/^#r=/.test(h))toast("That link didn't open");return}
-  try{const o=await decode(m[1]);if(!o||typeof o.t!=='string')throw 0;from='link';track('Open shared link');openRec({text:o.t,y:o.y,w:o.w,m:o.m==='scale'?'scale':'batch'},true)}
+  try{if(m[1].length>MAXT*8)throw 0;const o=await decode(m[1]);if(!o||typeof o.t!=='string'||!o.t.trim()||o.t.length>MAXT)throw 0;from='link';track('Open shared link');openRec({text:o.t,y:o.y,w:o.w,m:o.m==='scale'?'scale':'batch'},true)}
   catch(e){toast("That link didn't open")}
 }
 const menu=$('#menu');let menuFrom=null;
@@ -1349,7 +1416,8 @@ function openCook(){
 function closeCook(fromPop){
   $('#cook').classList.add('hidden');document.body.style.overflow='';
   try{if(lock)lock.release()}catch(e){}lock=null;
-  if(!fromPop&&history.state&&history.state.cook)history.back();
+  $('#dCook').focus({preventScroll:true});
+  if(!fromPop&&history.state&&history.state.cook){quiet=true;history.back()}
 }
 function drawStep(dir){
   const b=$('#cBody'),n=csteps.length;
@@ -1357,12 +1425,12 @@ function drawStep(dir){
   if(cs>=n){
     b.className+=' done';
     b.innerHTML=`<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="28"/><path d="M20 33l8 8 16-17"/></svg><h2>That’s the week, done.</h2><p>Label the bags with today’s date.</p>`;
-    $('#cStep').textContent='Done';$('#cProg').style.width='100%';$('#cNext').textContent='Close';$('#cBack').disabled=false;return;
+    $('#cStep').textContent='Done';$('#cLive').textContent='Done. That’s the week, done.';$('#cProg').style.width='100%';$('#cNext').textContent='Close';$('#cBack').disabled=false;return;
   }
   const s=csteps[cs];
   b.innerHTML=`<h2>${esc(s.t)}</h2>${s.d?`<p>${esc(s.d)}</p>`:''}${s.use&&s.use.length?`<ul class="uses">${s.use.map((u)=>`<li><b class="num">${esc(u.amt)}</b><span>${esc(u.name)}</span></li>`).join('')}</ul>`:''}${s.min?`<span class="time"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="11" r="7"/><path d="M10 7v4l2.5 2M8 2h4"/></svg>About ${s.min} min</span>`:''}`;
   b.scrollTop=0;
-  $('#cStep').textContent=`Step ${cs+1} of ${n}`;
+  $('#cStep').textContent=`Step ${cs+1} of ${n}`;$('#cLive').textContent=`Step ${cs+1} of ${n}. ${s.t}`;
   $('#cProg').style.width=Math.round(cs/n*100)+'%';
   $('#cBack').disabled=cs===0;$('#cNext').textContent=cs===n-1?'Finish':'Next';
 }
@@ -1370,7 +1438,14 @@ $('#dCook').onclick=openCook;
 $('#cNext').onclick=()=>{if(cs>=csteps.length){closeCook();return}cs++;drawStep(1)};
 $('#cBack').onclick=()=>{if(cs>0){cs--;drawStep(-1)}};
 $('#cClose').onclick=()=>closeCook();
+// keep Tab inside the open sheet or cook mode
+function trap(box,e){
+  const f=[...box.querySelectorAll('button,a[href],input,textarea')].filter((x)=>!x.disabled&&x.offsetParent);if(!f.length)return;
+  const a=f[0],z=f[f.length-1],on=document.activeElement;
+  if(!box.contains(on)){e.preventDefault();a.focus()}else if(e.shiftKey&&on===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&on===z){e.preventDefault();a.focus()}
+}
 addEventListener('keydown',(e)=>{
+  if(e.key==='Tab'){if(!menu.classList.contains('hidden'))trap(menu.querySelector('.mbox'),e);else if(!$('#cook').classList.contains('hidden'))trap($('#cook'),e);return}
   if(e.key==='Escape'&&!menu.classList.contains('hidden')){closeMenu();return}
   if($('#cook').classList.contains('hidden'))return;
   if(e.key==='ArrowRight')$('#cNext').click();else if(e.key==='ArrowLeft')$('#cBack').click();else if(e.key==='Escape')closeCook();
@@ -1418,7 +1493,8 @@ Directions
 6. Pour in the broth, coconut milk and soy sauce. Simmer a few minutes.
 7. Add the chicken back and simmer until cooked through. Add bok choy until just tender.
 8. Spoon rice into bowls, ladle the broth over, and finish with green onion, lime and chili oil.`;
-if(allB().length)track('Returning visit');
+// once per browser session, and never in the session that made the first batch
+{let seen=false;try{seen=sessionStorage.getItem('bd-rv')==='1';sessionStorage.setItem('bd-rv','1')}catch(e){}if(!seen&&allB().length)track('Returning visit')}
 renderSaved();
 if(/^#r=/.test(startHash))openFromHash(startHash);
 else{let oid=null;try{oid=sessionStorage.getItem('bd-open')}catch(e){}const r=oid&&allB().find((x)=>x.id===oid);if(r&&startHash==='#sheet'){from='saved';openRec(r,false);history.replaceState({v:'sheet'},'','#sheet')}}

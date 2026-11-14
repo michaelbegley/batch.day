@@ -167,7 +167,7 @@
         if (!r.sections.includes(section)) r.sections.push(section);
         continue;
       }
-      if (/recipe/i.test(line) && !QTY_RE.test(line) && !r.title) { r.title = line.replace(/\s*recipe.*$/i, '').replace(/[^\w\s'&-]/g, '').trim(); continue; }
+      if (/recipe/i.test(line) && !QTY_RE.test(line) && !r.title) { r.title = line.replace(/\s*recipe.*$/i, '').replace(/[^\p{L}\p{M}\p{N}\s'&-]/gu, '').trim(); continue; }
       const prev = r.ingredients[r.ingredients.length - 1];
       if (prev && !QTY_RE.test(line) && (/^[a-z(]/.test(line) || /^[A-Za-z ]{1,20}\)$/.test(line))) { prev.note = (prev.note + ' ' + line).trim(); continue; }
       const ing = parseIngredient(line);

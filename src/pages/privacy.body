@@ -23,6 +23,7 @@
 <li><b>Hugging Face</b> runs the AI reader described above and passes screenshots to the AI model through its Inference Providers.</li>
 <li><b>jsDelivr</b> serves the in-browser reader, which is only loaded if the AI reader can't be used.</li>
 <li><b>Vercel Web Analytics</b> counts visits and a few anonymous actions, like reading a recipe or opening cook mode. It uses no cookies and stores no personal information. We use it to see whether the site is worth keeping.</li>
+<li><b>Umami</b> counts the same visits and actions so we can see how many people are on the site right now. It also uses no cookies and stores no personal information.</li>
 </ul>
 
 <h2>Advertising</h2>

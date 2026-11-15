@@ -36,7 +36,7 @@ async def sheet(pg,t=6000):
     try: await pg.wait_for_selector('#v-sheet:not(.hidden)',timeout=t); await pg.wait_for_timeout(250); return True
     except Exception: return False
 async def paste(pg,text):
-    await pg.click('#pasteToggle'); await pg.fill('#paste',text); await pg.click('#usePaste'); await pg.wait_for_timeout(500)
+    await pg.click('#pasteToggle'); await pg.fill('#paste',text); await pg.wait_for_timeout(550); await pg.click('#usePaste'); await pg.wait_for_timeout(500)
 async def main():
     async with async_playwright() as p:
         b=await p.chromium.launch()

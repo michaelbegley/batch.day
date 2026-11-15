@@ -53,7 +53,7 @@ async def seeded(b,U,js,dev='ios',**kw):
 async def sample(pg): await pg.click('#sample'); await pg.wait_for_selector('#v-sheet:not(.hidden)'); await pg.wait_for_timeout(600)
 async def paste(pg,text):
     if not await pg.is_visible('#paste'): await pg.click('#pasteToggle')
-    await pg.fill('#paste',text); await pg.click('#usePaste'); await pg.wait_for_selector('#v-sheet:not(.hidden)'); await pg.wait_for_timeout(500)
+    await pg.fill('#paste',text); await pg.wait_for_timeout(550); await pg.click('#usePaste'); await pg.wait_for_selector('#v-sheet:not(.hidden)'); await pg.wait_for_timeout(500)
 async def tab(pg,t): await pg.click(f'#tabs [data-tab={t}]'); await pg.wait_for_timeout(300)
 async def mid(loc):
     await loc.scroll_into_view_if_needed(); await loc.page.wait_for_timeout(150); bb=await loc.bounding_box(); return bb['x']+bb['width']/2,bb['y']+bb['height']/2
@@ -199,7 +199,7 @@ async def _(b,U):
 
 # ---------- L-01
 async def tour_dbl(b,U,dev,step,mode):
-    ctx=await ctxp(b,dev); pg=await page(ctx,U); await pg.click('#tourYes'); await pg.wait_for_timeout(600)
+    ctx=await ctxp(b,dev); pg=await page(ctx,U); await pg.locator('#tourGo').scroll_into_view_if_needed(); await pg.click('#tourGo'); await pg.wait_for_timeout(600)
     for _ in range(step-1): await pg.click('#tNext'); await pg.wait_for_timeout(700)
     bb=await pg.locator('#tNext').bounding_box(); x,y=bb['x']+bb['width']/2,bb['y']+bb['height']/2
     if mode=='dbl': await pg.mouse.dblclick(x,y)
@@ -223,7 +223,7 @@ async def _(b,U):
     out=[]
     for dev in ('ios','desk'):
         for gap in (150,600):
-            ctx=await ctxp(b,dev); pg=await page(ctx,U); x,y=await mid(pg.locator('#tourYes')); await taps(pg,dev,x,y,2,gap); await pg.wait_for_timeout(300)
+            ctx=await ctxp(b,dev); pg=await page(ctx,U); await pg.locator('#tourGo').scroll_into_view_if_needed(); x,y=await mid(pg.locator('#tourGo')); await taps(pg,dev,x,y,2,gap); await pg.wait_for_timeout(300)
             r=await pg.evaluate("({on:!document.getElementById('tour').classList.contains('hidden'),at:document.getElementById('tDots').getAttribute('aria-label'),flag:localStorage.getItem('bd-tour')})")
             out.append((dev,gap,r['on'] and r['at']=='1 of 5' and not r['flag'],r)); await ctx.close()
     return all(o[2] for o in out),[o for o in out if not o[2]] or 'tour on, step 1'
@@ -231,13 +231,13 @@ async def _(b,U):
 async def _(b,U):
     out=[]
     for dev in ('ios','desk'):
-        ctx=await ctxp(b,dev); pg=await page(ctx,U); await pg.click('#tourYes'); await pg.wait_for_timeout(300)
+        ctx=await ctxp(b,dev); pg=await page(ctx,U); await pg.locator('#tourGo').scroll_into_view_if_needed(); await pg.click('#tourGo'); await pg.wait_for_timeout(300)
         vp=pg.viewport_size; await hit(pg,dev,vp['width']/2,vp['height']-30); await pg.wait_for_timeout(300)
         r=await pg.evaluate("({on:!document.getElementById('tour').classList.contains('hidden'),flag:localStorage.getItem('bd-tour'),view:!document.getElementById('v-add').classList.contains('hidden')})")
         out.append((dev,'outside',(not r['on']) and r['flag']=='skip' and r['view'],r)); await ctx.close()
-        ctx=await ctxp(b,dev); pg=await page(ctx,U); await pg.click('#tourYes'); await pg.wait_for_timeout(650); await pg.click('#tNext'); await pg.wait_for_timeout(200); await pg.keyboard.press('Escape'); await pg.wait_for_timeout(200)
+        ctx=await ctxp(b,dev); pg=await page(ctx,U); await pg.locator('#tourGo').scroll_into_view_if_needed(); await pg.click('#tourGo'); await pg.wait_for_timeout(650); await pg.click('#tNext'); await pg.wait_for_timeout(200); await pg.keyboard.press('Escape'); await pg.wait_for_timeout(200)
         out.append((dev,'escape',await pg.evaluate("document.getElementById('tour').classList.contains('hidden')&&localStorage.getItem('bd-tour')==='skip'"),'')); await ctx.close()
-    ctx=await ctxp(b,'android'); pg=await page(ctx,U); await pg.click('#tourYes'); await pg.wait_for_timeout(650)
+    ctx=await ctxp(b,'android'); pg=await page(ctx,U); await pg.locator('#tourGo').scroll_into_view_if_needed(); await pg.click('#tourGo'); await pg.wait_for_timeout(650)
     for _ in range(5): await pg.click('#tNext'); await pg.wait_for_timeout(650)
     out.append(('android','five Nexts finish it',await pg.evaluate("localStorage.getItem('bd-tour')")=='done','')); await ctx.close()
     return all(o[2] for o in out),[o for o in out if not o[2]] or 'outside, Escape and Done all work'
@@ -300,7 +300,7 @@ async def _(b,U):
         for start in ('portrait','landscape'):
             ctx=await ctxp(b,dev); pg=await page(ctx,U)
             if start=='landscape': await pg.set_viewport_size({'width':h,'height':w}); await pg.wait_for_timeout(300)
-            await pg.click('#tourYes'); await pg.wait_for_timeout(500)
+            await pg.locator('#tourGo').scroll_into_view_if_needed(); await pg.click('#tourGo'); await pg.wait_for_timeout(500)
             for _ in range(2): await pg.click('#tNext'); await pg.wait_for_timeout(700)
             await pg.set_viewport_size({'width':h,'height':w} if start=='portrait' else {'width':w,'height':h}); await pg.wait_for_timeout(800); g=await pg.evaluate(GEO)
             ok=g['at']=='3 of 5' and tour_ok(g,'tab'); out.append((dev,start,'turn',ok,g))
@@ -314,7 +314,7 @@ async def _(b,U):
     bad=[]
     for dev,(w,h) in (('android',(412,915)),('ios',(360,740))):
         for step in (1,2,3,4,5):
-            ctx=await ctxp(b,dev); pg=await page(ctx,U); await pg.set_viewport_size({'width':w,'height':h}); await pg.click('#tourYes'); await pg.wait_for_timeout(500)
+            ctx=await ctxp(b,dev); pg=await page(ctx,U); await pg.set_viewport_size({'width':w,'height':h}); await pg.locator('#tourGo').scroll_into_view_if_needed(); await pg.click('#tourGo'); await pg.wait_for_timeout(500)
             for _ in range(step-1): await pg.click('#tNext'); await pg.wait_for_timeout(600)
             await pg.set_viewport_size({'width':h,'height':w}); await pg.wait_for_timeout(800); g=await pg.evaluate(GEO)
             if not(g['at']==f'{step} of 5' and tour_ok(g)): bad.append((dev,step,g['bub'],g['ring'],g['H']))
@@ -492,10 +492,10 @@ async def _(b,U):
     out=[]
     for sel,seedjs,box in (('#savedList .rm',SOUPS,'#savedList'),('#fzList [data-frm]',STEWS,'#fzList')):
         for red in (False,True):
-            ctx,pg=await seeded(b,U,seedjs,'ios',reduce=red); x,y=await mid(pg.locator(sel).first); y0=await pg.evaluate(f"document.querySelectorAll('{box} li')[1].getBoundingClientRect().top")
+            ctx,pg=await seeded(b,U,seedjs,'ios',reduce=red); x,y=await mid(pg.locator(sel).first); y0=await pg.evaluate(f"document.querySelectorAll('{box} li')[1].getBoundingClientRect().top+scrollY")
             await pg.touchscreen.tap(x,y); await pg.wait_for_timeout(250)
-            g=await pg.evaluate(f"(()=>{{const g=document.querySelector('{box} li.gone'),n=document.querySelectorAll('{box} li:not(.gone)')[0];return g?{{hid:g.getAttribute('aria-hidden'),ctl:g.querySelectorAll('button,a,input').length,pe:getComputedStyle(g).pointerEvents,y:n.getBoundingClientRect().top,foc:document.activeElement.className}}:null}})()")
-            await pg.wait_for_timeout(900); left=await pg.locator(f'{box} li.gone').count(); y2=await pg.evaluate(f"document.querySelectorAll('{box} li')[0].getBoundingClientRect().top")
+            g=await pg.evaluate(f"(()=>{{const g=document.querySelector('{box} li.gone'),n=document.querySelectorAll('{box} li:not(.gone)')[0];return g?{{hid:g.getAttribute('aria-hidden'),ctl:g.querySelectorAll('button,a,input').length,pe:getComputedStyle(g).pointerEvents,y:n.getBoundingClientRect().top+scrollY,foc:document.activeElement.className}}:null}})()")
+            await pg.wait_for_timeout(900); left=await pg.locator(f'{box} li.gone').count(); y2=await pg.evaluate(f"document.querySelectorAll('{box} li')[0].getBoundingClientRect().top+scrollY")
             out.append((box,red,bool(g) and g['hid']=='true' and g['ctl']==0 and g['pe']=='none' and abs(g['y']-y0)<=1 and left==0 and y2<y0-20,f'{g} left={left} y {y0}->{y2}')); await ctx.close()
     return all(o[2] for o in out),[o for o in out if not o[2]] or 'held, then gone, in both lists'
 

@@ -73,7 +73,7 @@ def of(ev,n): return [e[1] for e in ev if e[0]==n]
 LS="(k)=>JSON.parse(localStorage.getItem(k)||'null')"
 async def paste(pg,text):
     if not await pg.is_visible('#paste'): await pg.click('#pasteToggle')
-    await pg.fill('#paste',text); await pg.click('#usePaste'); await pg.wait_for_timeout(450)
+    await pg.fill('#paste',text); await pg.wait_for_timeout(550); await pg.click('#usePaste'); await pg.wait_for_timeout(450)
 async def sample(pg):
     await pg.click('#sample'); await pg.wait_for_timeout(450)
 async def panel(pg,t):
@@ -144,7 +144,7 @@ async def main():
         ctx=await new(b); pg=await tab(ctx,U); await sample(pg); await pg.click('.step [data-t=want][data-d="1"]'); await pg.wait_for_timeout(300)
         saved=await pg.evaluate(LS,'bd-batches'); ev,_=await next_session(ctx)
         log('sample with the meals changed: saved, still not a Returning visit',len(saved)==1 and saved[0].get('f')=='sample' and ev==['Visit'],ev); await ctx.close()
-        ctx=await new(b); pg=await tab(ctx,U); await pg.click('#tourYes'); await pg.wait_for_timeout(300)
+        ctx=await new(b); pg=await tab(ctx,U); await pg.locator('#tourGo').scroll_into_view_if_needed(); await pg.click('#tourGo'); await pg.wait_for_timeout(300)
         for _ in range(5): await pg.click('#tNext'); await pg.wait_for_timeout(500)
         await pg.click('#dCook'); await pg.wait_for_timeout(300); await pg.click('#cClose'); await pg.wait_for_timeout(400)
         saved=await pg.evaluate(LS,'bd-batches'); plans=of(ctx._ev,'Plan'); ev,_=await next_session(ctx)
@@ -190,7 +190,7 @@ async def main():
         log('events: the sample: sample',got[:2]==['sample','sample'],got)
         await pg.click('#newRec'); await pg.wait_for_timeout(300); await pg.click('#savedList .open'); await pg.wait_for_timeout(400); got=await cook_events(ctx,pg)
         log('events: the saved sample opened again is still sample, so it can be filtered out',got[:2]==['sample','sample'],got); await ctx.close()
-        ctx=await new(b); pg=await tab(ctx,U); await pg.click('#tourYes'); await pg.wait_for_timeout(300)
+        ctx=await new(b); pg=await tab(ctx,U); await pg.locator('#tourGo').scroll_into_view_if_needed(); await pg.click('#tourGo'); await pg.wait_for_timeout(300)
         for _ in range(5): await pg.click('#tNext'); await pg.wait_for_timeout(500)
         got=await cook_events(ctx,pg); log('events: the tour: tour',got[:2]==['tour','tour'],got); await ctx.close()
         ctx=await new(b); pg=await tab(ctx,U+link_for(CHILI,6,14)); await pg.wait_for_timeout(300); got=await cook_events(ctx,pg)
@@ -369,16 +369,15 @@ async def main():
         ORANGE="[...document.querySelectorAll('button,a,[role=button]')].filter(e=>{const r=e.getBoundingClientRect(),c=getComputedStyle(e);return r.width>0&&r.height>0&&r.top<innerHeight&&c.visibility!=='hidden'&&(c.backgroundColor==='rgb(194, 65, 12)'||c.backgroundColor==='rgb(255, 122, 61)')}).map(e=>e.id||e.textContent.trim())"
         for w,h,mob in [(390,844,True),(1440,900,False)]:
             ctx=await new(b,w=w,h=h,mob=mob); pg=await tab(ctx,U)
-            o=await pg.evaluate(ORANGE); offer=await pg.is_visible('#tourOffer'); cls=await pg.get_attribute('#tourYes','class')
-            log(f'first view at {w}: one filled orange button (Choose screenshots); the tour offer shows and Show me is grey',o==['choose'] and offer and cls=='pillb soft' and (await pg.inner_text('#tourOffer')).split()==['Quick','tour','Show','me','Skip'],(o,offer,cls))
-            g=await pg.evaluate("(()=>{const q=(s)=>document.querySelector(s).getBoundingClientRect(),o=q('#tourOffer'),p=q('#tourOffer p b'),y=q('#tourYes'),n=q('#tourNo'),c=q('#choose');const L=Math.min(p.left,y.left),Rr=Math.max(n.right,p.right);return {l:Math.round(L-o.left),r:Math.round(o.right-Rr),mid:Math.round((o.left+o.right)/2-(c.left+c.right)/2),rows:p.top+2<y.top?2:1,yes:y.height,no:n.height,hero:getComputedStyle(document.querySelector('.hero')).paddingTop,ad:getComputedStyle(document.querySelector('.adlab')).marginBottom,adc:getComputedStyle(document.querySelector('.adlab')).color,ink2:getComputedStyle(document.querySelector('.sub')).color}})()")
-            if mob: log('tour offer on a phone: centred in its card (left and right gaps equal), both buttons 44 high',abs(g['l']-g['r'])<=1 and g['mid']==0 and g['yes']>=43.9 and g['no']>=43.9,g)
-            else: log('tour offer on desktop: one row, words left and buttons right, as before',g['rows']==1 and g['l']==16 and g['r']<=20,g)
+            o=await pg.evaluate(ORANGE); smp=await pg.is_visible('#sample'); cls=await pg.get_attribute('#sample','class')
+            log(f'first view at {w}: one filled orange button (Choose screenshots); See a sample plan is grey; no tour offer',o==['choose'] and smp and cls=='pillb soft' and await pg.inner_text('#sample')=='See a sample plan' and await pg.locator('#tourOffer').count()==0,(o,smp,cls))
+            g=await pg.evaluate("(()=>{const q=(s)=>document.querySelector(s).getBoundingClientRect(),y=q('#sample'),c=q('#choose');return {mid:Math.round((y.left+y.right)/2-(c.left+c.right)/2),yes:y.height,hero:getComputedStyle(document.querySelector('.hero')).paddingTop,ad:getComputedStyle(document.querySelector('.adlab')).marginBottom,adc:getComputedStyle(document.querySelector('.adlab')).color,ink2:getComputedStyle(document.querySelector('.sub')).color}})()")
+            log(f'sample button at {w}: centred under Choose screenshots, 44 high',g['mid']==0 and g['yes']>=43.9,g)
             log(f'spacing at {w}: hero top padding {"64" if not mob else "40"} and the Advertisement label 8 under, in the secondary text colour',g['hero']==('40px' if mob else '64px') and g['ad']=='8px' and g['adc']==g['ink2'],g)
             if mob:
                 await pg.set_viewport_size({'width':320,'height':700}); await pg.wait_for_timeout(200)
-                g=await pg.evaluate("(()=>{const q=(s)=>document.querySelector(s).getBoundingClientRect(),o=q('#tourOffer'),p=q('#tourOffer p b'),y=q('#tourYes'),n=q('#tourNo');return {p:Math.round((p.left+p.right)/2-(o.left+o.right)/2),b:Math.round((y.left+n.right)/2-(o.left+o.right)/2),wide:document.documentElement.scrollWidth<=innerWidth}})()")
-                log('tour offer at 320: whatever wraps is centred, no sideways scroll',abs(g['p'])<=1 and abs(g['b'])<=1 and g['wide'],g); await pg.set_viewport_size({'width':w,'height':h})
+                g=await pg.evaluate("(()=>{const q=(s)=>document.querySelector(s).getBoundingClientRect(),y=q('#sample'),c=q('#choose');return {b:Math.round((y.left+y.right)/2-(c.left+c.right)/2),wide:document.documentElement.scrollWidth<=innerWidth}})()")
+                log('sample button at 320: centred, no sideways scroll',abs(g['b'])<=1 and g['wide'],g); await pg.set_viewport_size({'width':w,'height':h})
             await paste(pg,SOUP) if not mob else (await pg.tap('#pasteToggle'), await pg.fill('#paste',SOUP), await pg.tap('#usePaste'), await pg.wait_for_timeout(450))
             pad=await pg.evaluate("(()=>{const c=document.getElementById('ctl'),r=c.getBoundingClientRect(),seg=c.querySelector('.seg').getBoundingClientRect(),st=[...c.querySelectorAll('.step')].pop().getBoundingClientRect(),o=document.querySelector('#sheet .card'),oc=getComputedStyle(o),cc=getComputedStyle(c);return {top:Math.round(seg.top-r.top),left:Math.round(seg.left-r.left),right:Math.round(r.right-seg.right),bottom:Math.round(r.bottom-st.bottom),css:cc.padding,other:oc.padding}})()")
             log(f'controls card at {w}: the same padding on all four sides as the other cards',pad['css']==pad['other'] and pad['top']==pad['left']==pad['right']==pad['bottom'],pad)
@@ -455,11 +454,11 @@ async def main():
             log(f'keyboard at {w}x{h}: tabbing back up, focus is not under the top bar',c[1],c); await ctx.close()
         ctx=await new(b,w=390,h=844,mob=True); pg=await tab(ctx,U)
         SZ="(sel)=>[...document.querySelectorAll(sel)].filter(e=>e.getBoundingClientRect().width>0).map(e=>{const r=e.getBoundingClientRect();return [Math.round(r.width),Math.round(r.height)]})"
-        sz={'theme':await pg.evaluate(SZ,'#theme'),'skip':await pg.evaluate(SZ,'#tourNo')}
+        sz={'theme':await pg.evaluate(SZ,'#theme'),'sample':await pg.evaluate(SZ,'#sample')}
         sw=await pg.evaluate("(()=>{const b=document.getElementById('theme'),k=b.querySelector('i').getBoundingClientRect(),r=b.getBoundingClientRect(),t=getComputedStyle(b,'::before');return {track:[t.width,t.height],knobMid:Math.round(k.top+k.height/2-r.top),bar:document.querySelector('.bar').getBoundingClientRect().height}})()")
         await pg.tap('#sample'); await pg.wait_for_timeout(450); sz['mode']=await pg.evaluate(SZ,'#mode button'); sz['tabs']=await pg.evaluate(SZ,'#tabs button')
         await pg.tap('#dShare'); await pg.tap('#menu [data-pic]'); await pic_ready(pg); sz['pic']=await pg.evaluate(SZ,'#picSize button'); alt=await pg.get_attribute('#picImg','alt')
-        log('tap targets: theme switch, tour Skip, Batch day / Just scale, the four tabs and Story / Pinterest are all at least 44 x 44',all(x[0]>=44 and x[1]>=44 for v in sz.values() for x in v) and all(len(v)>0 for v in sz.values()),sz)
+        log('tap targets: theme switch, See a sample plan, Batch day / Just scale, the four tabs and Story / Pinterest are all at least 44 x 44',all(x[0]>=44 and x[1]>=44 for v in sz.values() for x in v) and all(len(v)>0 for v in sz.values()),sz)
         log('theme switch: the button is 52 x 44, the track inside it is still 52 x 32, knob centred, bar still 52 high',sz['theme']==[[52,44]] and sw['track']==['52px','32px'] and sw['knobMid']==22 and sw['bar']==52,sw)
         log('share picture preview has alt text naming the dish and the count',alt=='Brothy chicken and rice, 14 meals',alt)
         await pg.tap('#picX'); await pg.wait_for_timeout(400)

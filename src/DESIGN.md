@@ -325,3 +325,5 @@ From report A (recipe accuracy). Tests: test_sweep.js (227 checks), plus updated
 - Oven: "roast/bake at 425F" without a pan word plans sheet pans or dishes. Over 10 h of cook order gets the big-cook note.
 - Searing shows the real share per batch ("up to 1½ lb a batch"); no seasoning step for ground meat; doneness temp fits the meat.
 - UI: focus ring full accent (3:1+), Meals field labelled by "Meals" with the note as description, bake count carried across modes, "Just scale" banner only in Just scale, pan note when a bake is scaled up, share picture never cuts a word, factor shows quarters (1.75×), Share event only after a link is copied. About page trimmed.
+
+- Home: the first-visit "Quick tour / Show me / Skip" row is gone (five-second test: 2 of 3 viewers could not tell what it did). One grey "See a sample plan" button under Choose screenshots opens the finished sample. The tour stays in the footer; its toast only shows when it ends on a plan.

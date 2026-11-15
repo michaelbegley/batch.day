@@ -105,7 +105,7 @@ async def main():
         ctx,pg,errs=await fresh(b)
         for txt in ("Bean chili\nServes 4\n2 cans beans\n1 onion\n1. Cook 20 minutes.",REC2):
             await pg.tap('#pasteToggle') if await pg.is_hidden('#paste') else None
-            await pg.fill('#paste',txt); await pg.tap('#usePaste'); await pg.wait_for_selector('#v-sheet:not(.hidden)'); await pg.wait_for_timeout(300); await pg.tap('#newRec'); await pg.wait_for_timeout(300)
+            await pg.fill('#paste',txt); await pg.wait_for_timeout(550); await pg.tap('#usePaste'); await pg.wait_for_selector('#v-sheet:not(.hidden)'); await pg.wait_for_timeout(300); await pg.tap('#newRec'); await pg.wait_for_timeout(300)
         r0=await pg.locator('#savedList .open').count(); await pg.locator('#savedList .rm').first.scroll_into_view_if_needed(); await pg.tap('#savedList .rm >> nth=0')
         st=await pg.evaluate("(()=>{const g=document.querySelector('#savedList li.gone');return [document.querySelectorAll('#savedList .open').length,!!g,g&&g.getAttribute('aria-hidden'),g?g.querySelectorAll('button,a,input').length:-1,JSON.parse(localStorage.getItem('bd-batches')).length,document.activeElement.className]})()")
         await pg.wait_for_timeout(900); g2=await pg.locator('#savedList li.gone').count(); lis=await pg.locator('#savedList li').count()
@@ -121,7 +121,7 @@ async def main():
         log('6 tapping the name scrolls to the top and the logo comes back',y==0 and back[0] is False and back[2]=='1',f'y={y} {back}')
         await pg.evaluate('scrollTo(0,500)'); await pg.wait_for_timeout(300); await pg.keyboard.press('Tab'); await pg.keyboard.press('Shift+Tab'); await pg.wait_for_timeout(50)
         await pg.evaluate("document.querySelector('.mark').focus()"); await pg.go_back(); await pg.wait_for_timeout(500); home=await pg.evaluate(BAR)
-        await pg.tap('#pasteToggle'); await pg.fill('#paste',LONG); await pg.tap('#usePaste'); await pg.wait_for_timeout(600)
+        await pg.tap('#pasteToggle'); await pg.fill('#paste',LONG); await pg.wait_for_timeout(550); await pg.tap('#usePaste'); await pg.wait_for_timeout(600)
         await pg.evaluate('scrollTo(0,500)'); await pg.wait_for_timeout(500); lng=await pg.evaluate(BAR); sw=await pg.evaluate("(()=>{const a=document.getElementById('barTitle').getBoundingClientRect(),s=document.getElementById('theme').getBoundingClientRect();return [a.right<=s.left,a.height,document.documentElement.scrollWidth<=innerWidth]})()")
         log('6 not shown on the home page; a long name is cut with an ellipsis on one line, clear of the switch',home[0] is False and lng[0] is True and lng[5] is True and sw==[True,52,True] and not errs,f'home={home[0]} long={lng} layout={sw} errs={errs[:2]}'); await ctx.close()
         # 7 press states, Copy

@@ -38,7 +38,7 @@ async def fresh(b,init='',mobile=True,api=None,**kw):
 async def sample(pg):
     await pg.click('#sample'); await pg.wait_for_selector('#v-sheet:not(.hidden)'); await pg.wait_for_timeout(700)
 async def paste(pg,t):
-    await pg.goto(U); await pg.wait_for_timeout(200); await pg.click('#pasteToggle'); await pg.fill('#paste',t); await pg.click('#usePaste'); await pg.wait_for_selector('#v-sheet:not(.hidden)'); await pg.wait_for_timeout(500)
+    await pg.goto(U); await pg.wait_for_timeout(200); await pg.click('#pasteToggle'); await pg.fill('#paste',t); await pg.wait_for_timeout(550); await pg.click('#usePaste'); await pg.wait_for_selector('#v-sheet:not(.hidden)'); await pg.wait_for_timeout(500)
 async def tab(pg,t): await pg.click(f'[data-tab={t}]'); await pg.wait_for_timeout(250)
 async def meals(pg,n): await pg.fill('#want',str(n)); await pg.evaluate("document.getElementById('want').blur()"); await pg.wait_for_timeout(350)  # blur sends the box's own change event
 async def openpic(pg):

@@ -375,7 +375,7 @@ console.log(JSON.stringify({o,long:Q.make('y'.repeat(200)),empty:Q.make(''),url:
         # reheat line and no date, with the code
         await ctx.close()
         RH='Lentil soup\nServes 4\n2 cups lentils\n1 onion\n6 cups broth\n1. Simmer 40 minutes.\n2. To reheat, microwave 2.5 minutes and stir. Add a splash of water if it has gone thick.'
-        ctx,pg,errs=await fresh(b,w=1280,h=900,mob=False,device_scale_factor=4); await pg.click('#pasteToggle'); await pg.fill('#paste',RH); await pg.click('#usePaste'); await pg.wait_for_timeout(700); await tab(pg,'store'); await pg.fill('#lblDate',''); await pg.wait_for_timeout(150)
+        ctx,pg,errs=await fresh(b,w=1280,h=900,mob=False,device_scale_factor=4); await pg.click('#pasteToggle'); await pg.fill('#paste',RH); await pg.wait_for_timeout(550); await pg.click('#usePaste'); await pg.wait_for_timeout(700); await tab(pg,'store'); await pg.fill('#lblDate',''); await pg.wait_for_timeout(150)
         r=await pg.evaluate("(()=>{const l=document.querySelector('#lblPrev .lbl'),rows=[...l.querySelectorAll('.lt>div')];return {over:l.scrollHeight>l.clientHeight+1,rh:rows[3].textContent,cooked:rows[1].querySelectorAll('i').length,inside:rows[3].getBoundingClientRect().bottom<=l.getBoundingClientRect().bottom-7}})()")
         sc=scan(await pg.locator('#lblPrev .lbl').screenshot())
         log('label: reheat line fits beside the code with the date emptied (round 3: that means today, no blank line), and it still scans',not r['over'] and r['rh']=='To reheat, microwave 2.5 minutes and stir.' and r['cooked']==0 and r['inside'] and len(sc)==1,r)

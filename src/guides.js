@@ -207,7 +207,7 @@ return{big:N(n,'item'),sub:'The sample recipe, for '+N(v.meals,'meal')+'.',tbl:h
     sum: (c) => `About ${c({ lb: 5 }).each} lb in a 12-inch pan.`,
     h1: 'How much meat can I brown at once?',
     controls: [{ id: 'lb', label: 'Meat (lb)', val: 5, min: 1, max: 99, dn: 'Fewer pounds', up: 'More pounds' }],
-    calc: `function calc(v){var p=E.batchDay(P('Chicken\\nServes 1\\n'+v.lb+' lb chicken thighs\\n1. Sear the chicken until golden.'),1),n=+(/Searing: (\\d+) batch/.exec(p.pots.join(' '))||[0,0])[1],each=(/about (\\S+) lb each/.exec(p.pots.join(' '))||[])[1],min=(p.order.filter(function(o){return /^Sear/.test(o.t)})[0]||{}).min;
+    calc: `function calc(v){var p=E.batchDay(P('Chicken\\nServes 1\\n'+v.lb+' lb chicken thighs\\n1. Sear the chicken until golden.'),1),n=+(/Searing: (\\d+) batch/.exec(p.pots.join(' '))||[0,0])[1],each=(/up to (\\S+) lb a batch/.exec(p.pots.join(' '))||[])[1],min=(p.order.filter(function(o){return /^Sear/.test(o.t)})[0]||{}).min;
 return{big:n+(n==1?' batch':' batches'),each:each,min:min,per:min/n,sub:'About '+N(min,'minute')+' of searing in a 12-inch pan.'}}`,
     answer: (c) => { const a = c({ lb: 5 }); return `About ${a.each} lb at a time in a 12-inch pan. More than that crowds the pan and the meat steams. 5 lb takes ${a.big}.`; },
     desc: (c) => { const a = c({ lb: 5 }); return `About ${a.each} lb at a time in a 12-inch pan, so 5 lb takes ${a.big}. Set your pounds to get the batches and the time.`; },

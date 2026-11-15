@@ -318,3 +318,10 @@ From report A (recipe accuracy). Tests: test_sweep.js (227 checks), plus updated
 - **Sweet bakes with cream cheese, cream or custard** (Chocolate Crunch Cake) stay a bake (Just scale) instead of becoming "meals", with a fridge line ("Keep it in the fridge... eat within 4 days"). `recipe.fridgeBake`. Savory bakes (meat, fish, beans, tofu, or no sweetener) are still meals in Batch day.
 - **No servings on a bake:** the guess is 12, not 4.
 - **AI reader:** the Space variable `MODELS` now puts Qwen/Qwen3-VL-30B-A3B-Instruct first, then Qwen3-VL-235B, then Qwen2.5-VL-32B. Three live test reads: 2.9 s, 2.0 s and 0.9 s, all transcribed correctly (junk lines dropped, two screenshots merged). Before: about 30 to 40 s on the 235B model. To go back, delete the variable (the code default is 235B first).
+
+## Follow-up sweep 2 (15 Nov 2026)
+- Yields in dozens count x12; "Makes 1 loaf, 10 slices" counts slices; "Makes 2 loaves" counts 10 a loaf with a note.
+- Storage: squares, slices, shortcake, curd, meringue titles and any filling/topping/frosting section mean fridge. No-amount meat or perishable lines are kept. Second amount of the same item is kept and added. ~40 more meat words. Fridge line gives no reason. Vanilla bean is not a bean; fruit-sweet bakes are sweet.
+- Oven: "roast/bake at 425F" without a pan word plans sheet pans or dishes. Over 10 h of cook order gets the big-cook note.
+- Searing shows the real share per batch ("up to 1½ lb a batch"); no seasoning step for ground meat; doneness temp fits the meat.
+- UI: focus ring full accent (3:1+), Meals field labelled by "Meals" with the note as description, bake count carried across modes, "Just scale" banner only in Just scale, pan note when a bake is scaled up, share picture never cuts a word, factor shows quarters (1.75×), Share event only after a link is copied. About page trimmed.

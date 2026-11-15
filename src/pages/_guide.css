@@ -15,9 +15,9 @@
 .step button{width:44px;height:44px;border-radius:50%;border:0;background:none;cursor:pointer;font:inherit;font-size:22px;line-height:1;color:var(--accent);padding:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .15s var(--ease),opacity .2s var(--fade)}
 .step button:active{transform:scale(.88)}
 .step button.end{opacity:.4}.step button.end:active{transform:none}
-.step button:focus-visible,.btn:focus-visible{outline:0;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent)}
+.step button:focus-visible,.btn:focus-visible{outline:0;box-shadow:0 0 0 3px var(--accent)}
 .step input,.step output{width:44px;height:44px;text-align:center;border:0;background:none;color:var(--ink);font:inherit;font-weight:600;font-size:19px;line-height:44px;outline:none;border-radius:8px;padding:0;display:block}
-.step input:focus-visible{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent)}
+.step input:focus-visible{box-shadow:0 0 0 3px var(--accent)}
 .step .nr{animation:nudgeR .2s var(--ease)}.step .nl{animation:nudgeL .2s var(--ease)}
 @keyframes nudgeR{35%{transform:translateX(4px)}to{transform:none}}
 @keyframes nudgeL{35%{transform:translateX(-4px)}to{transform:none}}

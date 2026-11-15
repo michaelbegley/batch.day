@@ -1,31 +1,27 @@
 <h1>About batch.recipes</h1>
-<p><strong>batch.recipes is a free website that turns any recipe into a batch-cooking plan.</strong> Add a screenshot or the text of a recipe, pick how many meals you want, and it gives you a grocery list, a cook order and a fridge and freezer plan.</p>
-<p>For meal preppers, budget cooks and anyone who saves recipes from TikTok, Instagram Reels or food blogs.</p>
+<p><strong>A free site that turns a recipe into a batch plan: grocery list, cook order, fridge and freezer plan.</strong> Add a screenshot or paste the text, pick how many meals, and it does the rest.</p>
+<p>For meal preppers who save recipes from TikTok and Reels.</p>
 
 <h2>What you get</h2>
 <ul>
-<li><strong>A scaled recipe</strong> for the number of meals you pick, in US cups, ounces and pounds.</li>
-<li><strong>A grocery list in store order</strong>: produce, meat, dairy, canned goods, dry goods, spices. Tick items as you shop, or send the list to Reminders, Notes, Google Keep or any list app.</li>
+<li><strong>The recipe, scaled</strong> to the meals you pick, in cups, ounces and pounds.</li>
+<li><strong>A grocery list in store order.</strong> Tick it off as you shop, or send it to Reminders, Notes or Keep.</li>
 <li><strong>A cook order</strong>, one step at a time, with the screen kept on.</li>
-<li><strong>A storage plan</strong>: what goes in the freezer, what goes in the fridge and what to add fresh when you eat.</li>
-<li><strong>Freezer labels</strong> to print on Avery 5160 sheets or save as an image.</li>
+<li><strong>Where it all goes</strong>: freezer, fridge, and what to add fresh.</li>
+<li><strong>Freezer labels</strong> for Avery 5160 sheets, or as an image.</li>
 </ul>
-
-<h2>How the scaling works</h2>
-<p>Meat, vegetables, grains and broth scale straight up. Salt, spices and oil are eased back past double. Fresh finishers like lime and herbs are kept for serving. Pots are sized so stews fill no more than three-quarters and dry rice no more than a quarter. Baking isn't eased back and gets a warning past double.</p>
 
 <h2>Questions</h2>
 <h3>Is it free?</h3>
 <p>Yes. No account. Store links and ads keep it free.</p>
-<h3>Does it work with TikTok and Instagram recipes?</h3>
-<p>Yes. Screenshot the recipe and add the screenshots. An AI model reads the ingredients and steps. If it can't, they are read on your device instead.</p>
 <h3>Where are my recipes saved?</h3>
-<p>On your phone or computer, not on a server. You can back them up to a file and restore them on a new phone. Screenshots are read by an AI reader, and we don't keep them. More in <a href="privacy">Privacy</a>.</p>
-<h3>Does it work on iPhone and Android?</h3>
-<p>Yes, in the browser. You can add it to your Home Screen to use it like an app.</p>
+<p>On your phone or computer. Back them up to a file to move them.</p>
+<h3>What happens to my screenshots?</h3>
+<p>An AI reader reads them and doesn't keep them. If it can't, they're read on your device instead. More in <a href="privacy">Privacy</a>.</p>
+<h3>Is there an app?</h3>
+<p>It runs in the browser. Add it to your Home Screen to use it as an app.</p>
 
-<h2>Guides</h2>
-{{GUIDES}}
+<p><a href="guides">All guides</a>: how much rice, how big a pot, how to double a recipe.</p>
 
 <p>Made by Michael Begley.</p>
 <h2>Contact</h2>

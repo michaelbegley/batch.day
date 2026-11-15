@@ -192,5 +192,36 @@ ok(P('Chicken Curry - serves 4\n2 lb chicken').title === 'Chicken Curry', 'title
 // M-04 sear size for a small batch
 { const p = B('Steak\nServes 4\n1 lb steak\n1. Sear until browned.', 1); ok(/about 4 oz/.test(p.pots.join(' ')), 'small sear: ' + p.pots.join(' ')); }
 
+// follow-up 2 (15 Nov): F4-01 dozens, F4-02 squares, F4-03 no-amount perishables kept, F4-04 shortcake, F4-05 more meats, F4-06 safe list, chili cook steps
+{ const cases = [['Makes 2 dozen cookies', 24], ['Yield: 2 dozen', 24], ['Makes 1 1/2 dozen', 18], ['Yields 3 dozen', 36], ['Makes a dozen', 12], ['Makes about 24', 24], ['Makes 12', 12]];
+  cases.forEach(([y, n]) => { const r = P('Cookies\n' + y + '\n2 cups flour\n1 cup sugar\n1/2 cup butter\n1 egg'); ok(r.yield === n && !r.yieldGuessed, 'yield ' + y + ' -> ' + r.yield); }); }
+{ const room = (t) => /room temp/.test(B(t, 24).split.fridge.join(' '));
+  ok(!room('Lemon squares\n2 cups flour\n1/2 cup powdered sugar\n1 cup butter\n4 eggs\n1 1/2 cups sugar\n1/4 cup lemon juice'), 'lemon squares not room temp');
+  ok(!room('Strawberry shortcake\n2 cups flour\n1/4 cup sugar\n1 tbsp baking powder\n1/2 cup butter\n3/4 cup milk\n2 cups strawberries'), 'shortcake not room temp');
+  ok(!room('Lemon cake\nCake:\n2 cups flour\n1 cup sugar\n2 eggs\n1 tsp baking powder\nFilling:\n1/2 cup lemon juice\n3 eggs\n1 cup sugar'), 'cake with a filling section not room temp');
+  ['diced ham', 'cooked ham', 'shredded cheddar', 'chopped bacon', 'crab meat', 'ricotta', 'custard', 'canned pumpkin', 'mascarpone'].forEach((x) => {
+    const t = 'Muffins\nMakes 12\n2 cups flour\n1/2 cup sugar\n1 tbsp baking powder\n1 egg\n1 cup milk\n' + x; const r = P(t);
+    ok(r.ingredients.length === 6, 'kept line ' + x); ok(!room(t), 'not room temp with ' + x); });
+  ['ground chuck', 'mince', 'crawfish', 'carnitas', 'lardons', 'mortadella', 'rabbit'].forEach((x) => { const r = P('Little cakes\n2 cups flour\n1/2 cup sugar\n1 tbsp baking powder\n1 egg\n8 oz ' + x); ok(!r.baking || r.savoryBake, 'meat in a bake is a meal: ' + x); });
+  ok(room('Snickerdoodles\n2 3/4 cups flour\n1 1/2 cups sugar\n1 cup butter\n2 eggs\n2 tsp cream of tartar\n1 tsp baking soda\n1/2 tsp salt'), 'snickerdoodles keep room temp');
+  ok(room('Oatmeal raisin cookies\n1 cup flour\n2 cups old-fashioned oats\n1 cup brown sugar\n1/2 cup butter\n1 egg\n1 cup raisins\n1 tsp baking soda'), 'oatmeal cookies keep room temp');
+  ok(room('Banana bread\n3 bananas\n1/3 cup melted butter\n3/4 cup sugar\n1 egg\n1 tsp baking soda\n1 1/2 cups flour'), 'banana bread keeps room temp');
+  ok(!/cream, cheese/.test(B('Pumpkin bread\n2 cups flour\n1 cup sugar\n1 cup pumpkin puree\n2 eggs\n1 tsp baking soda', 12).split.fridge.join(' ')), 'fridge line gives no false reason'); }
+{ const t = 'Weeknight beef chili\nServes 8\n2 lb ground beef\n1 large onion\n4 cloves garlic\n3 tbsp chili powder\n1 tbsp cumin\n2 tsp salt\n1 (28 oz) can crushed tomatoes\n2 (15 oz) cans kidney beans\n1 cup beef broth\n1. Brown the beef in batches.\n2. Add onion and garlic, then spices.\n3. Add tomatoes, beans and broth. Simmer 45 minutes.';
+  const p = B(t, 14), pots = p.pots.join(' '), ord = p.order.map((o) => o.t + ' ' + o.d).join(' | ');
+  ok(/3 batches.*about 1¼ lb each/.test(pots), 'sear each is the real share: ' + pots);
+  ok(!/Season the ground beef/.test(ord), 'no seasoning step for ground beef'); ok(!/165°F for chicken/.test(ord) && /160°F for ground meat/.test(ord), 'doneness fits the meat'); }
+
+{ const t = 'Cookies\nMakes 12\n1/2 cup butter\n1 cup sugar\n2 cups flour\n1/4 cup butter, softened\n1 cup sugar';
+  const r = P(t); ok(r.ingredients.filter((i) => /butter/.test(i.name)).length === 2, 'second butter amount kept'); ok(r.ingredients.filter((i) => /sugar/.test(i.name)).length === 1, 'repeated identical line dropped');
+  const g = B(t, 12).grocery.filter((x) => /butter/i.test(x.name)); ok(g.length === 1 && /¾ cup/.test(g[0].amt), 'grocery adds the butter: ' + JSON.stringify(g)); }
+
+{ const r = P('Vanilla bean cake\n2 cups flour\n1 cup sugar\n1 vanilla bean\n2 eggs\n1 tsp baking powder'); ok(!r.savoryBake, 'vanilla bean is not a bean');
+  ok(!P('Banana oat muffins\n2 bananas\n1 cup oats\n1 cup flour\n1 egg\n1 tsp baking soda').savoryBake, 'fruit-sweet muffins are not a meal');
+  ok(P('Lemon loaf\nMakes 1 loaf, 10 slices\n2 cups flour\n1 cup sugar\n2 eggs').yield === 10, 'loaf counts slices');
+  const c = P('Cheesecake\n2 cups graham cracker crumbs\n24 oz cream cheese\n1 cup sugar\n3 eggs'); ok(c.baking && c.fridgeBake, 'cheesecake is a fridge bake');
+  ok(B('Sheet pan salmon\nServes 4\n4 salmon fillets\n2 heads broccoli\n1. Roast at 425F for 15 minutes.', 200).pans > 1, 'roast at a temperature means sheet pans');
+  ok(B('Baked penne\nServes 6\n1 lb penne\n24 oz marinara\n1. Boil the penne.\n2. Mix and bake at 375F for 25 minutes.', 40).dishes > 1, 'bake at a temperature means baking dishes'); }
+
 console.log(`${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

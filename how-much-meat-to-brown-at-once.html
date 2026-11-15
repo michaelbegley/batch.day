@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-UNCnqUTql/xbIEo04G6jHvaHzA5atPKKaWP+yoDURoY=' 'sha256-8f4OfUr6VmSg5cTSUESgocl2cKODBsuPCHPYAOW/YJc=' https://cloud.umami.is; connect-src 'self' https://gateway.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-UNCnqUTql/xbIEo04G6jHvaHzA5atPKKaWP+yoDURoY=' 'sha256-p4BlEhlGgdfVpogasMSIc0lOHA7HUZNHqrtIIkSprjs=' https://cloud.umami.is; connect-src 'self' https://gateway.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>How much meat can I brown at once? · batch.recipes</title>
@@ -67,9 +67,9 @@ footer a{color:var(--ink2);min-height:44px;min-width:44px;display:inline-flex;al
 .step button{width:44px;height:44px;border-radius:50%;border:0;background:none;cursor:pointer;font:inherit;font-size:22px;line-height:1;color:var(--accent);padding:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .15s var(--ease),opacity .2s var(--fade)}
 .step button:active{transform:scale(.88)}
 .step button.end{opacity:.4}.step button.end:active{transform:none}
-.step button:focus-visible,.btn:focus-visible{outline:0;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent)}
+.step button:focus-visible,.btn:focus-visible{outline:0;box-shadow:0 0 0 3px var(--accent)}
 .step input,.step output{width:44px;height:44px;text-align:center;border:0;background:none;color:var(--ink);font:inherit;font-weight:600;font-size:19px;line-height:44px;outline:none;border-radius:8px;padding:0;display:block}
-.step input:focus-visible{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent)}
+.step input:focus-visible{box-shadow:0 0 0 3px var(--accent)}
 .step .nr{animation:nudgeR .2s var(--ease)}.step .nl{animation:nudgeL .2s var(--ease)}
 @keyframes nudgeR{35%{transform:translateX(4px)}to{transform:none}}
 @keyframes nudgeL{35%{transform:translateX(-4px)}to{transform:none}}
@@ -140,7 +140,7 @@ var P=E.parseRecipe,X=function(s){return String(s).replace(/[&<>"]/g,function(c)
 var EX=[['1 lb','chicken thighs'],['2 cups','chicken broth'],['1 cup','rice'],['2 cloves','garlic'],['1 tsp','salt'],['2 tsp','chili powder'],['2 tbsp','olive oil']];
 function TB(y,want,head){var s=E.scaleAll(P('Example\nServes '+y+'\n'+EX.map(function(r){return r[0]+' '+r[1]}).join('\n')),want);
 return '<table class="tbl"><tr><th>Ingredient</th><th>Recipe</th><th>'+head+'</th></tr>'+s.items.map(function(i,k){return '<tr><td>'+X(i.name)+(i.adjusted?' <small>eased back</small>':'')+'</td><td class="num">'+EX[k][0]+'</td><td class="num"><b>'+X(i.scaled)+'</b></td></tr>'}).join('')+'</table>'}
-function calc(v){var p=E.batchDay(P('Chicken\nServes 1\n'+v.lb+' lb chicken thighs\n1. Sear the chicken until golden.'),1),n=+(/Searing: (\d+) batch/.exec(p.pots.join(' '))||[0,0])[1],each=(/about (\S+) lb each/.exec(p.pots.join(' '))||[])[1],min=(p.order.filter(function(o){return /^Sear/.test(o.t)})[0]||{}).min;
+function calc(v){var p=E.batchDay(P('Chicken\nServes 1\n'+v.lb+' lb chicken thighs\n1. Sear the chicken until golden.'),1),n=+(/Searing: (\d+) batch/.exec(p.pots.join(' '))||[0,0])[1],each=(/up to (\S+) lb a batch/.exec(p.pots.join(' '))||[])[1],min=(p.order.filter(function(o){return /^Sear/.test(o.t)})[0]||{}).min;
 return{big:n+(n==1?' batch':' batches'),each:each,min:min,per:min/n,sub:'About '+N(min,'minute')+' of searing in a 12-inch pan.'}}
 var v={},last={};
 function el(i){return document.getElementById(i)}

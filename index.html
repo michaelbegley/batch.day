@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-fUd94LlaZpBiHQ6fiP2a5mbfnAegN3IiuFkj0qbeG/s=' 'sha256-OES8gBnv7NH17ImQPPCckyxSTllY9mqNcOWbHvO6JSA=' 'sha256-N00PyfzOHJPhoGFZby2x5TUL4SM1GEV54WtMPtkogJM=' 'sha256-HVtLzlneJZOvo8Jme0lj+tGVSxXBQ84aA2diukWQG8A=' https://cdn.jsdelivr.net https://cloud.umami.is 'wasm-unsafe-eval' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; worker-src blob: https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net https://gateway.umami.is https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com https://michbegl-batch-day-reader.hf.space; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; fenced-frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-fUd94LlaZpBiHQ6fiP2a5mbfnAegN3IiuFkj0qbeG/s=' 'sha256-OES8gBnv7NH17ImQPPCckyxSTllY9mqNcOWbHvO6JSA=' 'sha256-924iQ89mBAmoLzFJbCBD5/7qw2uTZGqu3vIjSGgWayU=' 'sha256-NpZmqk3g7KAEXW3W7KmcTH6x+eXh9jQF0xks2TfbbYE=' https://cdn.jsdelivr.net https://cloud.umami.is 'wasm-unsafe-eval' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; worker-src blob: https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net https://gateway.umami.is https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com https://michbegl-batch-day-reader.hf.space; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; fenced-frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin"><meta name="impact-site-verification" value="44a0832b-93ba-4379-b2a0-530627c39acf">
 <meta name="google-adsense-account" content="ca-pub-2427174040615956">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2427174040615956" crossorigin="anonymous"></script>
@@ -48,7 +48,7 @@ html{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.47 var(--font);-webkit-font-smoothing:antialiased;transition:background .3s var(--fade),color .3s var(--fade)}
 button,input,textarea{font:inherit;color:inherit}
 button{-webkit-tap-highlight-color:transparent}
-:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:2px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .num{font-variant-numeric:tabular-nums}
 .hidden,[hidden]{display:none!important}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
@@ -141,7 +141,7 @@ h3{margin:0 0 8px;font-size:19px;font-weight:600;letter-spacing:-.01em}
 /* paste */
 textarea{width:100%;min-height:200px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);padding:16px;resize:vertical;font-size:16px;line-height:1.5;outline:none;transition:box-shadow .2s var(--fade);display:block}
 textarea::placeholder{color:var(--ink2);opacity:1}
-textarea:focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent)}
+textarea:focus{box-shadow:0 0 0 3px var(--accent)}
 #usePaste,#reparse{margin-top:12px}
 
 /* recipe page */
@@ -177,7 +177,7 @@ textarea:focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transpar
 @keyframes nudgeR{35%{transform:translateX(4px)}to{transform:none}}
 @keyframes nudgeL{35%{transform:translateX(-4px)}to{transform:none}}
 .step input{width:44px;height:44px;text-align:center;border:0;background:none;font-weight:600;font-size:19px;outline:none;border-radius:8px;padding:0}
-.step input:focus-visible{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent)}
+.step input:focus-visible{box-shadow:0 0 0 3px var(--accent)}
 
 .tabs{position:sticky;top:60px;z-index:5;margin-bottom:16px;box-shadow:0 0 0 8px var(--bg)}
 .tbl{width:100%;border-collapse:collapse;font-size:16px}
@@ -540,7 +540,7 @@ details.edit[open] summary{margin-bottom:8px}
       <ol class="flow" aria-label="How it works">
         <li><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M11 6h2"/></svg></span><div><b>Add screenshots</b>TikTok or Reels</div></li>
         <li><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><path d="M8 10h8M8 14h5"/></svg></span><div><b>AI reads it</b>Under a minute</div></li>
-        <li><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7l2 2 3-3.5M4 15l2 2 3-3.5M13 7.5h7M13 15.5h7"/></svg></span><div><b>Shop, cook, store</b>Scaled for you</div></li>
+        <li><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7l2 2 3-3.5M4 15l2 2 3-3.5M13 7.5h7M13 15.5h7"/></svg></span><div><b>Shop, cook, store</b>Scaled</div></li>
       </ol>
 
       <div class="card mine hidden" id="mine">
@@ -600,7 +600,7 @@ details.edit[open] summary{margin-bottom:8px}
         <button aria-pressed="false" data-m="scale">Just scale</button>
       </div>
       <div class="set"><label for="want"><span id="wantLabel">Meals</span><small id="wantNote">14 is lunch and dinner for a week</small></label>
-        <div class="step"><button data-t="want" data-d="-1" aria-label="Fewer">−</button><input id="want" class="num" inputmode="numeric" autocomplete="off" value="14"><button data-t="want" data-d="1" aria-label="More">+</button></div></div>
+        <div class="step"><button data-t="want" data-d="-1" aria-label="Fewer">−</button><input id="want" class="num" inputmode="numeric" autocomplete="off" value="14" aria-labelledby="wantLabel" aria-describedby="wantNote"><button data-t="want" data-d="1" aria-label="More">+</button></div></div>
       <div class="set minor"><label for="yield">Recipe serves<small class="hidden" id="yieldNote">Our guess</small></label>
         <div class="step"><button data-t="yield" data-d="-1" aria-label="Fewer servings">−</button><input id="yield" class="num" inputmode="numeric" autocomplete="off" value="4"><button data-t="yield" data-d="1" aria-label="More servings">+</button></div></div>
     </div>
@@ -834,10 +834,10 @@ details.edit[open] summary{margin-bottom:8px}
 
   // Baking is decided from the title and the ingredients only, never from the steps ("a cookie sheet" is not a cookie).
   // Food safety: a recipe with meat or fish is never baking, so it never gets room-temp storage.
-  const BAKE_TITLE = /\b(cakes?|muffins?|cookies?|brownies?|blondies?|cupcakes?|shortbread|pie crusts?|pastry|pastries|scones?|biscuits?|cornbread|banana bread|quick bread|loaf cake|bread|rolls|buns|pancakes?|waffles?|crumble|cobbler|bars|tart|galette)\b/;
-  const MEAT = /\b(chicken|beef|steak|pork|turkey|sausages?|bacon|ham|lamb|veal|duck|goose|venison|bison|shrimp|prawns?|salmon|fish|cod|tilapia|halibut|trout|tuna|crab|lobster|clams?|mussels|scallops|oysters|squid|calamari|anchov(y|ies)|sardines|kielbasa|chorizo|pepperoni|salami|prosciutto|pancetta|brisket|hot ?dogs?|franks|frankfurters|bratwurst|meatballs?|jerky|ground (meat|beef|pork|turkey|chicken|lamb))\b/;
+  const BAKE_TITLE = /\b(cakes?|muffins?|cookies?|brownies?|blondies?|cupcakes?|shortbread|pie crusts?|pastry|pastries|scones?|biscuits?|cornbread|banana bread|quick bread|loaf cake|bread|rolls|buns|pancakes?|waffles?|crumble|cobbler|bars|tarts?|galette|pies?|cheesecakes?|quiche|flan|bread pudding|loaf)\b/;
+  const MEAT = /\b(chicken|beef|steak|pork|turkey|sausages?|bacon|ham|lamb|veal|duck|goose|venison|bison|shrimp|prawns?|salmon|fish|cod|tilapia|halibut|trout|tuna|crab|lobster|clams?|mussels|scallops|oysters|squid|calamari|anchov(y|ies)|sardines|kielbasa|chorizo|pepperoni|salami|prosciutto|pancetta|brisket|hot ?dogs?|franks|frankfurters|bratwurst|meatballs?|jerky|mince|minced (meat|beef|pork|lamb)|hamburger|ground (meat|beef|pork|turkey|chicken|lamb|chuck|round|sirloin|veal|bison)|chuck|sirloin|crawfish|crayfish|eel|carnitas|lardons?|mortadella|goat|rabbit|pastrami|corned beef|spam|liver|oxtail|ribs?|lox|smoked salmon|haddock|pollock|catfish|mahi|swordfish|octopus|bologna|guanciale|andouille|capicola|soppressata|turkey bacon|egg ?rolls?)\b/;
   // savory proteins that make a bake a meal: never room temp
-  const PERISH = /\b(beans?|lentils?|tofu|tempeh|chickpeas?|refried|cheese|cheddar|mozzarella|parmesan|ricotta|feta|cream cheese|cottage|custard|whipped cream|heavy cream|sour cream|pumpkin puree|cream filling)\b/;
+  const PERISH = /\b(beans?|lentils?|tofu|tempeh|chickpeas?|refried|cheese|cheddar|mozzarella|parmesan|ricotta|feta|cream cheese|cottage|custard|whipped cream|heavy cream|sour cream|pumpkin(?! pie spice)|mascarpone|yogurt|cream filling)\b/;
   const isMeat = (n) => MEAT.test(String(n).toLowerCase()) && !/\b(broth|stock|bouillon|soup|base|seasoning|flavou?r|powder|gravy)\b/i.test(n);
   const SAFE = new RegExp('^(?:' + [
     '(all[- ]purpose |bread |cake |self[- ]rising |whole wheat |white |almond |oat )?flour', 'cornmeal', 'cornstarch', 'oats?', 'rolled oats', 'quick oats',
@@ -845,17 +845,18 @@ details.edit[open] summary{margin-bottom:8px}
     '(unsalted |salted |softened |melted |cold )*butter', '(vegetable |canola |neutral |coconut |olive )?oil', 'shortening',
     '(large )?eggs?', '(large )?egg (yolks?|whites?)',
     '(whole |2% |skim |low[- ]fat )?milk', 'buttermilk', 'water', '(warm )?water',
-    'baking (powder|soda)', '(active dry |instant )?yeast', '(kosher |sea |table )?salt', '(pure )?vanilla( extract)?', '(almond|lemon|orange) extract',
+    'baking (powder|soda)', '(active dry |instant )?yeast', '(kosher |sea |table )?salt', '(pure )?vanilla( extract| beans?| bean paste)?', '(almond|lemon|orange) extract',
     '(ground )?(cinnamon|nutmeg|ginger|allspice|cloves|cardamom)', 'pumpkin pie spice', 'espresso powder', 'instant coffee',
     '((semi|bitter)[- ]?sweet |milk |dark |white )?chocolate( chips| chunks)?', '(unsweetened |dutch[- ]process )?cocoa( powder)?', 'sprinkles',
     '(chopped |toasted )?(walnuts|pecans|almonds|hazelnuts|peanuts|macadamia nuts|nuts)', 'peanut butter', '(raisins|dried cranberries|dried cherries|dates|currants)',
     '(ripe |mashed |overripe )*bananas?', 'apples?', 'applesauce', '(fresh |frozen )?(blueberries|raspberries|strawberries|berries|cranberries)', '(shredded |grated )?(carrots?|zucchini)',
-    '(lemon|orange|lime) (zest|juice)', 'zest of (a |one )?(lemon|orange|lime)', '(shredded |sweetened )?coconut', '(jam|jelly|preserves)', 'poppy seeds', 'chia seeds', 'flax( seeds| meal)?'
+    '(lemon|orange|lime) (zest|juice)', 'zest of (a |one )?(lemon|orange|lime)', '(shredded |sweetened )?coconut', '(jam|jelly|preserves)', 'poppy seeds', 'chia seeds', 'flax( seeds| meal)?', 'cream of tartar', '(old[- ]fashioned |steel[- ]cut )?oats', '(mini |miniature )?(semi[- ]?sweet |milk |dark |white )?chocolate (chips|chunks|morsels)', '(lemons?|oranges?|limes?)', '(dried )?(apricots|figs|cherries|blueberries|mixed fruit|fruit)', 'cinnamon sticks?', '(granola|graham cracker crumbs)'
   ].join('|') + ')$');
   function shelfStable(ings, title) {
-    if (/\b(pies?|custards?|flan|puddings?|cheesecakes?|tarts?|bars|quiche|tres leches|cream|frosting|icing|filling|eclairs?|cannoli|tiramisu|trifle)\b/i.test(title)) return false;
+    if (/\b(pies?|custards?|flan|puddings?|cheesecakes?|tarts?|bars|squares|slices?|shortcakes?|quiche|tres leches|cream|frosting|icing|filling|eclairs?|cannoli|tiramisu|trifle|curd|meringue|pavlova)\b/i.test(title)) return false;
+    if (ings.some((i) => /\b(filling|topping|frosting|icing|custard|curd|to serve|for serving)\b/i.test(i.section || ''))) return false; // a filling or fresh topping is kept cold
     if (!ings.every((i) => SAFE.test(String(i.name).toLowerCase().replace(/[,(].*$/, '').replace(/\s+/g, ' ').trim()))) return false;
-    if (!ings.some((i) => /\b(sugar|honey|maple|molasses|syrup|chocolate)\b/i.test(i.name))) return false; // no sweetener: biscuits, savory muffins go in the fridge
+    if (!ings.some((i) => /\b(sugar|honey|maple|molasses|syrup|chocolate|bananas?|dates|applesauce|raisins)\b/i.test(i.name))) return false; // no sweetener: biscuits, savory muffins go in the fridge
     // more egg and milk than flour is a custard, not a cake
     const cups = (i) => (i.qty == null ? 0 : i.unit && VOL_TSP[i.unit] ? mid(i) * VOL_TSP[i.unit] / 48 : !i.unit && /\beggs?\b|yolks?|whites?/i.test(i.name) ? mid(i) * 0.25 : 0);
     const wet = ings.filter((i) => /\b(eggs?|yolks?|whites?|milk|buttermilk)\b/i.test(i.name)).reduce((a, i) => a + cups(i), 0);
@@ -892,9 +893,17 @@ details.edit[open] summary{margin-bottom:8px}
       if (!line) continue;
       if (/^(less|more|search\b|add comment|comment recipe|#)/i.test(line)) continue;
       if (/^(jump to recipe|print recipe|pin recipe|save recipe|rate (this )?recipe|share( this)?( recipe)?|skip to (content|recipe)|go to recipe|watch (the )?video|leave a review)\b/i.test(line) && line.length < 40) continue; // web page buttons pasted with the recipe
-      const ym = line.match(/\b(serves|servings?|makes|yield[s]?)\s*:?\s*(\d+)(?:\s*(?:-|to)\s*(\d+))?/i);
+      // "Makes 2 dozen", "Yield: 1 1/2 dozen", "Makes a dozen": dozens times 12
+      const dz = line.match(/\b(serves|servings?|makes|yield[s]?)\s*:?\s*(?:about |around |approximately |roughly )?(a|one|two|three|four|\d+(?:\.\d+)?(?:\s+1\/2)?|1\/2|half a)\s*dozen\b/i);
+      const ym = dz || line.match(/\b(serves|servings?|makes|yield[s]?)\s*:?\s*(?:about |around |approximately |roughly |up to )?(\d+)(?:\s*(?:-|to)\s*(\d+))?/i);
       if (ym) {
-        r.yield = ym[3] ? (+ym[2] + +ym[3]) / 2 : +ym[2]; r.yieldText = line;
+        if (dz) { const w = dz[2].toLowerCase(); const d = { a: 1, one: 1, two: 2, three: 3, four: 4, '1/2': .5, 'half a': .5 }[w] ?? (parseFloat(w) + (/1\/2/.test(w) ? .5 : 0)); r.yield = Math.round(d * 12); }
+        else r.yield = ym[3] ? (+ym[2] + +ym[3]) / 2 : +ym[2];
+        // "Makes 1 loaf, 10 slices": count the slices; "Makes 2 loaves": count 10 slices a loaf and say so
+        const sl = line.match(/(\d+)\s*(slices|pieces|squares|bars|servings)\b/i);
+        if (!dz && sl && /\b(loaf|loaves|pan|cake|pie)\b/i.test(line)) r.yield = +sl[1];
+        else if (!dz && /\b(loaf|loaves)\b/i.test(line) && r.yield < 6) { r.yield *= 10; r.yieldGuessed = true; r.flags.push({ type: 'yield', line, msg: `Counted 10 slices a loaf (${r.yield}); change it if you know.` }); }
+        r.yieldText = line;
         // "Chicken curry (serves 4)": keep the part before the yield as the title
         if (!r.title && !r.ingredients.length) {
           const before = line.slice(0, ym.index).replace(/[(\[|,:·•\-–—\s]+$/u, '').replace(/[^\p{L}\p{M}\p{N}\s'&-]/gu, '').trim();
@@ -937,9 +946,11 @@ details.edit[open] summary{margin-bottom:8px}
       if (prev && !QTY_RE.test(line) && (/^[a-z(]/.test(line) || /^[A-Za-z ]{1,20}\)$/.test(line))) {
         const cont = /^\(|^[A-Za-z ]{1,20}\)$/.test(line) || /[,(]$/.test(prev.raw) || (prev.raw.split('(').length > prev.raw.split(')').length) ||
           /^(or|and|plus|such as|divided|about|roughly|cut|chopped|minced|diced|sliced|peeled|seeded|trimmed|finely|thinly|coarsely|roughly|room temp|softened|melted|at room|if |for the|drained|rinsed|packed|heaping|optional|see note)\b/.test(line);
+        const strong = isMeat(line) || PERISH.test(line.toLowerCase()) || /\b(crab|cheddar|pumpkin|ham|bacon)\b/i.test(line);
+        if (strong && !/^\(|^[A-Za-z ]{1,20}\)$/.test(line) && !/[,(]$/.test(prev.raw) && !(prev.raw.split('(').length > prev.raw.split(')').length)) { /* its own ingredient ("diced ham") */ } else {
         const foodish = classify({ name: line, note: '' }, '') !== 'other' || /\b(salt|pepper|parsley|cheese|parmesan|flakes|thyme|spinach|herbs?|sauce|oil|sugar|seeds|nuts|onions?|scallions?|cilantro|basil|lemon|lime)\b/i.test(line);
         if (cont || !foodish) { prev.note = (prev.note + ' ' + line).trim(); continue; }
-      }
+      } }
       const ing = parseIngredient(line);
       // drop lines that are clearly not ingredients
       if (!ing.qty && !ing.toTaste && !/^(salt|pepper|neutral|green onion|baby|fresh|optional|red chili|parish|cilantro|chili|black pepper)/i.test(ing.name) && line.split(' ').length > 7) { r.notes.push(line); continue; }
@@ -948,7 +959,7 @@ details.edit[open] summary{margin-bottom:8px}
       ing.cls = classify(ing, section);
       if (ing.cls === 'liquid' && ing.unit === 'oz') ing.unit = 'fl oz';
       const key = norm(ing.name);
-      if (key && r.ingredients.some((x) => norm(x.name) === key && x.section === section)) continue;
+      if (key && r.ingredients.some((x) => norm(x.name) === key && x.section === section && x.qty === ing.qty && x.qtyHi === ing.qtyHi && x.unit === ing.unit)) continue; // the same line twice (overlapping screenshots); a second amount of the same thing is kept
       if (ing.flag) r.flags.push({ type: 'amount', line: ing.raw, msg: 'Amount may have been misread' });
       if (ing.qtyHi) r.flags.push({ type: 'range', line: ing.raw, msg: 'Range: using the middle' });
       if (!ing.qty && !ing.toTaste && ing.cls !== 'finisher' && !ing.optional && !['salt', 'oil'].includes(ing.cls) && !/pepper|for cooking|for frying/i.test(ing.raw)) r.flags.push({ type: 'noamount', line: ing.raw, msg: 'No amount given' });
@@ -969,8 +980,8 @@ details.edit[open] summary{margin-bottom:8px}
     // Two kinds of bake that never sit out: a savory bake (meat, fish, beans, tofu, or no sweetener at all) is a meal and
     // gets Batch day; a sweet bake with cream cheese, cream, custard and the like (fridgeBake) stays a bake but is kept in the fridge.
     { const n = r.ingredients.map((i) => i.name).join(' ').toLowerCase();
-      r.savoryBake = r.baking && (r.ingredients.some((i) => isMeat(i.name)) || /\b(beans?|lentils?|tofu|tempeh|chickpeas?|refried)\b/.test(n) ||
-        !r.ingredients.some((i) => /\b(sugar|honey|maple|molasses|syrup|chocolate)\b/i.test(i.name)));
+      r.savoryBake = r.baking && (r.ingredients.some((i) => isMeat(i.name)) || /\b(?<!vanilla )(beans?|lentils?|tofu|tempeh|chickpeas?|refried)\b/.test(n) ||
+        !r.ingredients.some((i) => /\b(sugar|honey|maple|molasses|syrup|chocolate|bananas?|dates|applesauce|raisins)\b/i.test(i.name)));
       r.fridgeBake = r.baking && !r.savoryBake && !shelfStable(r.ingredients, r.title || ''); }
     if (!r.yield) {
       const prot = r.ingredients.filter((i) => i.cls === 'protein' && i.qty && (i.unit === 'lb' || i.unit === 'oz' || i.unit === 'g' || i.unit === 'kg'));
@@ -1193,8 +1204,12 @@ details.edit[open] summary{margin-bottom:8px}
     const protein = by('protein'), liquid = by('liquid'), grain = by('grain'), veg = by('veg'), fin = by('finisher');
     const meat = items.filter((i) => ['protein', 'other'].includes(i.cls) && isMeat(i.name));
     const stepsTxt = recipe.steps.map((s) => s.text.toLowerCase()).join(' ');
-    const sheet = /sheet pan|baking sheet|sheet-pan|cookie sheet|roasting pan|rimmed pan/.test(stepsTxt);
-    const dish = /baking dish|casserole|9\s*[x×]\s*13|13\s*[x×]\s*9|8\s*[x×]\s*8|pie dish|gratin dish/.test(stepsTxt);
+    const ttl = (recipe.title || '').toLowerCase();
+    // the oven: a pan word in the steps, a "sheet pan" title, or roast or bake at a temperature
+    const sheet = /sheet pan|baking sheet|sheet-pan|cookie sheet|roasting pan|rimmed pan/.test(stepsTxt) || /sheet[- ]?pan/.test(ttl) ||
+      (/\broast\b[^.]*\b\d{3}\s*°?\s*f?\b/.test(stepsTxt) && !/\b(bake|simmer|boil)\b/.test(stepsTxt));
+    const dish = /baking dish|casserole|9\s*[x×]\s*13|13\s*[x×]\s*9|8\s*[x×]\s*8|pie dish|gratin dish/.test(stepsTxt) ||
+      (!sheet && /\bbake\b[^.]*\b\d{3}\s*°?\s*f?\b/.test(stepsTxt));
     const liquidCups = liquid.reduce((s, i) => s + cupsOf(i, f), 0);
 
     // rice: its own pot, unless it cooks in the soup (congee) or in the oven (casserole)
@@ -1252,9 +1267,9 @@ details.edit[open] summary{margin-bottom:8px}
     const sears = lbs > 0 && /sear|brown|pan-?fry|golden/.test(stepsTxt);
     const searBatches = sears ? Math.max(1, Math.ceil(lbs / 1.5)) : 0;
     if (sears) {
-      const each = searBatches === 1 ? lbs : 1.5;
+      const each = lbs / searBatches;
       const eachTxt = each >= 1 ? `${fmtNum(Math.round(each * 4) / 4)} lb` : `${Math.max(1, Math.round(each * 16))} oz`;
-      plan.pots.push(`Searing: ${searBatches} batch${searBatches > 1 ? 'es' : ''} in a 12-inch pan (about ${eachTxt}${searBatches > 1 ? ' each' : ''}).`);
+      plan.pots.push(`Searing: ${searBatches} batch${searBatches > 1 ? 'es' : ''} in a 12-inch pan (about ${eachTxt}${searBatches > 1 ? ' each, up to 1½ lb a batch' : ''}).`);
       if (searBatches > 6) plan.pots.push(`That's a lot of batches for one pan. Run two pans at once, or brown it in the oven: one layer on sheet pans at 450°F until browned.`);
     }
 
@@ -1264,7 +1279,7 @@ details.edit[open] summary{margin-bottom:8px}
       plan.order.push({ t: 'Mix and portion', d: 'No cooking. Into the fridge right away.', min: 10 });
     } else if (!baking) {
       if (plan.rice) plan.order.push({ t: 'Start the rice first', d: 'It cooks while you do the rest.', min: 25 });
-      if (meat.length) plan.order.push({ t: `Season the ${meat[0].name.replace(/boneless|skinless/gi, '').replace(/\s+/g, ' ').trim()}`, d: 'All of it at once, in a big bowl.', min: 5 });
+      if (meat.length && !/\b(ground|mince|minced|sausages?|chorizo)\b/i.test(meat[0].name)) plan.order.push({ t: `Season the ${meat[0].name.replace(/boneless|skinless/gi, '').replace(/\s+/g, ' ').trim()}`, d: 'All of it at once, in a big bowl.', min: 5 });
       else if (sheet) plan.order.push({ t: 'Season everything', d: 'Toss it all in a big bowl with the oil and seasoning.', min: 5 });
       if (boilPasta) plan.order.push({ t: 'Boil the pasta', d: 'Big pot, salted water. If it bakes after, pull it a minute early.', min: 15 });
       if (sears) plan.order.push({ t: 'Sear in batches', d: 'Set each batch aside.', min: searBatches * 6 });
@@ -1279,12 +1294,12 @@ details.edit[open] summary{margin-bottom:8px}
           const m = potCups < 24 ? 15 : potCups < 60 ? 25 : 40; covered += m;
           plan.order.push({ t: 'Liquids in, bring to a simmer', d: 'A big pot takes longer. Taste, but hold back on salt.', min: m });
         }
-        if (meat.length && liquid.length) { covered += 15; plan.order.push({ t: 'Protein back in until cooked through', d: 'Judge by doneness, not the clock (165°F for chicken).', min: 15 }); }
+        if (meat.length && liquid.length) { covered += 15; plan.order.push({ t: 'Protein back in until cooked through', d: `Judge by doneness, not the clock${meat.some((i) => /chicken|turkey/i.test(i.name)) ? ' (165°F for chicken)' : meat.some((i) => /\b(ground|mince|minced|sausages?)\b/i.test(i.name)) ? ' (160°F for ground meat)' : ''}.`, min: 15 }); }
         if (dish) { const m = (own || 30) * Math.ceil((plan.dishes || 1) / 4); covered = Math.max(covered, m); plan.order.push({ t: 'Into the oven', d: `${plan.dishes > 1 ? `${plan.dishes} baking dishes, swap racks halfway. ` : ''}Bake as the recipe says; check the middle is hot.`, min: m }); }
       }
-      if (own - covered >= 10) plan.order.push({ t: 'Let it cook', d: `The recipe's own time is about ${fmtDur(own)}. Mostly hands off.`, min: own - covered });
+      if (own - covered >= 10) plan.order.push({ t: 'Let it cook', d: `Until the recipe's ${fmtDur(own)} of cooking is up. Mostly hands off.`, min: own - covered });
       if (veg.some((v) => /bok choy|spinach|kale|greens/i.test(v.name))) plan.order.push({ t: 'Skip the tender greens for now', d: 'Add them when you reheat each portion so they stay bright.', min: 0 });
-      plan.order.push({ t: 'Taste and adjust', d: 'Now add the rest of the salt and spice if it needs it.', min: 3 });
+      plan.order.push({ t: 'Taste and adjust', d: 'Add the rest of the salt and spice if it needs it.', min: 3 });
       plan.order.push({ t: 'Cool, then portion', d: 'Shallow containers, into the fridge within 2 hours.', min: 20 });
     } else {
       plan.order.push({ t: 'Mix and bake in batches', d: 'Follow the recipe steps for each batch.', min: 0 });
@@ -1292,7 +1307,7 @@ details.edit[open] summary{margin-bottom:8px}
     }
     plan.totalMin = plan.order.reduce((s, o) => s + o.min, 0);
     const handsOn = plan.order.filter((o) => !/^(Let it cook|Roast on sheet pans|Into the oven|Start the rice)/.test(o.t)).reduce((s, o) => s + o.min, 0);
-    if (!baking && (bigJob || searBatches > 10 || handsOn > 240)) plan.notes.push('This is a very big cook for one day. Think about splitting it into two sessions.');
+    if (!baking && (bigJob || searBatches > 10 || handsOn > 240 || plan.order.reduce((s, o) => s + o.min, 0) > 600)) plan.notes.push('This is a very big cook for one day. Think about splitting it into two sessions.');
 
     // what goes in at each step, with batch amounts
     if (!baking && !nocook) {
@@ -1349,7 +1364,7 @@ details.edit[open] summary{margin-bottom:8px}
       fin.concat(veg.filter((v) => /bok choy|spinach|kale|greens/i.test(v.name))).forEach((i) => plan.split.fresh.push(i.name));
     } else {
       if (recipe.fridgeBake) {
-        plan.split.fridge.push('Keep it in the fridge (it has cream, cheese, custard or fruit filling). Into the fridge within 2 hours of cooling, eat within 4 days.');
+        plan.split.fridge.push('Keep it in the fridge: into the fridge within 2 hours of cooling, eat within 4 days.');
         plan.split.freezer.push('Most bakes freeze well wrapped tight (frost after thawing)');
       } else if (!savoryBake) {
         plan.split.fridge.push('Keep covered at room temp up to 2 days. Anything with cream, cream cheese or custard goes in the fridge.');
@@ -1628,7 +1643,7 @@ const NEWBIE=(()=>{try{let n=sessionStorage.getItem('bd-new');if(n===null){let o
 const READER='https://michbegl-batch-day-reader.hf.space';
 const SPLIT=/\n-{3,}\n/;
 function esc(s){return String(s).replace(/[&<>"]/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
-function fmtX(f){return (f>0&&f<.095?+f.toPrecision(2):Math.round(f*10)/10).toString()} // 0.012×, never 0×: a tiny batch still shows its size
+function fmtX(f){return (f>0&&f<.095?+f.toPrecision(2):Math.abs(f*4-Math.round(f*4))<.005&&f<10?Math.round(f*4)/4:Math.round(f*10)/10).toString()} // 0.012×, never 0×: a tiny batch still shows its size
 
 /* a second tap in the same spot, on something that has only just come under the finger, was meant for what was there before:
    the first tap took a row away, closed a sheet or moved a bubble. It is dropped for half a second. Tapping the same control twice still counts twice */
@@ -1731,7 +1746,7 @@ $('#sample').onclick=()=>{from='sample';shots=[];extra=0;src='';load(SAMPLE)};
 
 /* reading: AI first, this device as the fallback */
 const TIMEOUT=75000, SLOW=40000;
-const WHY={offline:"You're offline.",limit:'AI reading is at its limit for now.',timeout:"The AI reader didn't answer.",error:"The AI reader didn't answer."};
+const WHY={offline:"You're offline.",limit:'The AI reader is busy.',timeout:"The AI reader didn't answer.",error:"The AI reader didn't answer."};
 let job=null, clock=null;
 function addState(s){$('#home').classList.toggle('hidden',s!=='pick');const r=$('#reading');r.classList.toggle('hidden',s==='pick');r.dataset.state=s;if(s==='pick')$('#thumbs').innerHTML=''}
 function setStatus(s){$('#status').textContent=s}
@@ -1761,7 +1776,7 @@ function coded(c){const e=new Error(c);e.code=c;return e}
 function shrink(f){return new Promise((ok,no)=>{const img=new Image();img.onerror=no;img.onload=()=>{
   const w=Math.min(1000,img.width),h=Math.round(img.height*w/img.width),c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);
   let q=.85,d=c.toDataURL('image/jpeg',q);while(d.length>1.8e6&&q>.4){q-=.15;d=c.toDataURL('image/jpeg',q)}URL.revokeObjectURL(img.src);ok(d)};img.src=URL.createObjectURL(f)})}
-const aiSays=(n)=>'The AI is reading '+(n>1?`your ${n} screenshots`:'your screenshot'); // one status line for the whole wait
+const aiSays=(n)=>'Reading '+(n>1?`your ${n} screenshots`:'your screenshot'); // one status line for the whole wait
 async function aiRead(list,run){
   let images;
   try{images=await Promise.all(list.map(shrink))}catch(e){throw coded('badfile')}
@@ -1940,8 +1955,8 @@ function drawHead(){
   if(skipped&&shots.length)al.push([`${files(skipped)} couldn't be opened.`]);
   if(extra&&shots.length)al.push(['Only the first 6 screenshots were read.']);
   if(cutOff())al.push(['Steps look cut off. Add the next screenshot.']);
-  if(recipe.baking&&!recipe.savoryBake)al.push(['Baking: set to Just scale.']);
-  if(recipe.fridgeBake)al.push(['Keep it in the fridge: it has cream, cheese or custard. Eat within 4 days.']);
+  if(recipe.baking&&!recipe.savoryBake&&mode==='scale')al.push(['Baking: set to Just scale.']);
+  if(recipe.fridgeBake)al.push(['Keep it in the fridge. Eat within 4 days.']);
   const odd=recipe.ingredients.filter(isOdd);
   if(odd.length)al.push([`Some amounts look off (${odd.slice(0,3).map((i)=>i.name||i.raw).join(', ')}). Check them.`,'edit']);
   if(!recipe.ingredients.length)al.push(['No ingredients found.','edit']);
@@ -1963,7 +1978,7 @@ function syncMode(){
 }
 function setMode(m){
   if(m===mode)return;
-  const w=$('#want');wants[mode]=snapN(w,wants[mode]);w.value=wants[m]; // meals and servings are separate numbers
+  const w=$('#want');wants[mode]=snapN(w,wants[mode]);if(recipe&&recipe.baking&&!recipe.savoryBake)wants[m]=wants[mode];w.value=wants[m]; // a bake counts pieces in both modes: keep the number // meals and servings are separate numbers
   mode=userMode=m;touched=true;syncMode();build();
 }
 $$('#mode button').forEach((b)=>b.onclick=()=>setMode(b.dataset.m));
@@ -2065,6 +2080,7 @@ function build(fresh,soft){
     const s=E.scaleAll(recipe,want);plan={mode,s,want};
     say(`${fmtX(s.factor)}× the recipe`,`${want} servings · ${fmtX(s.factor)}× the recipe`);
     if(recipe.baking&&s.factor>2)h+=`<div class="note">Baking past 2×: make ${Math.ceil(s.factor/2)} batches.</div>`;
+    else if(recipe.baking&&s.factor>1.15&&/\b(pans?|tins?|dish|skillet|sheet)\b/i.test(recipe.steps.map((x)=>x.text).join(' ')))h+=`<div class="note">More batter than the recipe's pans hold: use more pans of the same size, same oven and time. Check a few minutes early.</div>`;
     h+=`<div class="card${R}"><h3 aria-level="2">Ingredients <small>original on the right</small></h3><table class="tbl">${ingRows(s.items)}</table></div>${steps}`;
   }
   if(soft){late=true;remember(want);return} // the plan is new, the page is still the old one: it is drawn once the tap has landed
@@ -2424,9 +2440,9 @@ async function decode(code){
 async function linkFor(){return location.origin+location.pathname+'#r='+await encode({v:1,t:$('#text').value,y:recipe.yield,w:plan.want,m:plan.mode})}
 function keep(){if(!touched){touched=true;if(plan)remember(plan.want)}}
 async function copyLink(){
-  track('Share',{how:'link'});keep();
+  keep();
   if($('#text').value.length>MAXT){toast('Too long for a link');return}
-  try{const u=await linkFor();await navigator.clipboard.writeText(u);toast('Link copied')}catch(e){toast("Couldn't copy the link")}
+  try{const u=await linkFor();await navigator.clipboard.writeText(u);track('Share',{how:'link'});toast('Link copied')}catch(e){toast("Couldn't copy the link")}
 }
 function plainText(){
   const L=[];
@@ -2534,7 +2550,7 @@ function cvWrap(c,text,w,max){
   return out;
 }
 // the same number of lines, but as even in length as they will go, so a title never ends on one stray word
-function cvBal(c,text,w,max){const base=cvWrap(c,text,w,max);if(base.length<2||/…$/.test(base[base.length-1]))return base;let lo=w/base.length,hi=w,best=base;for(let i=0;i<12;i++){const mid=(lo+hi)/2,l=cvWrap(c,text,mid,max);if(l.length===base.length&&!/…$/.test(l[l.length-1])){best=l;hi=mid}else lo=mid}return best}
+function cvBal(c,text,w,max){const base=cvWrap(c,text,w,max);if(base.length<2||/…$/.test(base[base.length-1]))return base;const wide=Math.max(...String(text).trim().split(/\s+/).map((x)=>c.measureText(x).width));let lo=Math.max(w/base.length,Math.min(wide,w)),hi=w,best=base;if(wide<=w&&cvWrap(c,text,lo,max).length===base.length)best=cvWrap(c,text,lo,max);/* never narrower than the longest word, so no word is cut in two */for(let i=0;i<12;i++){const mid=(lo+hi)/2,l=cvWrap(c,text,mid,max);if(l.length===base.length&&!/…$/.test(l[l.length-1])){best=l;hi=mid}else lo=mid}return best}
 // text centred by its ink, not its advance box, so left and right margins match to the pixel; returns the ink's top and bottom
 function cvMid(c,text,cx,y,draw){c.textAlign='left';const m=c.measureText(text),x=cx-(m.actualBoundingBoxRight-m.actualBoundingBoxLeft)/2;if(draw!==false)c.fillText(text,x,y);return {x,top:y-m.actualBoundingBoxAscent,bottom:y+m.actualBoundingBoxDescent,asc:m.actualBoundingBoxAscent}}
 function cvFit(c,text,w){let s=String(text);if(c.measureText(s).width<=w)return s;while(s.length>1&&c.measureText(s+'…').width>w)s=s.slice(0,-1).trimEnd();return s+'…'}
@@ -2543,7 +2559,7 @@ function cvFit(c,text,w){let s=String(text);if(c.measureText(s).width<=w)return 
 const PIC={story:{w:1080,h:1920,x:64,y:256,r:64},pin:{w:1000,h:1500,x:48,y:48,r:56}}; // the white card's inset and corner. A story keeps 256 clear top and bottom, where the apps lay their own buttons
 const POT=['M20 16c-2-3 2-5 0-8','M28 16c-2-3 2-5 0-8','M36 16c-2-3 2-5 0-8','M10 24h36','M13 24v16a6 6 0 0 0 6 6h18a6 6 0 0 0 6-6V24','M6 28h7M43 28h7']; // the one mark (brand/mark.py PATHS), on its 56 grid
 const PIC_INK='#1d1d1f',PIC_INK2='#6e6e73',PIC_ACC='#c2410c',PIC_BG='#f5f5f7',PIC_CARD='#ffffff';
-const PIC_SAY='Batch plan from a recipe screenshot'; // under the word mark, so someone who sees the picture knows what made it
+const PIC_SAY='Batch plan from a recipe'; // under the word mark, so someone who sees the picture knows what made it
 function picCount(){const n=plan.want;return plan.mode==='batch'?`${n} ${n===1?'meal':'meals'}`:`${n} ${n===1?'serving':'servings'}`}
 function drawPic(size){
   const S=PIC[size],W=S.w,H=S.h,u=W/1080,cv=document.createElement('canvas'),c=cv.getContext('2d'),ff=cvFont(),cx=W/2,pad=Math.round(96*u),side=S.x+Math.round(80*u),maxW=W-2*side;
@@ -2901,9 +2917,9 @@ function drawStep(dir){
   b.className='body'+(dir>0?' go':dir<0?' back':'');
   if(cs>=n){
     b.className+=' done';
-    b.innerHTML=`<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="28"/><path d="M20 33l8 8 16-17"/></svg><h2>Done.</h2>${plan&&plan.mode==='batch'?'<p>Label the bags with today’s date.</p>':''}${fzPortions()?'<div class="cdid" id="cDidBox"></div>':''}`;
+    b.innerHTML=`<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="28"/><path d="M20 33l8 8 16-17"/></svg><h2>Done.</h2>${plan&&plan.mode==='batch'?"<p>Label the bags with today's date.</p>":''}${fzPortions()?'<div class="cdid" id="cDidBox"></div>':''}`;
     cDidState='';cHold=Date.now()+C_HOLD;drawCDid();
-    $('#cStep').textContent='Done';$('#cLive').textContent=cAsks()?'Done. Tap I cooked this to add it to My freezer.':'Done.';$('#cProg').style.width='100%';$('#cBack').disabled=false;return;
+    $('#cStep').textContent='Done';$('#cLive').textContent=cAsks()?'Done. I cooked this adds it to My freezer.':'Done.';$('#cProg').style.width='100%';$('#cBack').disabled=false;return;
   }
   const s=csteps[cs];
   b.innerHTML=`<h2>${esc(s.t)}</h2>${s.d?`<p>${esc(s.d)}</p>`:''}${s.use&&s.use.length?`<ul class="uses">${s.use.map((u)=>`<li><b class="num">${esc(u.amt)}</b><span>${esc(u.name)}</span></li>`).join('')}</ul>`:''}${s.min?`<span class="time"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="11" r="7"/><path d="M10 7v4l2.5 2M8 2h4"/></svg>About ${s.min} min</span>`:''}`;

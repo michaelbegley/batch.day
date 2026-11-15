@@ -179,9 +179,9 @@ async def main():
                     ctx,pg,errs,_=await fresh(b,pgn,w=w,h=h,scheme=scheme,mobile=mob); ov=await pg.evaluate(OV); c=await pg.evaluate(LUM); small=await pg.evaluate(SMALL)
                     ok=ov[0]<=ov[1] and not ov[2] and c['body']==('rgb(255, 255, 255)' if scheme=='light' else 'rgb(0, 0, 0)') and not {k:v for k,v in c.items() if k!='body' and v<4.5} and not small and not errs
                     log(f'{pgn} {w} {scheme}: no sideways scroll, right colours, contrast, 44 px targets',ok,[ov,c,small,errs[:2]] if not ok else ''); await ctx.close()
-        ctx,pg,errs,st=await fresh(b,'about'); al=await pg.evaluate("()=>{const h=[...document.querySelectorAll('h2')].find(x=>x.innerText=='Guides');return h?[...h.nextElementSibling.querySelectorAll('a')].map(a=>a.getAttribute('href')):[]}")
+        ctx,pg,errs,st=await fresh(b,'about'); al=await pg.evaluate("()=>[...document.querySelectorAll('main a, article a')].filter(a=>a.innerText.trim()=='All guides').map(a=>a.getAttribute('href'))")
         foot=await pg.evaluate("()=>[...document.querySelectorAll('footer a')].map(a=>[a.innerText,a.getAttribute('href')])")
-        log('about: has a Guides list with all ten; footer has Guides',al==slugs and ['Guides','guides'] in foot and not errs,[al[:2],foot])
+        log('about: links to all guides; footer has Guides',al==['guides'] and ['Guides','guides'] in foot and not errs,[al[:2],foot])
         log('about: its WebApplication data block still parses',json.loads(await pg.locator('script[type="application/ld+json"]').inner_text())['@type']=='WebApplication')
         await pg.tap('footer a[href=guides]'); await pg.wait_for_selector('.gl.idx'); log('about: footer Guides opens /guides',(await pg.evaluate('location.pathname'))=='/guides'); await ctx.close()
         ctx,pg,errs,st=await fresh(b,''); hf=await pg.evaluate("()=>[...document.querySelectorAll('footer.foot a')].map(a=>[a.innerText,a.getAttribute('href'),Math.round(a.getBoundingClientRect().height),Math.round(a.getBoundingClientRect().width)])")

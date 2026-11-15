@@ -331,7 +331,7 @@ async def main():
             if size=='story': im.save(os.path.join(HERE,'breakit','12-sharepic.png'))
         await ctx.close()
         t=open(os.path.join(HERE,'template.html')).read()
-        log('the share picture line is plain words','const PIC_SAY=\'Batch plan from a recipe screenshot\'' in t)
+        log('the share picture line is plain words','const PIC_SAY=\'Batch plan from a recipe\'' in t)
 
         # ---------- 10. Privacy and About say what is true (sweep E, L-1 L-2; sweep B, 7 9 10; sweep D, 37)
         ctx=await new(b); pg=await tab(ctx,U+'privacy'); pv=await pg.inner_text('main'); pg2=await tab(ctx,U+'about'); ab=await pg2.inner_text('main'); await ctx.close()

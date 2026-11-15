@@ -113,7 +113,7 @@ console.log(JSON.stringify({o,long:Q.make('y'.repeat(200)),empty:Q.make(''),url:
             await pg.click('#cClose'); await pg.wait_for_timeout(450)
             log(f'tap ({nm}): type 14, tap Start cooking: cook mode opens for 14',r['cook'] and r['want']=='14' and r['ev']==1 and (await pg.inner_text('#sMeta')).startswith('3.5×'),(r,await pg.inner_text('#sMeta')))
             await typed(pg,'#want',20,mob); await hit(pg,'.step button[data-t=want][data-d="1"]'); await pg.wait_for_timeout(150)
-            log(f'tap ({nm}): type 20, tap +: 21',await pg.input_value('#want')=='21' and (await pg.inner_text('#sMeta')).startswith('5.3×'),(await pg.input_value('#want'),await pg.inner_text('#sMeta')))
+            log(f'tap ({nm}): type 20, tap +: 21',await pg.input_value('#want')=='21' and (await pg.inner_text('#sMeta')).startswith('5.25×'),(await pg.input_value('#want'),await pg.inner_text('#sMeta')))
             await typed(pg,'#yield',2,mob); await hit(pg,'[data-tab=store]'); await pg.wait_for_timeout(150)
             log(f'tap ({nm}): type in Recipe serves, tap the Store tab',await pg.evaluate(PRESSED,'store')=='true' and (await pg.inner_text('#sMeta')).startswith('10.5×') and await pg.evaluate("document.getElementById('yieldNote').classList.contains('hidden')"),await pg.inner_text('#sMeta'))
             await typed(pg,'#want',33,mob); await hit(pg,'#lblPrint'); await pg.wait_for_timeout(250)

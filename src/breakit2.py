@@ -102,7 +102,7 @@ async def main():
         # Try AI again from a device read
         ctx,pg,errs,calls=await fresh(b,reader='limit'); await pg.set_input_files('#file',SHOTS[:2]); await sheet(pg)
         await pg.click('#aiGo'); await pg.wait_for_timeout(1500)
-        log('retry','Try AI again, still limited',await pg.evaluate(VIEW)=='v-sheet' and 'limit' in await pg.inner_text('#toast') and 'Read with AI' in await pg.evaluate(EV) and not errs,f"toast={await pg.inner_text('#toast')!r}")
+        log('retry','Try AI again, still limited',await pg.evaluate(VIEW)=='v-sheet' and 'busy' in await pg.inner_text('#toast') and 'Read with AI' in await pg.evaluate(EV) and not errs,f"toast={await pg.inner_text('#toast')!r}")
         await pg.unroute('**/*.hf.space/**')
         async def good(route): await route.fulfill(status=200,content_type='application/json',headers={'Access-Control-Allow-Origin':'*'},body=json.dumps({'text':TXT}))
         await pg.route('**/*.hf.space/**',good); await pg.wait_for_timeout(2600); await pg.click('#aiGo'); await pg.wait_for_timeout(1500)

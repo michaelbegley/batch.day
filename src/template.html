@@ -81,9 +81,9 @@ h3{margin:0 0 8px;font-size:19px;font-weight:600;letter-spacing:-.01em}
 .hero{text-align:center;padding:40px 0 32px}
 .sub{color:var(--ink2);font-size:19px;max-width:520px;text-wrap:balance;margin:16px auto 0}
 .pot{width:48px;height:48px;margin:0 auto 20px;color:var(--accent);display:block}
-.pot .steam path{stroke-dasharray:14;stroke-dashoffset:14;animation:steam 3.2s var(--fade) infinite}
-.pot .steam path:nth-child(2){animation-delay:.5s}.pot .steam path:nth-child(3){animation-delay:1s}
-@keyframes steam{0%{stroke-dashoffset:14;opacity:0}30%{opacity:1}70%{stroke-dashoffset:0;opacity:.8}100%{stroke-dashoffset:-14;opacity:0}}
+.pot .steam path{transform-box:fill-box;transform-origin:50% 100%;animation:steam 2.8s ease-in-out infinite alternate} /* three lines, always there, swaying gently */
+.pot .steam path:nth-child(2){animation-delay:-.9s;animation-duration:3.1s}.pot .steam path:nth-child(3){animation-delay:-1.7s;animation-duration:2.6s}
+@keyframes steam{0%{transform:translateX(-.6px) skewX(9deg)}100%{transform:translateX(.6px) skewX(-9deg)}}
 
 /* cards */
 .card{background:var(--raise);border-radius:20px;box-shadow:var(--shadow);border:1px solid var(--line);padding:20px;margin-bottom:16px;transition:border-color .2s var(--fade),background .2s var(--fade)}
@@ -336,7 +336,7 @@ details.edit[open] summary{margin-bottom:8px}
 /* motion */
 .rise{opacity:0;transform:translateY(12px)}
 .rise.in{opacity:1;transform:none;transition:opacity .7s var(--fade),transform .7s var(--ease)}
-@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01s!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:opacity .2s linear!important}.rise{transform:none}.pot .steam path{stroke-dashoffset:0;opacity:1}.th.scan:after{display:none}
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01s!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:opacity .2s linear!important}.rise{transform:none}.pot .steam path{animation:none;transform:none}.th.scan:after{display:none}
   /* small touches: the end state with a 0.2s fade, no movement */
   .checks input:after{clip-path:none;opacity:0}.checks input:checked:after{opacity:1}
   .chg{animation:fadeIn .2s linear both!important}

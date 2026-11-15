@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-fUd94LlaZpBiHQ6fiP2a5mbfnAegN3IiuFkj0qbeG/s=' 'sha256-OES8gBnv7NH17ImQPPCckyxSTllY9mqNcOWbHvO6JSA=' 'sha256-sxYkY4fSdQuZzxmdq2Cat9y/BFF47dCQamvjAbU6rZg=' 'sha256-xj0FAjd7yCLSiUNNwlM60U+lv1psiZcZJiX4ki7AUKc=' https://cdn.jsdelivr.net https://cloud.umami.is 'wasm-unsafe-eval' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; worker-src blob: https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net https://gateway.umami.is https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com https://michbegl-batch-day-reader.hf.space; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; fenced-frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-fUd94LlaZpBiHQ6fiP2a5mbfnAegN3IiuFkj0qbeG/s=' 'sha256-OES8gBnv7NH17ImQPPCckyxSTllY9mqNcOWbHvO6JSA=' 'sha256-E2u8B+Digwbcp62P55eXVviKQMT6UoaMkby4KaW/Jyg=' 'sha256-cKuZhizbbWcY+D3kcuaBPQjmWPbgS80y3Fd+JVLYjFw=' https://cdn.jsdelivr.net https://cloud.umami.is 'wasm-unsafe-eval' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; worker-src blob: https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net https://gateway.umami.is https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com https://michbegl-batch-day-reader.hf.space; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; fenced-frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="google-adsense-account" content="ca-pub-2427174040615956">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2427174040615956" crossorigin="anonymous"></script>
@@ -212,6 +212,23 @@ textarea:focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transpar
 b.chg,span.chg{display:inline-block}
 @keyframes amt{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .checks b{font-weight:600}
+/* shop: small section labels in store order; "Always have" shows while marking staples and in the pantry group */
+.aisle{margin:16px 0 0;font-size:13px;line-height:20px;font-weight:400;color:var(--ink2)}
+h3+.aisle,.pick+.aisle{margin-top:4px}
+.checks li{display:flex;align-items:center}
+.checks label{flex:1;min-width:0}
+.stp{display:none;flex:none;align-items:center;gap:4px;min-height:44px;padding:0 12px;margin-right:-12px;border:0;background:none;border-radius:980px;font-size:13px;color:var(--ink2);cursor:pointer;white-space:nowrap;transition:box-shadow .15s var(--fade)}
+.shop.ed .stp,.pan .stp{display:inline-flex}
+.stp[aria-pressed=true]{color:var(--accent);font-weight:600}
+.stp svg{width:16px;height:16px;flex:none}
+.pantry{border-top:1px solid var(--line);margin-top:8px}
+.pantry.only{border-top:0;margin-top:0}
+.ptog{display:flex;align-items:center;justify-content:space-between;gap:12px;width:calc(100% + 24px);min-height:48px;margin:0 -12px;padding:0 12px;border:0;background:none;border-radius:12px;font-size:16px;text-align:left;cursor:pointer;transition:box-shadow .15s var(--fade)}
+.ptog svg{width:16px;height:16px;flex:none;color:var(--ink2);transition:transform .3s var(--ease)}
+.ptog[aria-expanded=true] svg{transform:rotate(90deg)}
+.pan.shut{display:none}
+.gfoot{display:flex;justify-content:center;margin-top:8px}
+.gfoot .link,.mine .links .link,.foot .link{color:var(--ink2);font-weight:400}
 ol.order{list-style:none;padding:0;margin:0;counter-reset:o}
 ol.order li{counter-increment:o;display:grid;grid-template-columns:28px 1fr auto;gap:12px;padding:12px 0;border-top:1px solid var(--line);font-size:16px}
 ol.order li:first-child{border-top:0;padding-top:4px}
@@ -270,7 +287,7 @@ details.edit[open] summary{margin-bottom:8px}
 .how h2{font-size:20px;line-height:26px;font-weight:600;margin:0 0 16px}
 .how b{color:var(--ink);font-weight:600}
 .rules{margin:0;padding:0 0 0 20px;display:grid;gap:8px;font-size:15px;line-height:22px;color:var(--ink2)}
-.foot{display:flex;justify-content:center;gap:24px;padding:40px 0 0;font-size:13px}
+.foot{display:flex;flex-wrap:wrap;justify-content:center;gap:0 24px;padding:40px 0 0;font-size:13px}
 .foot a{color:var(--ink2);text-decoration:none;min-height:44px;min-width:44px;justify-content:center;display:inline-flex;align-items:center}
 .foot a:hover{color:var(--ink)}
 .foot .hapsw{color:var(--ink2);font-size:13px;min-height:44px}
@@ -333,7 +350,7 @@ details.edit[open] summary{margin-bottom:8px}
 .done svg{width:64px;height:64px;color:var(--accent);margin-bottom:16px}
 
 /* rows answer a touch: grey fill straight away, fading over 150ms on release */
-.checks label:active,.saved .open:active,.mrow:active,.chip:active,.seg button:active,.rm:active{box-shadow:inset 0 0 0 999px var(--press);transition-duration:0s}
+.checks label:active,.stp:active,.ptog:active,.saved .open:active,.mrow:active,.chip:active,.seg button:active,.rm:active{box-shadow:inset 0 0 0 999px var(--press);transition-duration:0s}
 
 /* motion */
 .rise{opacity:0;transform:translateY(12px)}
@@ -353,6 +370,7 @@ details.edit[open] summary{margin-bottom:8px}
   .cook .nav .btn{min-width:0;padding:0 12px;font-size:15px}.cook .nav .btn.soft{flex:0 1 auto}
   .dock .btn{white-space:normal;line-height:1.2;padding:0 8px}.dock .btn.soft span{display:none}.dock .btn.soft{padding:0 16px}
   .links{flex-wrap:wrap;gap:0 24px}.toast{white-space:normal}
+  .checks li{flex-wrap:wrap}.checks label{flex:1 1 100%}.stp{margin:0 0 8px;padding:0}
 }
 @media (max-width:340px){.dock .btn{font-size:15px;padding:0 12px}.dock .btn.soft{padding:0 16px}.seg button{font-size:14px}.tbl .o{display:none}}
 @media (min-width:721px){
@@ -366,6 +384,7 @@ details.edit[open] summary{margin-bottom:8px}
   .bar,.dock,footer,.noprint,.tabs,.cook,.menu,.toast{display:none!important}
   .printonly{display:block;margin:0 0 16px;font-size:15px}
   .checks input:checked+span{text-decoration:line-through}
+  .pan.shut{display:block}.ptog svg{display:none}
   body{background:#fff;color:#000}main{padding:0}.card{box-shadow:none;break-inside:avoid;border:1px solid #ddd}
   .rise{opacity:1!important;transform:none!important}[data-panel]{display:block!important}
 }
@@ -418,6 +437,8 @@ details.edit[open] summary{margin-bottom:8px}
         <h3 id="mineH" tabindex="-1">My batches</h3>
         <ul class="saved" id="savedList"></ul>
         <div class="tip hidden" id="tip"><b>Keep these for good.</b> Safari can clear them after a week away. Tap Share, then Add to Home Screen.<button class="link" id="tipX">Got it</button></div>
+        <div class="tip hidden" id="bkNudge"><b>Back up your batches.</b> They're only on this device.<span class="instrow"><button class="pillb" id="bkYes">Back up</button><button class="link" id="bkNo">Not now</button></span></div>
+        <div class="links" id="bkRow"><button class="link" id="bkUp">Back up</button><button class="link" id="bkIn">Restore</button></div>
       </div>
       <section class="how" aria-labelledby="howH">
         <h2 id="howH">How it scales</h2>
@@ -429,7 +450,8 @@ details.edit[open] summary{margin-bottom:8px}
           <li>Baking isn't eased back, and gets a warning past double.</li>
         </ul>
       </section>
-      <footer class="foot"><a href="about">About</a><a href="privacy">Privacy</a><button class="link hapsw hidden" id="hapSw" aria-pressed="true">Vibration on</button></footer>
+      <footer class="foot"><a href="about">About</a><a href="privacy">Privacy</a><button class="link hapsw hidden" id="hapSw" aria-pressed="true">Vibration on</button><button class="link hapsw hidden" id="bkFoot">Restore backup</button></footer>
+      <input type="file" id="bfile" accept=".json,application/json" hidden>
     </div>
 
     <section class="reading hidden" id="reading" data-state="read" aria-labelledby="rdTitle">
@@ -945,7 +967,54 @@ details.edit[open] summary{margin-bottom:8px}
     return { factor: f, items: recipe.ingredients.map((i) => scaleIngredient(i, f, recipe.baking)) };
   }
 
-  const api = { parseRecipe, parseIngredient, stitch, scaleAll, batchDay, fmtNum };
+
+  /* ---------- the shop: store sections and staples (pure, no storage) ---------- */
+  // US grocery sections in walking order
+  const AISLES = ['Produce', 'Meat & seafood', 'Dairy & eggs', 'Bakery', 'Canned & jarred', 'Dry goods & grains', 'Spices & oils', 'Frozen', 'Other'];
+  const HERB = 'basil|parsley|cilantro|rosemary|thyme|dill|mint|sage|chives|oregano|tarragon|marjoram';
+  // first match wins, so the order matters: "garlic powder" is a spice before "garlic" is produce, "chicken broth" is a can before "chicken" is meat
+  const AISLE_RULES = [
+    [7, /\bfrozen\b|ice cream|\bpopsicles?\b|tater tots|\bwaffles\b/],
+    [0, new RegExp('\\bfresh\\s+(' + HERB + '|herbs?|ginger|garlic|turmeric)\\b|cauliflower rice|butternut|butter lettuce|\\bcloves?( of)? garlic|garlic cloves?|\\b(lemon|lime)s?\\b|spaghetti squash|\\bgreen beans?\\b|\\bbean sprouts?\\b|sweet potato|\\bcorn on the cob\\b|\\bbell peppers?\\b|\\b(red|green|yellow|orange) peppers?$')],
+    [5, /baking (powder|soda)|(powdered|brown|white|granulated|cane|coconut) sugar|\bcocoa\b|corn ?starch|bread ?crumbs|\bpanko\b|bread flour|egg noodles|rice noodles|cream of wheat|peanut butter (chips|cups)|\b(tortilla|pita|bagel|corn) chips\b/],
+    [6, /cream of tartar|\b(garlic|onion|chili|chile|chilli|curry|mustard|ginger|five[- ]spice) powder\b|\bbouillon powder\b/],
+    [4, /\b(broth|stock|bouillon|sauce|paste|salsa|canned|cans?|jarred|jars?|soup|puree|purée)\b|coconut (milk|cream|aminos)|(condensed|evaporated) milk|\b(diced|crushed|stewed|whole peeled|fire[- ]roasted|sun[- ]dried) tomatoes\b|\b(peanut|almond|cashew|nut|apple) butter\b|\b(apple|orange|pineapple|tomato|cranberry|grape) juice\b/],
+    [6, new RegExp('\\boils?\\b|vinegar|\\bsalt\\b|\\b(black|white|cayenne|ground|cracked|lemon|red) pepper\\b|peppercorns?|\\bpepper$|(chili|chile|chilli|pepper) flakes|seasoning|\\bspice|\\b(dried|ground)\\s+(' + HERB + '|ginger|mustard|coriander|cloves|garlic|onion|chiles?|chilies)\\b|\\b(cumin|paprika|cinnamon|nutmeg|turmeric|cardamom|allspice|saffron|oregano|cayenne|garam masala|bay lea(f|ves)|vanilla|extract|msg|za.?atar|sumac|fennel seeds?|mustard seeds?|caraway|curry leaves|taco mix|cooking spray|shortening|lard|ghee)\\b|\\b(whole|ground) cloves\\b')],
+    [4, /\b(black|kidney|pinto|cannellini|garbanzo|white|navy|refried|baked|butter|lima) beans\b|chickpeas|\b(jam|jelly|honey|syrup|molasses|ketchup|mustard|mayo|mayonnaise|pickles?|relish|olives|capers|tuna|sardines|anchovies|tahini|sriracha|worcestershire|pesto|marinara|hummus|dressing|applesauce|mirin|rice wine|cooking wine|sauerkraut|kimchi|artichoke hearts|chipotles?|adobo|pimentos?|gochujang|miso|harissa|sambal)\b/],
+    [3, /\b(bread|buns?|rolls|tortillas?|pitas?|naan|bagels?|baguette|croissants?|english muffins?|flatbreads?|pizza dough|pie crust|ciabatta|sourdough|brioche|wraps)\b/],
+    [5, /\b(rice|pasta|spaghetti|penne|macaroni|linguine|fettuccine|rigatoni|lasagna|orzo|noodles|ramen|couscous|quinoa|oats|oatmeal|flour|sugar|cornmeal|polenta|grits|yeast|lentils|split peas|barley|farro|bulgur|cereal|granola|crackers|chips|almonds|walnuts|pecans|cashews|peanuts|pistachios|pine nuts|nuts|sesame seeds|chia seeds|flaxseed|sunflower seeds|pumpkin seeds|raisins|dried (cranberries|apricots|fruit|beans)|chocolate|marshmallows|gelatin|sprinkles|pretzels|popcorn|beans|tapioca)\b/],
+    [1, /\b(chicken|beef|pork|turkey|lamb|veal|duck|bacon|sausages?|ham|steaks?|brisket|ribs|chuck|sirloin|tenderloin|thighs|breasts?|drumsticks|wings|meatballs|chorizo|pepperoni|salami|prosciutto|pancetta|hot dogs|ground meat|mince|salmon|shrimp|prawns|fish|cod|tilapia|halibut|trout|crab|lobster|scallops|clams|mussels|oysters|squid|calamari|kielbasa|bratwurst|roast)\b/],
+    [2, /\b(milk|cream|butter|buttermilk|cheese|cheddar|mozzarella|parmesan|parmigiano|feta|ricotta|gouda|swiss|provolone|monterey jack|pepper jack|queso|paneer|halloumi|mascarpone|yogurt|yoghurt|kefir|eggs?|egg whites|egg yolks|half[- ](and|&)[- ]half|creamer|margarine|whipped topping)\b/],
+    [0, new RegExp('\\b(onions?|scallions?|shallots?|leeks?|garlic|ginger|potato(es)?|carrots?|celery|tomato(es)?|peppers?|jalape[nñ]os?|serranos?|poblanos?|habaneros?|chil(i|e|ie|li)s?|cucumbers?|zucchini|squash|pumpkin|eggplant|broccoli|broccolini|cauliflower|cabbage|bok choy|kale|spinach|lettuce|romaine|arugula|greens|chard|mushrooms?|corn|peas|snap peas|snow peas|asparagus|beets?|radish(es)?|turnips?|parsnips?|fennel|okra|sprouts|avocados?|apples?|bananas?|oranges?|grapes|berries|strawberries|blueberries|raspberries|blackberries|cranberries|mango(es)?|pineapple|peach(es)?|pears?|plums?|cherries|melon|watermelon|cantaloupe|grapefruit|kiwi|pomegranate|dates|figs|coconut|lemongrass|tofu|tempeh|edamame|herbs?|' + HERB + '|microgreens|plantains?|yams?|jicama|tomatillos?|rhubarb|artichokes?|endive|radicchio|watercress|fresh)\\b')]
+  ];
+  // which section an item is in: an index into AISLES
+  function aisleOf(name) {
+    const n = String(name == null ? '' : name).toLowerCase().replace(/[’']/g, '').replace(/\([^)]*\)/g, ' ').replace(/\s+/g, ' ').trim();
+    if (!n) return 8;
+    for (let k = 0; k < AISLE_RULES.length; k++) if (AISLE_RULES[k][1].test(n)) return AISLE_RULES[k][0];
+    return 8;
+  }
+  // grocery items grouped by section, in store order; items keep their order inside a section; empty sections are left out
+  function aisles(items) {
+    const g = AISLES.map((name) => ({ name, items: [] }));
+    (items || []).forEach((i) => g[aisleOf(i.name)].items.push(i));
+    return g.filter((x) => x.items.length);
+  }
+  // one spelling for a staple: "Olive Oil", "olive oil " and "olive oils" are the same thing
+  function stapleKey(name) {
+    return String(name == null ? '' : name).toLowerCase().replace(/[’']/g, '').replace(/[^a-z0-9À-￿]+/g, ' ').trim()
+      .split(' ').map((w) => (w.length > 3 ? w.replace(/ies$/, 'y').replace(/oes$/, 'o').replace(/([^s])s$/, '$1') : w)).join(' ').slice(0, 60);
+  }
+  // the shop as the cook sees it: sections of what to buy, then the staples to check at home. staples = a Set or array of stapleKey names
+  function shopList(grocery, staples) {
+    const st = staples instanceof Set ? staples : new Set(staples || []);
+    const buy = [], pan = [];
+    (grocery || []).forEach((g) => (st.has(stapleKey(g.name)) ? pan : buy).push(g));
+    const flat = (a) => aisles(a).reduce((o, s) => o.concat(s.items), []);
+    return { groups: aisles(buy), buy: flat(buy), pantry: flat(pan) };
+  }
+
+  const api = { parseRecipe, parseIngredient, stitch, scaleAll, batchDay, fmtNum, AISLES, aisleOf, aisles, stapleKey, shopList };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.BatchEngine = api;
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -1208,7 +1277,7 @@ function cutOff(){const s=recipe.steps[recipe.steps.length-1];return !!s&&recipe
 function load(raw,replace){
   const ps=String(raw).split(SPLIT).map((s)=>s.trim()).filter((p)=>p&&E.parseRecipe(p).ingredients.length);
   if(!ps.length)return false;
-  parts=ps;pick=0;curId=null;touched=false;yieldSet=false;have.clear();tab='shop';
+  parts=ps;pick=0;curId=null;touched=false;yieldSet=false;have.clear();tab='shop';stEd=panOpen=false;
   $('#text').value=parts[0];$('#edit').open=false;
   parse();
   wants={batch:14,scale:defWant('scale')};$('#want').value=wants[mode];
@@ -1320,7 +1389,6 @@ function build(fresh){
   wants[mode]=want;
   // amounts as they stand now, by item, to compare after the redraw
   const old=flash&&!fresh?new Map([...sh.querySelectorAll('[data-a]')].map((e)=>[e.dataset.a,e.textContent])):null,oldMeta=$('#sMeta').textContent;
-  const oddN=new Set(recipe.ingredients.filter(isOdd).map((i)=>i.name));
   drawHead();
   let h='';
   const steps=recipe.steps.length?`<div class="card${R}"><h3>Steps</h3><ol class="osteps">${recipe.steps.map((s)=>`<li>${esc(s.text)}</li>`).join('')}</ol></div>`:'';
@@ -1334,8 +1402,7 @@ function build(fresh){
     // shop
     const seen={};p.grocery.forEach((g)=>{const n=seen[g.name]=(seen[g.name]||0)+1;g.key=n>1?g.name+' #'+n:g.name}); // "ginger paste" can be on the list twice
     const names=new Set(p.grocery.map((g)=>g.key));[...have].forEach((k)=>{if(!names.has(k))have.delete(k)}); // a tick goes only when its item does
-    const list=p.grocery.map((g)=>g.amt==='for serving'?`${g.name} (for serving)`:`${g.amt?g.amt+' ':''}${g.name}`).join('\n');
-    h+=`<div data-panel="shop"><div class="card${R}"><h3><span>Grocery list<small class="cnt" id="gcount" aria-live="polite"></small></span><span class="acts noprint"><button class="link hidden" data-addlist>Add to list</button><button class="link" data-copy>Copy</button></span></h3><div class="pick noprint hidden" id="gpick"><button class="link" data-rem>Reminders</button><button class="link" data-other>Other apps</button></div><ul class="checks">${p.grocery.map((g)=>`<li><label><input type="checkbox" data-k="${esc(g.key)}"${have.has(g.key)?' checked':''}><span><span class="tx">${g.amt==='for serving'?`${esc(g.name)} <span class="muted">for serving</span>`:`<b class="num" data-a="s:${esc(g.key)}">${esc(g.amt)}</b> ${esc(g.name)}`}${oddN.has(g.name)?'<span class="tag">check amount</span>':''}</span></span></label></li>`).join('')}</ul><textarea hidden id="glist">${esc(list)}</textarea></div></div>`;
+    h+=`<div data-panel="shop">${shopHTML(R)}</div>`;
     // cook
     h+=`<div data-panel="cook">`;
     if(p.pots.length)h+=`<div class="card${R}"><h3>Pots and pans</h3><ul class="plain">${p.pots.map((x,k)=>`<li data-a="p:${k}">${esc(x)}</li>`).join('')}</ul></div>`;
@@ -1353,10 +1420,7 @@ function build(fresh){
   }
   sh.innerHTML=h;
   sh.querySelectorAll('.rise').forEach((el,k)=>watch(el,Math.min(k,4)*60));
-  sh.querySelectorAll('.checks input').forEach((c)=>c.onchange=()=>{have[c.checked?'add':'delete'](c.dataset.k);touched=true;drawCount();if(c.checked)HAP.buzz($('#gcount')&&$('#gcount').classList.contains('all')?'done':'tick');remember(plan.want)});
-  drawCount();
-  const al=sh.querySelector('[data-addlist]');if(al){al.classList.toggle('hidden',!navigator.share);al.onclick=()=>{if(isIOS()&&SHORTCUT_LINK){$('#gpick').classList.toggle('hidden');return}sendList('share')};sh.querySelector('[data-other]').onclick=()=>sendList('share');sh.querySelector('[data-rem]').onclick=()=>sendList('rem')}
-  const cp=sh.querySelector('[data-copy]');if(cp)cp.onclick=()=>{navigator.clipboard.writeText($('#glist').value).then(()=>{cp.innerHTML=CHECK_IC+'Copied';clearTimeout(cp.t);cp.t=setTimeout(()=>cp.textContent='Copy',1600)},()=>{cp.textContent='Copy failed'})};
+  wireShop();
   sh.querySelectorAll('[data-tab]').forEach((b)=>b.onclick=()=>setTab(b.dataset.tab));
   setTab(mode==='batch'?tab:'recipe',true);
   syncEnds();
@@ -1367,10 +1431,48 @@ function build(fresh){
   remember(want);
   $$('[data-inst]').forEach(fillInst);
 }
+/* the shop: sections in store order, then the staples to check at home */
+const CHEV_IC='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg>';
+const SK_IC='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 4.8"/></svg>';
+const STK='bd-staples';let panOpen=false,stEd=false;
+function staples(){try{const a=JSON.parse(localStorage.getItem(STK));return new Set(Array.isArray(a)?a.filter((x)=>typeof x==='string'&&x).slice(0,500):[])}catch(e){return new Set()}}
+function putStaples(set){try{localStorage.setItem(STK,JSON.stringify([...set].slice(0,500)));return true}catch(e){return false}}
+function gline(g){return g.amt==='for serving'?`${g.name} (for serving)`:`${g.amt?g.amt+' ':''}${g.name}`}
+function shopHTML(R){
+  const S=plan.shop=E.shopList(plan.p.grocery,staples()),oddN=new Set(recipe.ingredients.filter(isOdd).map((i)=>i.name));
+  // Copy keeps the section names; Add to list doesn't, because list apps would turn them into items
+  const text=S.groups.map((s)=>s.name+'\n'+s.items.map(gline).join('\n')).concat(S.pantry.length?['Check your pantry\n'+S.pantry.map(gline).join('\n')]:[]).join('\n\n');
+  const li=(g,pan)=>`<li><label><input type="checkbox" data-k="${esc(g.key)}"${have.has(g.key)?' checked':''}><span><span class="tx">${g.amt==='for serving'?`${esc(g.name)} <span class="muted">for serving</span>`:`<b class="num" data-a="s:${esc(g.key)}">${esc(g.amt)}</b> ${esc(g.name)}`}${oddN.has(g.name)?'<span class="tag">check amount</span>':''}</span></span></label><button class="stp noprint" data-st="${esc(g.key)}" aria-pressed="${pan}" aria-label="Always have ${esc(g.name)}">${pan?SK_IC:''}Always have</button></li>`;
+  return `<div class="card shop${stEd?' ed':''}${R}"><h3><span>Grocery list<small class="cnt" id="gcount" aria-live="polite"></small></span><span class="acts noprint"><button class="link hidden" data-addlist>Add to list</button><button class="link" data-copy>Copy</button></span></h3><div class="pick noprint hidden" id="gpick"><button class="link" data-rem>Reminders</button><button class="link" data-other>Other apps</button></div>`
+    +S.groups.map((s)=>`<h4 class="aisle">${esc(s.name)}</h4><ul class="checks">${s.items.map((g)=>li(g,false)).join('')}</ul>`).join('')
+    +(S.pantry.length?`<div class="pantry${S.groups.length?'':' only'}"><button class="ptog" id="ptog" aria-expanded="${panOpen}" aria-controls="pan"><span>Check your pantry <span class="muted num" id="pcount">(${S.pantry.length})</span></span>${CHEV_IC}</button><ul class="checks pan${panOpen?'':' shut'}" id="pan">${S.pantry.map((g)=>li(g,true)).join('')}</ul></div>`:'')
+    +(plan.p.grocery.length?`<div class="gfoot noprint"><button class="link" id="stEdit">${stEd?'Done':'Mark staples'}</button></div>`:'')
+    +`<textarea hidden id="glist">${esc(text)}</textarea></div>`;
+}
+function wireShop(){
+  const sh=$('#sheet');
+  sh.querySelectorAll('.checks input').forEach((c)=>c.onchange=()=>{have[c.checked?'add':'delete'](c.dataset.k);touched=true;drawCount();if(c.checked)HAP.buzz($('#gcount')&&$('#gcount').classList.contains('all')?'done':'tick');remember(plan.want)});
+  drawCount();
+  const al=sh.querySelector('[data-addlist]');if(al){al.classList.toggle('hidden',!navigator.share);al.onclick=()=>{if(isIOS()&&SHORTCUT_LINK){$('#gpick').classList.toggle('hidden');return}sendList('share')};sh.querySelector('[data-other]').onclick=()=>sendList('share');sh.querySelector('[data-rem]').onclick=()=>sendList('rem')}
+  const cp=sh.querySelector('[data-copy]');if(cp)cp.onclick=()=>{navigator.clipboard.writeText($('#glist').value).then(()=>{cp.innerHTML=CHECK_IC+'Copied';clearTimeout(cp.t);cp.t=setTimeout(()=>cp.textContent='Copy',1600)},()=>{cp.textContent='Copy failed'})};
+  const pt=$('#ptog');if(pt)pt.onclick=()=>{panOpen=!panOpen;pt.setAttribute('aria-expanded',panOpen);$('#pan').classList.toggle('shut',!panOpen)};
+  const ed=$('#stEdit');if(ed)ed.onclick=()=>{stEd=!stEd;ed.textContent=stEd?'Done':'Mark staples';ed.closest('.card').classList.toggle('ed',stEd)};
+  // "Always have" moves an item to the pantry group, or back; it is remembered by name for every recipe
+  sh.querySelectorAll('.stp').forEach((b)=>b.onclick=()=>{
+    const g=plan.p.grocery.find((x)=>x.key===b.dataset.st);if(!g)return;
+    const k=E.stapleKey(g.name),set=staples(),on=!set.has(k),pan=!!b.closest('.pan'),i=[...sh.querySelectorAll(pan?'.pan .stp':'.checks:not(.pan) .stp')].indexOf(b);
+    if(!k)return;set[on?'add':'delete'](k);if(!putStaples(set)){toast("Couldn't save on this device");return}
+    HAP.buzz('tick');const n0=plan.shop.pantry.length;
+    $('[data-panel=shop]').innerHTML=shopHTML('');wireShop();
+    const pc=$('#pcount');if(pc&&plan.shop.pantry.length!==n0)pc.classList.add('chg');
+    const rest=[...sh.querySelectorAll(pan?'.pan .stp':'.checks:not(.pan) .stp')]; // focus stays in the list it was in
+    (rest[Math.min(i,rest.length-1)]||(pan&&$('#ptog'))||$('#stEdit')).focus({preventScroll:true});
+  });
+}
 const CHECK_IC='<svg class="ck" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 4.8"/></svg>';
 $('#sheet').addEventListener('animationend',(e)=>e.target.classList.remove('chg'));
-// how far along the shop is: "4 of 15", then "All set"
-function drawCount(){const c=$('#gcount');if(!c)return;const n=$$('#sheet .checks input').length,k=$$('#sheet .checks input:checked').length,all=n>0&&k===n;c.textContent=all?'All set':k?`${k} of ${n}`:'';c.classList.toggle('all',all)}
+// how far along the shop is: "4 of 15", then "All set". Staples aren't counted: they are checked at home, not bought
+function drawCount(){const c=$('#gcount');if(!c)return;const n=$$('#sheet .checks:not(.pan) input').length,k=$$('#sheet .checks:not(.pan) input:checked').length,all=n>0&&k===n;c.textContent=all?'All set':k?`${k} of ${n}`:'';c.classList.toggle('all',all)}
 function setTab(t,quiet){
   if(mode==='batch')tab=t;
   $$('#tabs [data-tab]').forEach((b)=>b.setAttribute('aria-pressed',b.dataset.tab===t));
@@ -1400,13 +1502,14 @@ function remember(want){
   $('#fullNote').classList.toggle('hidden',!full);
   if(full){note.classList.add('hidden');return}
   a.unshift(rec);curId=rec.id;
-  note.textContent=putB(a)?'Saved on this device':"Couldn't save on this device. Share a link to keep it.";
+  const kept=putB(a);if(kept)persistOnce();
+  note.textContent=kept?'Saved on this device':"Couldn't save on this device. Share a link to keep it.";
   note.classList.remove('hidden');
   try{if(view==='sheet')sessionStorage.setItem('bd-open',curId)}catch(e){}
   renderSaved();
 }
 function openRec(r,push){
-  curId=r.id||null;parts=[];pick=0;shots=[];extra=0;skipped=0;src='';touched=false;yieldSet=true;have.clear();(r.k||[]).forEach((k)=>have.add(k));tab='shop';plan=null;
+  curId=r.id||null;parts=[];pick=0;shots=[];extra=0;skipped=0;src='';touched=false;yieldSet=true;have.clear();(r.k||[]).forEach((k)=>have.add(k));tab='shop';plan=null;stEd=panOpen=false;
   userMode=r.m==='scale'?'scale':'batch';
   $('#text').value=r.text;$('#edit').open=false;parse();
   $('#yield').value=r.y||recipe.yield;snapN($('#yield'),recipe.yield);recipe.yield=+$('#yield').value;
@@ -1432,7 +1535,75 @@ function renderSaved(){
     }
     toast(`Removed ${gone.title||'recipe'}`,()=>{const now=allB();now.splice(Math.min(i,now.length),0,gone);putB(now);renderSaved()})});
   $('#tip').classList.toggle('hidden',!(a.length&&isIOS()&&!isHome()&&!tipOff()));
+  // one gentle nudge from the third batch on, until it is backed up or waved off; never next to the Home Screen tip
+  $('#bkNudge').classList.toggle('hidden',!(a.length>=3&&!flag('bd-bk')&&!flag('bd-bkn')&&$('#tip').classList.contains('hidden')));
+  $('#bkFoot').classList.toggle('hidden',a.length>0); // with no batches the card is hidden, so Restore lives in the footer
 }
+function flag(k){try{return !!localStorage.getItem(k)}catch(e){return false}}
+function setFlag(k,v){try{localStorage.setItem(k,v||'1')}catch(e){}}
+// ask the browser, once, not to clear saved batches when space runs low; the answer doesn't change anything here
+function persistOnce(){if(flag('bd-ps'))return;setFlag('bd-ps');try{const st=navigator.storage;if(st&&st.persist)Promise.resolve(st.persist()).catch(()=>{})}catch(e){}}
+
+/* backup and restore: one file, made and read on this device. Batches (with their ticks), theme and staples; nothing else */
+const BK_APP='batch.recipes',BK_V=1,BK_MAX=2e6;
+function cleanB(x){const o={id:String(x.id),text:x.text,w:+x.w,m:x.m==='scale'?'scale':'batch',at:+x.at,k:Array.isArray(x.k)?x.k.filter((t)=>typeof t==='string'):[]};if(typeof x.title==='string')o.title=x.title;if(isFinite(+x.y)&&+x.y>0)o.y=+x.y;return o}
+function backupData(){
+  let th=null;try{th=localStorage.getItem('bd-theme')}catch(e){}
+  return {app:BK_APP,v:BK_V,at:new Date().toISOString(),batches:allB().map(cleanB),settings:{theme:th==='dark'||th==='light'?th:null,staples:[...staples()]}};
+}
+async function backUp(){
+  const d=new Date(),two=(n)=>String(n).padStart(2,'0'),name=`batch-recipes-backup-${d.getFullYear()}-${two(d.getMonth()+1)}-${two(d.getDate())}.json`,json=JSON.stringify(backupData());
+  let how='download';
+  // phones: the share sheet (Save to Files, AirDrop, Drive) when the browser will share a file; otherwise a plain download
+  if(matchMedia('(pointer:coarse)').matches&&navigator.share&&navigator.canShare){
+    let f=null,can=false;try{f=new File([json],name,{type:'application/json'});can=navigator.canShare({files:[f]})}catch(e){}
+    if(can){try{await navigator.share({files:[f]});how='share'}catch(e){if(e&&e.name==='AbortError')return}}
+  }
+  if(how==='download'){
+    try{const u=URL.createObjectURL(new Blob([json],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download=name;a.style.display='none';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),10000)}
+    catch(e){toast("Couldn't make the backup");return}
+  }
+  setFlag('bd-bk',String(Date.now()));$('#bkNudge').classList.add('hidden');track('Backup',{how});toast('Backup saved');
+}
+// the file must be ours, this version, and every batch in it must be one this page could have saved
+function readBackup(txt){
+  let o;try{o=JSON.parse(txt)}catch(e){return null}
+  if(!o||typeof o!=='object'||Array.isArray(o)||o.app!==BK_APP||o.v!==BK_V||!Array.isArray(o.batches)||!o.batches.every(okB))return null;
+  const st=o.settings==null?{}:o.settings;if(typeof st!=='object'||Array.isArray(st))return null;
+  if(st.theme!=null&&st.theme!=='dark'&&st.theme!=='light')return null;
+  if(st.staples!=null&&!(Array.isArray(st.staples)&&st.staples.length<=500&&st.staples.every((x)=>typeof x==='string')))return null;
+  return {batches:o.batches.map(cleanB),theme:st.theme||null,staples:(st.staples||[]).map(E.stapleKey).filter(Boolean)};
+}
+// merge: same batch (by id, or the very same text) keeps the newer one; nothing already here is removed
+function restore(txt){
+  const d=txt.length>BK_MAX?null:readBackup(txt);
+  if(!d){track('Restore',{ok:'no',n:0});toast(txt.length>BK_MAX?'That file is too big':"That file isn't a batch.recipes backup");return}
+  const cur=allB(),byId=new Map(cur.map((x)=>[x.id,x])),byText=new Map(cur.map((x)=>[x.text,x]));
+  let added=0,newer=0,left=0;
+  d.batches.sort((a,b)=>b.at-a.at).forEach((b)=>{
+    const old=byId.get(b.id)||byText.get(b.text);
+    if(old){
+      if(b.at>old.at){b.id=old.id;cur[cur.indexOf(old)]=b;byId.set(b.id,b);byText.delete(old.text);byText.set(b.text,b);newer++;
+        if(b.id===curId){curId=null;plan=null;try{sessionStorage.removeItem('bd-open')}catch(e){}}} // the open copy is now the older one
+      return;
+    }
+    if(cur.length>=CAP){left++;return}
+    cur.push(b);byId.set(b.id,b);byText.set(b.text,b);added++;
+  });
+  cur.sort((a,b)=>b.at-a.at);
+  if((added||newer)&&!putB(cur)){track('Restore',{ok:'no',n:0});toast("Couldn't save on this device");return}
+  const set=staples(),s0=set.size;d.staples.forEach((k)=>set.add(k));if(set.size>s0)putStaples(set);
+  if(d.theme&&!flag('bd-theme')){root.dataset.theme=d.theme;setFlag('bd-theme',d.theme);syncSwitch()}
+  const n=added+newer;track('Restore',{ok:'yes',n});renderSaved();
+  toast(left?`My batches is full. Added ${added} of ${added+left}.`:n?`Restored ${n} ${n===1?'batch':'batches'}`:set.size>s0?'Restored':'Nothing new in that file');
+  if(n&&allB().length){$('#mine').scrollIntoView({block:'nearest',behavior:reduce?'auto':'smooth'});$('#mineH').focus({preventScroll:true})}
+}
+{const bf=$('#bfile'),pickFile=()=>bf.click();
+  $('#bkUp').onclick=$('#bkYes').onclick=backUp;$('#bkIn').onclick=$('#bkFoot').onclick=pickFile;
+  $('#bkNo').onclick=()=>{setFlag('bd-bkn');$('#bkNudge').classList.add('hidden')};
+  bf.addEventListener('change',()=>{const f=bf.files[0];bf.value='';if(!f)return;
+    if(f.size>BK_MAX){track('Restore',{ok:'no',n:0});toast('That file is too big');return}
+    const rd=new FileReader();rd.onload=()=>restore(String(rd.result||''));rd.onerror=()=>{track('Restore',{ok:'no',n:0});toast("That file couldn't be opened")};rd.readAsText(f)});}
 /* use it like an app: one-time Home Screen card on the recipe page */
 let bip=null;
 addEventListener('beforeinstallprompt',(e)=>{e.preventDefault();bip=e;$$('[data-inst]').forEach(fillInst)});
@@ -1491,7 +1662,7 @@ function plainText(){
   const L=[];
   if(plan.mode==='batch'){
     const p=plan.p;L.push(`${recipe.title}: ${plan.want} meals (${fmtX(p.factor)}× the recipe)`,'','Shopping');
-    p.grocery.forEach((g)=>L.push(`- ${g.amt==='for serving'?g.name+' (for serving)':(g.amt?g.amt+' ':'')+g.name}`));
+    plan.shop.buy.concat(plan.shop.pantry).forEach((g)=>L.push('- '+gline(g))); // same order as the Shop tab
     L.push('','Cook order');
     p.order.forEach((o,k)=>{L.push(`${k+1}. ${o.t}${o.min?` (${o.min} min)`:''}`);(o.use||[]).forEach((u)=>L.push(`   ${u.amt?u.amt+' ':''}${u.name}`))});
     if(p.pots.length){L.push('','Pots');p.pots.forEach((x)=>L.push('- '+x))}
@@ -1504,9 +1675,9 @@ function plainText(){
   }
   return L.join('\n');
 }
-// grocery list out to the phone's list apps: one item per line, only what's not ticked yet
+// grocery list out to the phone's list apps: one item per line, in store order, only what's not ticked yet. No section names, no staples
 const SHORTCUT_NAME='Add to Reminders';
-function needList(){const all=plan.p.grocery,left=all.filter((g)=>!have.has(g.key));return (left.length?left:all).map((g)=>g.amt==='for serving'?g.name:`${g.amt?g.amt+' ':''}${g.name}`).join('\n')}
+function needList(){const all=plan.shop.buy.length?plan.shop.buy:plan.shop.pantry,left=all.filter((g)=>!have.has(g.key));return (left.length?left:all).map((g)=>g.amt==='for serving'?g.name:`${g.amt?g.amt+' ':''}${g.name}`).join('\n')}
 async function sendList(how){
   if(!plan||plan.mode!=='batch')return;keep();const text=needList();track('Add to list',{how});
   if(how==='rem'){

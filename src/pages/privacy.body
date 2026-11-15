@@ -14,6 +14,7 @@
 <ul>
 <li>Recipe text you paste is read in your browser and isn't uploaded.</li>
 <li>Recipes are saved in your browser's storage under My batches. Clearing your browser data removes them. We can't see or recover them.</li>
+<li><b>Back up</b> makes a file on your device with your batches, your theme and your staples. It goes only where you save or send it.</li>
 <li>When you use <b>Copy link</b> or <b>Send</b>, the recipe goes inside the link itself. The part of a link after the # isn't sent to our servers.</li>
 </ul>
 

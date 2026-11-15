@@ -432,6 +432,53 @@
     return { factor: f, items: recipe.ingredients.map((i) => scaleIngredient(i, f, recipe.baking)) };
   }
 
-  const api = { parseRecipe, parseIngredient, stitch, scaleAll, batchDay, fmtNum };
+
+  /* ---------- the shop: store sections and staples (pure, no storage) ---------- */
+  // US grocery sections in walking order
+  const AISLES = ['Produce', 'Meat & seafood', 'Dairy & eggs', 'Bakery', 'Canned & jarred', 'Dry goods & grains', 'Spices & oils', 'Frozen', 'Other'];
+  const HERB = 'basil|parsley|cilantro|rosemary|thyme|dill|mint|sage|chives|oregano|tarragon|marjoram';
+  // first match wins, so the order matters: "garlic powder" is a spice before "garlic" is produce, "chicken broth" is a can before "chicken" is meat
+  const AISLE_RULES = [
+    [7, /\bfrozen\b|ice cream|\bpopsicles?\b|tater tots|\bwaffles\b/],
+    [0, new RegExp('\\bfresh\\s+(' + HERB + '|herbs?|ginger|garlic|turmeric)\\b|cauliflower rice|butternut|butter lettuce|\\bcloves?( of)? garlic|garlic cloves?|\\b(lemon|lime)s?\\b|spaghetti squash|\\bgreen beans?\\b|\\bbean sprouts?\\b|sweet potato|\\bcorn on the cob\\b|\\bbell peppers?\\b|\\b(red|green|yellow|orange) peppers?$')],
+    [5, /baking (powder|soda)|(powdered|brown|white|granulated|cane|coconut) sugar|\bcocoa\b|corn ?starch|bread ?crumbs|\bpanko\b|bread flour|egg noodles|rice noodles|cream of wheat|peanut butter (chips|cups)|\b(tortilla|pita|bagel|corn) chips\b/],
+    [6, /cream of tartar|\b(garlic|onion|chili|chile|chilli|curry|mustard|ginger|five[- ]spice) powder\b|\bbouillon powder\b/],
+    [4, /\b(broth|stock|bouillon|sauce|paste|salsa|canned|cans?|jarred|jars?|soup|puree|purée)\b|coconut (milk|cream|aminos)|(condensed|evaporated) milk|\b(diced|crushed|stewed|whole peeled|fire[- ]roasted|sun[- ]dried) tomatoes\b|\b(peanut|almond|cashew|nut|apple) butter\b|\b(apple|orange|pineapple|tomato|cranberry|grape) juice\b/],
+    [6, new RegExp('\\boils?\\b|vinegar|\\bsalt\\b|\\b(black|white|cayenne|ground|cracked|lemon|red) pepper\\b|peppercorns?|\\bpepper$|(chili|chile|chilli|pepper) flakes|seasoning|\\bspice|\\b(dried|ground)\\s+(' + HERB + '|ginger|mustard|coriander|cloves|garlic|onion|chiles?|chilies)\\b|\\b(cumin|paprika|cinnamon|nutmeg|turmeric|cardamom|allspice|saffron|oregano|cayenne|garam masala|bay lea(f|ves)|vanilla|extract|msg|za.?atar|sumac|fennel seeds?|mustard seeds?|caraway|curry leaves|taco mix|cooking spray|shortening|lard|ghee)\\b|\\b(whole|ground) cloves\\b')],
+    [4, /\b(black|kidney|pinto|cannellini|garbanzo|white|navy|refried|baked|butter|lima) beans\b|chickpeas|\b(jam|jelly|honey|syrup|molasses|ketchup|mustard|mayo|mayonnaise|pickles?|relish|olives|capers|tuna|sardines|anchovies|tahini|sriracha|worcestershire|pesto|marinara|hummus|dressing|applesauce|mirin|rice wine|cooking wine|sauerkraut|kimchi|artichoke hearts|chipotles?|adobo|pimentos?|gochujang|miso|harissa|sambal)\b/],
+    [3, /\b(bread|buns?|rolls|tortillas?|pitas?|naan|bagels?|baguette|croissants?|english muffins?|flatbreads?|pizza dough|pie crust|ciabatta|sourdough|brioche|wraps)\b/],
+    [5, /\b(rice|pasta|spaghetti|penne|macaroni|linguine|fettuccine|rigatoni|lasagna|orzo|noodles|ramen|couscous|quinoa|oats|oatmeal|flour|sugar|cornmeal|polenta|grits|yeast|lentils|split peas|barley|farro|bulgur|cereal|granola|crackers|chips|almonds|walnuts|pecans|cashews|peanuts|pistachios|pine nuts|nuts|sesame seeds|chia seeds|flaxseed|sunflower seeds|pumpkin seeds|raisins|dried (cranberries|apricots|fruit|beans)|chocolate|marshmallows|gelatin|sprinkles|pretzels|popcorn|beans|tapioca)\b/],
+    [1, /\b(chicken|beef|pork|turkey|lamb|veal|duck|bacon|sausages?|ham|steaks?|brisket|ribs|chuck|sirloin|tenderloin|thighs|breasts?|drumsticks|wings|meatballs|chorizo|pepperoni|salami|prosciutto|pancetta|hot dogs|ground meat|mince|salmon|shrimp|prawns|fish|cod|tilapia|halibut|trout|crab|lobster|scallops|clams|mussels|oysters|squid|calamari|kielbasa|bratwurst|roast)\b/],
+    [2, /\b(milk|cream|butter|buttermilk|cheese|cheddar|mozzarella|parmesan|parmigiano|feta|ricotta|gouda|swiss|provolone|monterey jack|pepper jack|queso|paneer|halloumi|mascarpone|yogurt|yoghurt|kefir|eggs?|egg whites|egg yolks|half[- ](and|&)[- ]half|creamer|margarine|whipped topping)\b/],
+    [0, new RegExp('\\b(onions?|scallions?|shallots?|leeks?|garlic|ginger|potato(es)?|carrots?|celery|tomato(es)?|peppers?|jalape[nñ]os?|serranos?|poblanos?|habaneros?|chil(i|e|ie|li)s?|cucumbers?|zucchini|squash|pumpkin|eggplant|broccoli|broccolini|cauliflower|cabbage|bok choy|kale|spinach|lettuce|romaine|arugula|greens|chard|mushrooms?|corn|peas|snap peas|snow peas|asparagus|beets?|radish(es)?|turnips?|parsnips?|fennel|okra|sprouts|avocados?|apples?|bananas?|oranges?|grapes|berries|strawberries|blueberries|raspberries|blackberries|cranberries|mango(es)?|pineapple|peach(es)?|pears?|plums?|cherries|melon|watermelon|cantaloupe|grapefruit|kiwi|pomegranate|dates|figs|coconut|lemongrass|tofu|tempeh|edamame|herbs?|' + HERB + '|microgreens|plantains?|yams?|jicama|tomatillos?|rhubarb|artichokes?|endive|radicchio|watercress|fresh)\\b')]
+  ];
+  // which section an item is in: an index into AISLES
+  function aisleOf(name) {
+    const n = String(name == null ? '' : name).toLowerCase().replace(/[’']/g, '').replace(/\([^)]*\)/g, ' ').replace(/\s+/g, ' ').trim();
+    if (!n) return 8;
+    for (let k = 0; k < AISLE_RULES.length; k++) if (AISLE_RULES[k][1].test(n)) return AISLE_RULES[k][0];
+    return 8;
+  }
+  // grocery items grouped by section, in store order; items keep their order inside a section; empty sections are left out
+  function aisles(items) {
+    const g = AISLES.map((name) => ({ name, items: [] }));
+    (items || []).forEach((i) => g[aisleOf(i.name)].items.push(i));
+    return g.filter((x) => x.items.length);
+  }
+  // one spelling for a staple: "Olive Oil", "olive oil " and "olive oils" are the same thing
+  function stapleKey(name) {
+    return String(name == null ? '' : name).toLowerCase().replace(/[’']/g, '').replace(/[^a-z0-9À-￿]+/g, ' ').trim()
+      .split(' ').map((w) => (w.length > 3 ? w.replace(/ies$/, 'y').replace(/oes$/, 'o').replace(/([^s])s$/, '$1') : w)).join(' ').slice(0, 60);
+  }
+  // the shop as the cook sees it: sections of what to buy, then the staples to check at home. staples = a Set or array of stapleKey names
+  function shopList(grocery, staples) {
+    const st = staples instanceof Set ? staples : new Set(staples || []);
+    const buy = [], pan = [];
+    (grocery || []).forEach((g) => (st.has(stapleKey(g.name)) ? pan : buy).push(g));
+    const flat = (a) => aisles(a).reduce((o, s) => o.concat(s.items), []);
+    return { groups: aisles(buy), buy: flat(buy), pantry: flat(pan) };
+  }
+
+  const api = { parseRecipe, parseIngredient, stitch, scaleAll, batchDay, fmtNum, AISLES, aisleOf, aisles, stapleKey, shopList };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.BatchEngine = api;
 })(typeof window !== 'undefined' ? window : globalThis);

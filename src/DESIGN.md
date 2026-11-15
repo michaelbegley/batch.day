@@ -133,3 +133,25 @@ Checks in `breakit7.py` (109). Numbers from `p1b_even.py`. Screenshots in `phase
 - **Privacy page:** new "Affiliate links" section with the Amazon sentence; date now 14 November 2026.
 - **Spacing:** sheet pad 16, gaps 16, Cancel 8 from the button and the sheet's foot; labels card gaps 8; store link 8 above and below its hairline (16 under the Store blocks), 4 px pad inside the 44 px target.
 - **Not tested here:** real iPhone and Android, a real printer and a real sheet of 5160. See the builder's report.
+
+## First-visit tour (14 Nov)
+Checks in `breakit8.py` (182). Numbers from `tour_even.py`. Screenshots in `tour-shots/` (`tour_shots.py`). Video script in `tour-video-script.md`. Not committed or deployed by the builder.
+
+- **Offered, never started.** On a first visit a small grey card sits under "Choose screenshots", inside the same white card: "New here? Quick tour", Show me, Skip. Nothing overlays the page. One row on desktop, two on a phone.
+- **First visit means:** nothing of ours (`bd-` keys) was stored on this device before this session, no saved batches, no shared link, and `bd-tour` not set. `bd-seen` marks the device; `bd-new` (session) keeps the answer for reloads in the same visit. If storage is blocked the card is not shown, because it couldn't be dismissed for good. People who came before 14 Nov and never stored anything get the offer once.
+- **Skip:** card goes, toast for 4 s: "Tour's at the bottom of the page anytime." The footer always has "Take the tour".
+- **Show me:** five bubbles, each on the real control with a pointer and a 2 px accent ring 4 px outside it.
+  1. Choose screenshots: "Add screenshots of any recipe. Here's a sample." Next loads the sample.
+  2. Meals stepper: "Set how many meals."
+  3. Shop tab (bubble above it, so the list shows below): "Your grocery list. Tick as you shop, or send it to your list app." Without a share sheet the second half is left out.
+  4. Start cooking: "Cook one step at a time. The screen stays on." Without Wake Lock the second sentence is left out.
+  5. Share: "Save it or share it." The button says Done.
+- **Bubble:** 320 wide (window minus 32 on small phones), pad 16, text to buttons 12, Skip tour and Next 44 high, 8 between them, five 8 px dots with "2 of 5" as their label. 16 from the control. It goes below the control, or above when there is no room (step 3 prefers above), and stays 16 from the window edge with the pointer on the control's middle. Its place is worked out every frame, so it follows scroll, rotation and the dock sliding in.
+- **Dim:** 12% black around the ring. Everything stays readable. A tap anywhere off the bubble, Escape or the phone's Back ends the tour. The tap is swallowed, so it doesn't press what is under it.
+- **The sample in the tour** is opened with `from: 'tour'`, in Batch day. It is not saved and `Plan` fires with `from: tour`, so filter it out with `sample`. After the tour it follows the sample rule: saved only once you change it, cook it or share it.
+- **End:** `bd-tour` = `done` or `skip` (outside counts as skip). The card never comes back. On the plan, focus goes to the recipe title; on home, to the button that started it. Ending early shows the toast (on the plan it says "the home page"), except when the tour was started from the footer.
+- **Access:** the bubble is a dialog labelled "Tour", described by its text; the text is `aria-live`; focus moves to the bubble; Tab stays on its two buttons. Reduced motion: no rise, it just appears.
+- **Events:** `Tour {step:0, choice: show|skip|link}` (link = the footer), `Tour {step, end: done|skip|outside}` with the step it ended on.
+- **Clear of the rest:** the offer needs zero batches and the Home Screen tip and backup nudge need at least one, so they never share a screen. The tour sits above everything (z 70) and clears any toast when it starts. The sample has no saved id, so the install tip doesn't show on it.
+- **Spacing:** hint to offer 16, offer pad 16, text to buttons 12, Show me to Skip 16.
+- **Not tested here:** real iPhone and Android. See the builder's report.

@@ -281,6 +281,26 @@ details.edit[open] summary{margin-bottom:8px}
 .instrow .link{margin:0;display:inline}
 .pillb{min-height:44px;padding:0 16px;border-radius:980px;border:0;background:var(--accent);color:var(--accent-ink);font-size:15px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:transform .15s var(--ease)}
 .pillb:active{transform:scale(.96)}
+/* tour: offered once on a first visit, never started for you. The bubble sits beside the real control; the page stays visible under a light dim */
+.offer{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 16px;text-align:left}
+.offer p{margin:0}
+.offer .instrow{margin:0}
+.tour{position:fixed;inset:0;z-index:70}
+.tring{position:fixed;left:0;top:0;border-radius:24px;box-shadow:0 0 0 2px var(--accent),0 0 0 200vmax rgba(0,0,0,.12);pointer-events:none}
+.tbub{position:fixed;left:0;top:0;width:min(320px,calc(100vw - 32px));background:var(--raise);border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.12);outline:none}
+.tbub.in{animation:tourUp .3s var(--ease) both}
+.tbub.in.above{animation-name:tourDown}
+@keyframes tourUp{from{opacity:0;translate:0 8px}to{opacity:1;translate:0 0}}
+@keyframes tourDown{from{opacity:0;translate:0 -8px}to{opacity:1;translate:0 0}}
+.tbub p{margin:0 0 12px;font-size:16px;line-height:24px;text-wrap:pretty}
+.tarr{position:absolute;top:-7px;left:0;width:12px;height:12px;background:var(--raise);border:1px solid var(--line);border-right:0;border-bottom:0;border-top-left-radius:4px;transform:rotate(45deg)}
+.tbub.above .tarr{top:auto;bottom:-7px;transform:rotate(225deg)}
+.trow{display:flex;align-items:center;gap:8px}
+.tdots{display:flex;gap:8px;margin-right:auto}
+.tdots i{width:8px;height:8px;border-radius:50%;background:color-mix(in srgb,var(--ink2) 32%,transparent);transition:background .2s var(--fade)}
+.tdots i.on{background:var(--accent)}
+[data-theme=dark] .tbub{box-shadow:none}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .tbub{box-shadow:none}}
 .how{margin:48px 0 0;padding:0}
 .how h2{font-size:20px;line-height:26px;font-weight:600;margin:0 0 16px}
 .how b{color:var(--ink);font-weight:600}
@@ -415,7 +435,7 @@ details.edit[open] summary{margin-bottom:8px}
   .menu{align-items:center}
 }
 @media print{
-  .bar,.dock,footer,.noprint,.tabs,.cook,.menu,.toast{display:none!important}
+  .bar,.dock,footer,.noprint,.tabs,.cook,.menu,.toast,.tour{display:none!important}
   .printonly{display:block;margin:0 0 16px;font-size:15px}
   .checks input:checked+span{text-decoration:line-through}
   .pan.shut{display:block}.ptog svg{display:none}
@@ -456,6 +476,7 @@ details.edit[open] summary{margin-bottom:8px}
           <input type="file" id="file" accept="image/*" multiple hidden>
           <button class="btn" id="choose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="15.5" cy="8.5" r="1.5"/></svg>Choose screenshots</button>
           <p class="hint">Screenshots are sent to an AI reader and not kept.</p>
+          <div class="tip offer hidden" id="tourOffer"><p><b>New here?</b> Quick tour</p><span class="instrow"><button class="pillb" id="tourYes">Show me</button><button class="link" id="tourNo">Skip</button></span></div>
         </div>
         <div class="hidden" id="pastebox">
           <textarea id="paste" placeholder="Ingredients, steps, servings" aria-label="Recipe text"></textarea>
@@ -491,7 +512,7 @@ details.edit[open] summary{margin-bottom:8px}
           <li>Baking isn't eased back, and gets a warning past double.</li>
         </ul>
       </section>
-      <footer class="foot"><a href="about">About</a><a href="privacy">Privacy</a><button class="link hapsw hidden" id="hapSw" aria-pressed="true">Vibration on</button><button class="link hapsw hidden" id="bkFoot">Restore backup</button></footer>
+      <footer class="foot"><a href="about">About</a><a href="privacy">Privacy</a><button class="link hapsw" id="tourGo">Take the tour</button><button class="link hapsw hidden" id="hapSw" aria-pressed="true">Vibration on</button><button class="link hapsw hidden" id="bkFoot">Restore backup</button></footer>
       <input type="file" id="bfile" accept=".json,application/json" hidden>
     </div>
 
@@ -555,6 +576,15 @@ details.edit[open] summary{margin-bottom:8px}
   <button class="btn" id="dCook">Start cooking</button>
 </div></div>
 
+<div class="tour hidden" id="tour">
+  <div class="tring" id="tRing"></div>
+  <div class="tbub" id="tBub" role="dialog" aria-modal="true" aria-label="Tour" aria-describedby="tText" tabindex="-1">
+    <i class="tarr" id="tArr" aria-hidden="true"></i>
+    <p id="tText" aria-live="polite"></p>
+    <div class="trow"><span class="tdots" id="tDots" role="img" aria-label="1 of 5"><i></i><i></i><i></i><i></i><i></i></span><button class="link" id="tSkip">Skip tour</button><button class="pillb" id="tNext">Next</button></div>
+  </div>
+</div>
+
 <div class="menu hidden" id="menu" role="dialog" aria-modal="true" aria-label="Share">
   <div class="mbox">
     <button class="mrow" data-share><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l14-6-6 14-2-6z"/></svg>Send</button>
@@ -600,6 +630,8 @@ const have=new Set();
    (Vercel's own UTM breakdown is a paid add-on, so the source rides along as event data) */
 const SRC=(()=>{let s='';try{s=sessionStorage.getItem('bd-src')||''}catch(e){}if(!s){try{const u=new URLSearchParams(location.search).get('utm_source');const r=document.referrer?new URL(document.referrer).hostname.replace(/^www\./,''):'';s=(u||(r&&!/(^|\.)batch\.recipes$/.test(r)?r:'')||'direct').toLowerCase().replace(/[^a-z0-9.-]/g,'').slice(0,40)||'direct'}catch(e){s='direct'}try{sessionStorage.setItem('bd-src',s)}catch(e){}}return s})();
 function track(name,data){data=Object.assign({src:SRC},data||{});try{window.va('event',{name,data})}catch(e){}try{window.umami&&window.umami.track(name,data)}catch(e){}} // Vercel + Umami (live view)
+// a first visit: nothing of ours stored on this device before this session. Read before anything else writes a bd- key
+const NEWBIE=(()=>{try{let n=sessionStorage.getItem('bd-new');if(n===null){let old=false;for(let i=0;i<localStorage.length;i++)if(/^bd-/.test(localStorage.key(i)))old=true;localStorage.setItem('bd-seen','1');n=old?'0':'1';sessionStorage.setItem('bd-new',n)}return n==='1'}catch(e){return false}})();
 const READER='/*READER*/';
 const SPLIT=/\n-{3,}\n/;
 function esc(s){return String(s).replace(/[&<>"]/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
@@ -651,6 +683,7 @@ function show(v,push){
 }
 addEventListener('popstate',(e)=>{
   const toCook=()=>setTimeout(()=>$('#dCook').focus({preventScroll:true}),0); // a history step can drop focus, so set it after
+  if(touring)endTour('outside',true); // Back ends the tour and then does what Back does
   if(cookOpen()){closeCook(true);toCook();return}
   if(quiet){quiet=false;toCook();return} // our own history.back() after closing cook mode
   closeMenu();closePic();stopRead();addState('pick');show((e.state&&e.state.v)||'add',false); // Back while reading is Cancel
@@ -1076,7 +1109,7 @@ function allB(){junk=[];try{const a=JSON.parse(localStorage.getItem(KEY));if(!Ar
 function putB(a){try{localStorage.setItem(KEY,JSON.stringify(a.concat(junk)));return true}catch(e){return false}}
 function remember(want){
   const note=$('#savedNote');
-  if(from==='sample'&&!touched&&!curId){note.classList.add('hidden');full=false;$('#fullNote').classList.add('hidden');return} // a look at the sample isn't a batch
+  if((from==='sample'||from==='tour')&&!touched&&!curId){note.classList.add('hidden');full=false;$('#fullNote').classList.add('hidden');return} // a look at the sample isn't a batch
   const text=$('#text').value,a0=allB();
   const rec={id:curId||Date.now().toString(36),title:recipe.title,text,y:recipe.yield,w:want,m:mode,at:Date.now(),k:[...have]};
   const a=a0.filter((x)=>x.id!==rec.id&&x.text!==text);
@@ -1120,6 +1153,7 @@ function renderSaved(){
   // one gentle nudge from the third batch on, until it is backed up or waved off; never next to the Home Screen tip
   $('#bkNudge').classList.toggle('hidden',!(a.length>=3&&!flag('bd-bk')&&!flag('bd-bkn')&&$('#tip').classList.contains('hidden')));
   $('#bkFoot').classList.toggle('hidden',a.length>0); // with no batches the card is hidden, so Restore lives in the footer
+  offerSync();
 }
 function flag(k){try{return !!localStorage.getItem(k)}catch(e){return false}}
 function setFlag(k,v){try{localStorage.setItem(k,v||'1')}catch(e){}}
@@ -1206,13 +1240,88 @@ function fillInst(el){
 $('#fullGo').onclick=()=>{addState('pick');show('add',true);const m=$('#mine');m.scrollIntoView({block:'start',behavior:reduce?'auto':'smooth'});$('#mineH').focus({preventScroll:true})};
 $('#tipX').onclick=()=>{try{localStorage.setItem('bd-tip','1')}catch(e){}$('#tip').classList.add('hidden')};
 
+/* tour: five bubbles on the real controls, using the sample. Offered on a first visit, always in the footer.
+   bd-tour = done | skip once it has been finished or waved off; the offer never comes back after that */
+const CAN_LIST=!!navigator.share, CAN_WAKE='wakeLock' in navigator;
+const TOUR=[
+  {t:()=>$('#choose'),s:"Add screenshots of any recipe. Here's a sample."},
+  {t:()=>$('#want').closest('.step'),s:'Set how many meals.'},
+  {t:()=>$('#tabs [data-tab=shop]'),s:CAN_LIST?'Your grocery list. Tick as you shop, or send it to your list app.':'Your grocery list. Tick as you shop.',up:true},
+  {t:()=>$('#dCook'),s:CAN_WAKE?'Cook one step at a time. The screen stays on.':'Cook one step at a time.'},
+  {t:()=>$('#dShare'),s:'Save it or share it.'}];
+let touring=false,ti=0,tSide='',tKey='',tRaf=0,tFrom=null,offerGone=false;
+function offerSync(){$('#tourOffer').classList.toggle('hidden',!(NEWBIE&&!offerGone&&!touring&&!flag('bd-tour')&&!allB().length&&!/^#r=/.test(startHash)))}
+function tourEdges(el){const dock=$('#dock');return {top:$('.bar').getBoundingClientRect().bottom+8,bot:(view==='sheet'&&!dock.contains(el)?dock.getBoundingClientRect().top:innerHeight)-8}}
+// keeps the ring on the control and the bubble beside it, whatever scrolls, slides in or resizes underneath
+function tourPos(){
+  if(!touring)return;tRaf=requestAnimationFrame(tourPos);
+  const el=TOUR[ti].t();if(!el)return;
+  const bub=$('#tBub'),r=el.getBoundingClientRect(),W=document.documentElement.clientWidth,bw=bub.offsetWidth,bh=bub.offsetHeight,e=tourEdges(el);
+  const L=r.left-4,T=r.top-4,w=r.width+8,h=r.height+8;
+  const fitB=T+h+12+bh<=e.bot,fitA=T-12-bh>=e.top;
+  if(!tSide)tSide=TOUR[ti].up?(fitA||!fitB?'above':'below'):(fitB||!fitA?'below':'above');
+  else if(tSide==='below'&&!fitB&&fitA)tSide='above';
+  else if(tSide==='above'&&!fitA&&fitB)tSide='below';
+  const x=Math.round(Math.max(16,Math.min(W-16-bw,r.left+r.width/2-bw/2))),y=Math.round(tSide==='below'?T+h+12:T-12-bh),ax=Math.round(Math.max(24,Math.min(bw-24,r.left+r.width/2-x)))-7;
+  const k=[L,T,w,h,x,y,ax,tSide].join();if(k===tKey)return;tKey=k;
+  const ring=$('#tRing');ring.style.transform=`translate(${L}px,${T}px)`;ring.style.width=w+'px';ring.style.height=h+'px';
+  ring.style.borderRadius=Math.min(24,(parseFloat(getComputedStyle(el).borderTopLeftRadius)||12)+4)+'px';
+  bub.style.transform=`translate(${x}px,${y}px)`;bub.classList.toggle('above',tSide==='above');$('#tArr').style.left=ax+'px';
+}
+// brings the control on screen with room for the bubble on its side; nothing moves if it is already there
+function tourScroll(el,up){
+  if($('#dock').contains(el))return;
+  const r=el.getBoundingClientRect(),bh=$('#tBub').offsetHeight,e=tourEdges(el);
+  const ok=up?(r.top-16-bh>=e.top&&r.bottom+4<=e.bot):(r.top-4>=e.top&&r.bottom+16+bh<=e.bot);
+  if(!ok)scrollBy(0,r.top-(up?e.top+bh+16:e.top+16));
+}
+function tourStep(n){
+  ti=n;tSide='';tKey='';const st=TOUR[n],bub=$('#tBub'),last=n===TOUR.length-1;
+  $('#tText').textContent=st.s;$('#tNext').textContent=last?'Done':'Next';
+  $('#tDots').setAttribute('aria-label',`${n+1} of ${TOUR.length}`);$$('#tDots i').forEach((d,k)=>d.classList.toggle('on',k===n));
+  const el=st.t();if(!el){endTour('outside');return}
+  tourScroll(el,st.up);
+  bub.classList.remove('in');bub.offsetWidth;cancelAnimationFrame(tRaf);tourPos();bub.classList.add('in');
+}
+function startTour(opener){
+  if(touring||job)return;
+  tFrom=opener||null;offerGone=true;touring=true;hideToast();
+  if(view!=='add')show('add',true);addState('pick');pasteMode(false);offerSync();
+  $('#tour').classList.remove('hidden');tourStep(0);$('#tBub').focus({preventScroll:true});
+}
+function tourNext(){
+  if(ti===TOUR.length-1){endTour('done');return}
+  if(ti===0){const um=userMode;userMode='batch';from='tour';shots=[];extra=0;src='';const ok=load(SAMPLE);userMode=um;if(!ok){endTour('outside');return}$('#tNext').focus({preventScroll:true})} // the sample, opened for the tour: not saved, and its Plan event says from: tour
+  if(ti>=1&&tab!=='shop')setTab('shop',true);
+  tourStep(ti+1);
+}
+// how: done | skip | outside (a tap off the bubble, Escape or Back). quiet = Back is already moving the page
+function endTour(how,quiet){
+  if(!touring)return;touring=false;cancelAnimationFrame(tRaf);$('#tour').classList.add('hidden');
+  setFlag('bd-tour',how==='done'?'done':'skip');track('Tour',{step:ti+1,end:how});offerSync();
+  if(quiet)return;
+  const to=view==='sheet'?$('#sTitle'):(tFrom&&tFrom.isConnected&&tFrom.offsetParent?tFrom:$('#choose'));to.focus({preventScroll:true});
+  if(how!=='done'&&tFrom!==$('#tourGo'))toast(view==='sheet'?"Tour's at the bottom of the home page anytime.":"Tour's at the bottom of the page anytime.",null,4000);
+}
+$('#tourYes').onclick=()=>{track('Tour',{step:0,choice:'show'});startTour($('#choose'))};
+$('#tourNo').onclick=()=>{offerGone=true;setFlag('bd-tour','skip');track('Tour',{step:0,choice:'skip'});offerSync();$('#choose').focus({preventScroll:true});toast("Tour's at the bottom of the page anytime.",null,4000)};
+$('#tourGo').onclick=()=>{track('Tour',{step:0,choice:'link'});startTour($('#tourGo'))};
+$('#tNext').onclick=tourNext;
+$('#tSkip').onclick=()=>endTour('skip');
+$('#tour').addEventListener('click',(e)=>{if(!e.target.closest('#tBub'))endTour('outside')});
+addEventListener('keydown',(e)=>{
+  if(!touring)return;
+  if(e.key==='Escape'){e.preventDefault();e.stopPropagation();endTour('outside');return}
+  if(e.key==='Tab'){const f=[$('#tSkip'),$('#tNext')],a=document.activeElement,i=f.indexOf(a);e.preventDefault();e.stopPropagation();f[i<0?(e.shiftKey?1:0):(i+(e.shiftKey?1:1))%2].focus()} // two buttons: Tab stays between them
+},true);
+
 let tt=null;
-function toast(msg,undo){
+function toast(msg,undo,ms){
   const el=$('#toast');clearTimeout(tt);
   el.innerHTML=`<span>${esc(msg)}</span>${undo?'<button>Undo</button>':''}`;el.classList.toggle('u',!!undo);
   el.style.bottom=view==='sheet'?'calc(var(--dock) + env(safe-area-inset-bottom) + 16px)':'24px';
   if(undo)el.querySelector('button').onclick=()=>{undo();hideToast()};
-  el.classList.add('on');tt=setTimeout(hideToast,undo?5000:2400);
+  el.classList.add('on');tt=setTimeout(hideToast,ms||(undo?5000:2400));
 }
 function hideToast(){$('#toast').classList.remove('on')}
 

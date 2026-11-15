@@ -30,17 +30,18 @@
   --shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);
   --ease:cubic-bezier(.32,.72,0,1);--fade:cubic-bezier(.25,.1,.25,1);
   --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Inter,system-ui,sans-serif;
-  --dock:80px;
+  --dock:80px;--press:rgba(0,0,0,.07);
+  --tick:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7.4l2.8 2.8L11 4.4'/%3E%3C/svg%3E");
 }
 [data-theme=dark]{
   --bg:#000;--bg2:#2c2c2e;--raise:#1c1c1e;--ink:#f5f5f7;--ink2:#a1a1a6;--line:rgba(255,255,255,.12);
-  --accent:#ff7a3d;--accent-ink:#1d1d1f;--warn:#ffb454;--warn-bg:#2a2010;--pill:#48484a;--shadow:none;
+  --accent:#ff7a3d;--accent-ink:#1d1d1f;--warn:#ffb454;--warn-bg:#2a2010;--pill:#48484a;--shadow:none;--press:rgba(255,255,255,.12);
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]){
   --bg:#000;--bg2:#2c2c2e;--raise:#1c1c1e;--ink:#f5f5f7;--ink2:#a1a1a6;--line:rgba(255,255,255,.12);
-  --accent:#ff7a3d;--accent-ink:#1d1d1f;--warn:#ffb454;--warn-bg:#2a2010;--pill:#48484a;--shadow:none;}}
+  --accent:#ff7a3d;--accent-ink:#1d1d1f;--warn:#ffb454;--warn-bg:#2a2010;--pill:#48484a;--shadow:none;--press:rgba(255,255,255,.12);}}
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.47 var(--font);-webkit-font-smoothing:antialiased;transition:background .3s var(--fade),color .3s var(--fade)}
 button,input,textarea{font:inherit;color:inherit}
 button{-webkit-tap-highlight-color:transparent}
@@ -55,8 +56,13 @@ h2:focus,h3:focus{outline:none}
 /* top bar */
 .bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;height:52px;padding:0 16px;
   background:color-mix(in srgb,var(--bg) 72%,transparent);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line)}
-.mark{font-weight:600;font-size:19px;letter-spacing:-.02em;text-decoration:none;color:var(--ink);display:flex;align-items:center;min-height:44px}
+.mark{font-weight:600;font-size:19px;letter-spacing:-.02em;text-decoration:none;color:var(--ink);display:flex;align-items:center;min-height:44px;transition:opacity .2s var(--fade)}
 .mark b{color:var(--accent);font-weight:600}
+/* the recipe name takes the logo's place once the title has scrolled under the bar; tap it to go back up */
+.btitle{position:absolute;left:16px;right:84px;top:0;height:52px;line-height:52px;font-weight:600;font-size:17px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s var(--fade);-webkit-user-select:none;user-select:none}
+.bar.t .btitle{opacity:1;pointer-events:auto}
+.bar.t .mark:not(:focus-visible){opacity:0;pointer-events:none}
+.bar.t:has(.mark:focus-visible) .btitle{opacity:0;pointer-events:none}
 .switch{width:52px;height:32px;border-radius:16px;border:0;background:var(--bg2);box-shadow:inset 0 0 0 1px var(--line);position:relative;cursor:pointer;padding:0}
 .switch:before{content:"";position:absolute;inset:-8px 0}
 .switch i{position:absolute;top:4px;left:4px;width:24px;height:24px;border-radius:50%;background:var(--bg);box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .3s var(--ease);display:grid;place-items:center}
@@ -92,7 +98,11 @@ h3{margin:0 0 8px;font-size:19px;font-weight:600;letter-spacing:-.01em}
 .btn:disabled{opacity:.4;cursor:default;transform:none;filter:none}
 .btn svg{width:22px;height:22px;flex:none}
 .btn.soft{background:var(--bg2);color:var(--ink)}
-.link{background:none;border:0;color:var(--accent);cursor:pointer;padding:0 4px;font-size:15px;min-height:44px;font-weight:600}
+.link{background:none;border:0;color:var(--accent);cursor:pointer;padding:0 4px;font-size:15px;min-height:44px;font-weight:600;transition:opacity .15s var(--fade)}
+.link:active{opacity:.5;transition-duration:0s}
+.link[data-copy]{display:inline-flex;align-items:center;gap:4px}
+.ck{width:16px;height:16px;flex:none}.ck path{stroke-dasharray:15;stroke-dashoffset:15;animation:draw .18s var(--fade) .05s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
 .links{display:flex;justify-content:center;gap:24px;margin-top:8px}
 .hint{color:var(--ink2);font-size:14px;line-height:20px;text-align:center;margin:12px 0 0;text-wrap:balance}
 
@@ -143,7 +153,7 @@ textarea:focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transpar
 .which{margin-bottom:16px}
 .which p{margin:0 0 8px;font-size:13px;color:var(--ink2)}
 .which div{display:flex;flex-wrap:wrap;gap:8px}
-.chip{min-height:44px;max-width:100%;padding:0 16px;border-radius:980px;border:0;background:var(--bg2);font-size:15px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:background .2s var(--fade),color .2s var(--fade)}
+.chip{min-height:44px;max-width:100%;padding:0 16px;border-radius:980px;border:0;background:var(--bg2);font-size:15px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:background .2s var(--fade),color .2s var(--fade),box-shadow .15s var(--fade)}
 .chip[aria-pressed=true]{background:var(--accent);color:var(--accent-ink);font-weight:600}
 
 .set{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--line)}
@@ -152,13 +162,18 @@ textarea:focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transpar
 .set.minor label{font-size:16px;font-weight:400}
 .set small{display:block;color:var(--ink2);font-size:13px;font-weight:400}
 .seg{display:flex;background:var(--bg2);border-radius:980px;padding:4px;position:relative;margin-bottom:8px}
-.seg button{flex:1;min-width:0;border:0;background:none;min-height:40px;border-radius:980px;cursor:pointer;font-size:15px;position:relative;z-index:1;color:var(--ink2);transition:color .2s var(--fade);padding:0 4px}
+.seg button{flex:1;min-width:0;border:0;background:none;min-height:40px;border-radius:980px;cursor:pointer;font-size:15px;position:relative;z-index:1;color:var(--ink2);transition:color .2s var(--fade),box-shadow .15s var(--fade);padding:0 4px}
 .seg button:before{content:"";position:absolute;inset:-4px 0}
 .seg button[aria-pressed=true]{color:var(--ink);font-weight:600}
 .seg .pill{position:absolute;top:4px;bottom:4px;left:4px;border-radius:980px;background:var(--pill);box-shadow:0 1px 3px rgba(0,0,0,.12);transition:transform .35s var(--ease),width .35s var(--ease),height .35s var(--ease)}
 .step{display:inline-flex;align-items:center;gap:4px;background:var(--bg2);border-radius:980px;padding:4px;flex:none}
-.step button{width:44px;height:44px;border-radius:50%;border:0;background:none;cursor:pointer;font-size:22px;line-height:1;color:var(--accent);transition:transform .15s var(--ease)}
+.step button{width:44px;height:44px;border-radius:50%;border:0;background:none;cursor:pointer;font-size:22px;line-height:1;color:var(--accent);transition:transform .15s var(--ease),opacity .2s var(--fade)}
 .step button:active{transform:scale(.88)}
+/* at 1 or 999 that button dims and the number nudges 4px and settles */
+.step button.end{opacity:.4}.step button.end:active{transform:none}
+.step input.nr{animation:nudgeR .2s var(--ease)}.step input.nl{animation:nudgeL .2s var(--ease)}
+@keyframes nudgeR{35%{transform:translateX(4px)}to{transform:none}}
+@keyframes nudgeL{35%{transform:translateX(-4px)}to{transform:none}}
 .step input{width:44px;height:44px;text-align:center;border:0;background:none;font-weight:600;font-size:19px;outline:none;border-radius:8px;padding:0}
 .step input:focus-visible{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent)}
 #ctl{padding:16px 20px}
@@ -175,13 +190,25 @@ textarea:focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transpar
 .tbl small.w{color:var(--warn)}
 .tag{font-size:12px;color:var(--warn);margin-left:8px;white-space:nowrap}
 .checks{list-style:none;margin:0;padding:0}
-.checks label{display:flex;align-items:center;gap:16px;min-height:48px;padding:8px 0;border-top:1px solid var(--line);cursor:pointer;font-size:16px}
-.checks li:first-child label{border-top:0}
-.checks input{appearance:none;-webkit-appearance:none;width:24px;height:24px;border-radius:50%;border:1.5px solid color-mix(in srgb,var(--ink2) 60%,transparent);margin:0;flex:none;display:grid;place-items:center;transition:background .2s var(--fade),border-color .2s var(--fade);cursor:pointer}
+.checks li{border-top:1px solid var(--line)}
+.checks li:first-child{border-top:0}
+.checks label{display:flex;align-items:center;gap:16px;min-height:48px;padding:8px 12px;margin:0 -12px;border-radius:12px;cursor:pointer;font-size:16px;transition:box-shadow .15s var(--fade)}
+/* the tick draws itself: circle fills (150ms), check wipes in left to right (180ms), a line runs across the words (250ms) */
+.checks input{appearance:none;-webkit-appearance:none;position:relative;width:24px;height:24px;border-radius:50%;border:1.5px solid color-mix(in srgb,var(--ink2) 60%,transparent);margin:0;flex:none;transition:background .15s var(--fade),border-color .15s var(--fade);cursor:pointer}
 .checks input:checked{background:var(--accent);border-color:var(--accent)}
-.checks input:checked:after{content:"";width:10px;height:5px;border:2px solid var(--accent-ink);border-top:0;border-right:0;transform:translateY(-1px) rotate(-45deg)}
-.checks span{transition:color .2s var(--fade);min-width:0;overflow-wrap:anywhere}
-.checks input:checked+span{color:var(--ink2);text-decoration:line-through}
+.checks input:after{content:"";position:absolute;inset:0;background:var(--accent-ink);-webkit-mask:var(--tick) center/18px 18px no-repeat;mask:var(--tick) center/18px 18px no-repeat;clip-path:inset(0 100% 0 0)}
+.checks input:checked:after{clip-path:inset(0);transition:clip-path .18s var(--fade) .08s}
+.checks span{transition:color .25s var(--fade);min-width:0;overflow-wrap:anywhere}
+.checks input:checked+span{color:var(--ink2)}
+/* the line is a background on an inline box, so it follows the words onto a second line */
+.checks .tx{background:linear-gradient(currentColor,currentColor) 0 54%/0 1.5px no-repeat;transition:background-size .15s var(--fade),color .25s var(--fade)}
+.checks input:checked+span .tx{background-size:100% 1.5px;transition:background-size .25s var(--fade) .05s,color .25s var(--fade)}
+.card h3 .cnt{margin-left:8px;font-variant-numeric:tabular-nums}
+.card h3 .cnt.all{color:var(--accent);font-weight:600}
+/* an amount that just changed slides up 6px and fades in */
+.chg{animation:amt .18s var(--fade) both}
+b.chg,span.chg{display:inline-block}
+@keyframes amt{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .checks b{font-weight:600}
 ol.order{list-style:none;padding:0;margin:0;counter-reset:o}
 ol.order li{counter-increment:o;display:grid;grid-template-columns:28px 1fr auto;gap:12px;padding:12px 0;border-top:1px solid var(--line);font-size:16px}
@@ -219,12 +246,15 @@ details.edit[open] summary{margin-bottom:8px}
 .saved{list-style:none;margin:0;padding:0}
 .saved li{display:flex;align-items:center;gap:8px;border-top:1px solid var(--line)}
 .saved li:first-child{border-top:0}
-.saved .open{flex:1;min-width:0;text-align:left;background:none;border:0;padding:8px 0;min-height:56px;cursor:pointer;display:flex;flex-direction:column;justify-content:center}
-.saved .open b{font-weight:600;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-.saved .open span{font-size:13px;color:var(--ink2)}
-.rm{width:44px;height:44px;flex:none;border:0;background:none;color:var(--ink2);cursor:pointer;border-radius:50%;display:grid;place-items:center;transition:background .2s var(--fade)}
-.rm:hover{background:var(--bg2)}
-.rm svg{width:14px;height:14px}
+.saved .open,.saved .gopen{flex:1;min-width:0;text-align:left;background:none;border:0;padding:8px 12px;margin-left:-12px;border-radius:12px;min-height:56px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;transition:box-shadow .15s var(--fade)}
+/* a removed row folds shut; the copy that folds is not a control and is hidden from screen readers */
+.saved li.gone{overflow:hidden;border-top:0;pointer-events:none;transition:height .2s var(--ease),opacity .2s var(--fade)}
+.saved li.gone:first-child+li{border-top-color:transparent}
+.saved .open b,.saved .gopen b{font-weight:600;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.saved .open span,.saved .gopen span{font-size:13px;color:var(--ink2)}
+.rm,.grm{width:44px;height:44px;flex:none;border:0;background:none;color:var(--ink2);cursor:pointer;border-radius:50%;display:grid;place-items:center;transition:background .2s var(--fade),box-shadow .15s var(--fade)}
+@media (hover:hover){.rm:hover{background:var(--bg2)}}
+.rm svg,.grm svg{width:14px;height:14px}
 .tip{background:var(--bg2);border-radius:16px;padding:16px;font-size:14px;color:var(--ink2);margin-top:16px}
 .tip b{color:var(--ink);font-weight:600}
 .tip .link{min-height:44px;padding:0;display:block;margin-bottom:-12px}
@@ -261,8 +291,14 @@ details.edit[open] summary{margin-bottom:8px}
 .menu{position:fixed;inset:0;z-index:45;background:rgba(0,0,0,.4);display:flex;align-items:flex-end;justify-content:center;padding:16px 16px calc(16px + env(safe-area-inset-bottom));animation:fadeIn .25s var(--fade) both}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .mbox{width:100%;max-width:400px;background:var(--raise);border-radius:20px;padding:8px;animation:viewIn .35s var(--ease) both}
-.mrow{display:flex;align-items:center;gap:16px;width:100%;min-height:56px;padding:0 16px;border:0;background:none;border-radius:12px;font-size:17px;cursor:pointer;text-align:left}
-.mrow:hover{background:var(--bg2)}
+.mrow{display:flex;align-items:center;gap:16px;width:100%;min-height:56px;padding:0 16px;border:0;background:none;border-radius:12px;font-size:17px;cursor:pointer;text-align:left;transition:box-shadow .15s var(--fade)}
+@media (hover:hover){.mrow:hover{background:var(--bg2)}}
+/* things close the way they opened */
+.menu.out{animation:fadeOut .2s var(--fade) both;pointer-events:none}
+.menu.out .mbox{animation:dropOut .25s var(--fade) both}
+.cook.out{animation:dropOut .25s var(--fade) both;pointer-events:none}
+@keyframes fadeOut{to{opacity:0}}
+@keyframes dropOut{to{opacity:0;transform:translateY(12px)}}
 .mrow svg{width:20px;height:20px;color:var(--accent);flex:none}
 .mrow.mx{justify-content:center;color:var(--ink2);border-top:1px solid var(--line);border-radius:0 0 12px 12px}
 
@@ -293,10 +329,17 @@ details.edit[open] summary{margin-bottom:8px}
 .done{text-align:center;align-items:center}
 .done svg{width:64px;height:64px;color:var(--accent);margin-bottom:16px}
 
+/* rows answer a touch: grey fill straight away, fading over 150ms on release */
+.checks label:active,.saved .open:active,.mrow:active,.chip:active,.seg button:active,.rm:active{box-shadow:inset 0 0 0 999px var(--press);transition-duration:0s}
+
 /* motion */
 .rise{opacity:0;transform:translateY(12px)}
 .rise.in{opacity:1;transform:none;transition:opacity .7s var(--fade),transform .7s var(--ease)}
-@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01s!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:opacity .2s linear!important}.rise{transform:none}.pot .steam path{stroke-dashoffset:0;opacity:1}.th.scan:after{display:none}}
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01s!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:opacity .2s linear!important}.rise{transform:none}.pot .steam path{stroke-dashoffset:0;opacity:1}.th.scan:after{display:none}
+  /* small touches: the end state with a 0.2s fade, no movement */
+  .checks input:after{clip-path:none;opacity:0}.checks input:checked:after{opacity:1}
+  .chg{animation:fadeIn .2s linear both!important}
+  .menu.out,.cook.out{animation:fadeOut .2s linear both!important}.menu.out .mbox{animation:none!important}}
 
 @media (max-width:300px){
   h1{font-size:32px}h2,.reading h2{font-size:24px}.mark{font-size:17px}.set{flex-wrap:wrap}.flow{grid-template-columns:1fr;gap:16px}.flow li+li:before{display:none}
@@ -319,6 +362,7 @@ details.edit[open] summary{margin-bottom:8px}
 @media print{
   .bar,.dock,footer,.noprint,.tabs,.cook,.menu,.toast{display:none!important}
   .printonly{display:block;margin:0 0 16px;font-size:15px}
+  .checks input:checked+span{text-decoration:line-through}
   body{background:#fff;color:#000}main{padding:0}.card{box-shadow:none;break-inside:avoid;border:1px solid #ddd}
   .rise{opacity:1!important;transform:none!important}[data-panel]{display:block!important}
 }
@@ -327,6 +371,7 @@ details.edit[open] summary{margin-bottom:8px}
 <body>
 <header class="bar">
   <a class="mark" href="./" aria-label="batch.recipes home">batch<b>.</b>recipes</a>
+  <span class="btitle" id="barTitle" dir="auto" aria-hidden="true"></span>
   <button class="switch" id="theme" role="switch" aria-checked="false" aria-label="Dark mode"><i><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M13 9.5A5.5 5.5 0 0 1 6.5 3a5.5 5.5 0 1 0 6.5 6.5z"/></svg></i></button>
 </header>
 
@@ -511,12 +556,12 @@ function show(v,push){
   $('#dock').classList.toggle('on',v==='sheet');$('#main').classList.toggle('docked',v==='sheet');
   try{if(v==='sheet'&&curId)sessionStorage.setItem('bd-open',curId);else sessionStorage.removeItem('bd-open')}catch(e){}
   if(push){const rd=history.state&&history.state.reading;history[rd?'replaceState':'pushState']({v},'','#'+(v==='add'?'':v))} // the reading screen's entry becomes the recipe's
-  scrollTo(0,0);
+  scrollTo(0,0);syncBar();
   if(v==='sheet'){placeAd();if(full)remember(plan.want);$('#sTitle').focus({preventScroll:true});requestAnimationFrame(()=>{moveSeg();moveTabs()})}
 }
 addEventListener('popstate',(e)=>{
   const toCook=()=>setTimeout(()=>$('#dCook').focus({preventScroll:true}),0); // a history step can drop focus, so set it after
-  if(!$('#cook').classList.contains('hidden')){closeCook(true);toCook();return}
+  if(cookOpen()){closeCook(true);toCook();return}
   if(quiet){quiet=false;toCook();return} // our own history.back() after closing cook mode
   closeMenu();stopRead();addState('pick');show((e.state&&e.state.v)||'add',false); // Back while reading is Cancel
 });
@@ -736,7 +781,7 @@ function parse(){
   recipe=E.parseRecipe(raw);
   recipe.title=recipe.title||guessTitle(raw);
   $('#yield').value=recipe.yield;
-  $('#sTitle').textContent=recipe.title;
+  $('#sTitle').textContent=$('#barTitle').textContent=recipe.title;
   mode=recipe.baking?'scale':userMode;
   syncMode();
 }
@@ -779,11 +824,20 @@ function moveTabs(){slide($('#tabs'))}
 addEventListener('resize',()=>{moveSeg();moveTabs()});
 // whole numbers 1 to 999; anything that isn't a plain number goes back to the last good value
 function snapN(i,fb){const s=i.value.trim();let v=/^[+-]?\d+(\.\d+)?$/.test(s)?Math.round(parseFloat(s)):fb;v=Math.min(999,Math.max(1,v||1));i.value=v;return v}
-function changed(id){if(!recipe)return;touched=true;if(id==='yield')yieldSet=true;build()}
-$$('.step button').forEach((b)=>{ // tap = one step; press and hold = keeps counting
-  const bump=()=>{if(!recipe)return;const i=$('#'+b.dataset.t);i.value=Math.min(999,Math.max(1,snapN(i,b.dataset.t==='yield'?recipe.yield:(plan?plan.want:defWant(mode)))+(+b.dataset.d)));changed(b.dataset.t)};
-  let t1,t2,held=false;const stop=()=>{clearTimeout(t1);clearInterval(t2)};
-  b.addEventListener('pointerdown',(e)=>{if(e.button)return;held=false;stop();t1=setTimeout(()=>{held=true;bump();t2=setInterval(bump,110)},450)});
+let flash=false; // set while a stepper or number box redraws the page, so changed amounts can show it
+function changed(id){if(!recipe)return;touched=true;if(id==='yield')yieldSet=true;flash=true;try{build()}finally{flash=false}}
+// at 1 or 999 the button that can't go further dims
+function syncEnds(){$$('.step button').forEach((b)=>{const v=parseInt($('#'+b.dataset.t).value,10),end=+b.dataset.d<0?v<=1:v>=999;b.classList.toggle('end',end)})} // a class, not disabled: the button still answers with a nudge
+function nudge(i,d){i.classList.remove('nl','nr');i.offsetWidth;i.classList.add(d<0?'nl':'nr')}
+$$('.step button').forEach((b)=>{ // tap = one step; press and hold = keeps counting, faster after 1.5 s
+  const id=b.dataset.t,d=+b.dataset.d,inp=$('#'+id);
+  // one count; false at 1 or 999. light (while holding) changes only the number: the page is drawn once, on release
+  const bump=(light)=>{if(!recipe)return false;const v=snapN(inp,id==='yield'?recipe.yield:(plan?plan.want:defWant(mode))),n=Math.min(999,Math.max(1,v+d));
+    inp.value=n;if(n===v)nudge(inp,d);syncEnds();if(!light)changed(id);return n!==v};
+  let t1,t2,t3,held=false,moved=false;
+  const stop=()=>{clearTimeout(t1);clearInterval(t2);clearTimeout(t3);if(moved){moved=false;changed(id)}};
+  const run=(ms)=>{clearInterval(t2);t2=setInterval(()=>{if(bump(true))moved=true;else{clearInterval(t2);clearTimeout(t3)}},ms)};
+  b.addEventListener('pointerdown',(e)=>{if(e.button)return;held=false;stop();t1=setTimeout(()=>{held=true;if(bump(true)){moved=true;run(110);t3=setTimeout(()=>run(60),1050)}},450)}); // 450 + 1050 = 1.5 s held
   ['pointerup','pointerleave','pointercancel'].forEach((ev)=>b.addEventListener(ev,stop));
   b.addEventListener('contextmenu',(e)=>e.preventDefault());
   b.onclick=()=>{if(held){held=false;return}bump()};
@@ -794,11 +848,11 @@ const IC={freezer:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" st
 function ingRows(items){
   const byLine={};recipe.flags.forEach((f)=>{if(f.line)byLine[f.line]=f});
   let sec=null,h='';
-  items.forEach((i)=>{
+  items.forEach((i,k)=>{
     if(i.section!==sec){sec=i.section;if(sec)h+=`<tr class="sec"><td colspan="3">${esc(sec)}</td></tr>`}
     const orig=i.qty==null?'':esc(i.raw.match(/^[^a-zA-Z]*[a-zA-Z]*/)[0].trim());
     const f=byLine[i.raw];
-    h+=`<tr><td class="q num">${esc(i.scaled||'')}</td><td>${esc(i.name)}${i.adjusted?'<span class="tag">eased back</span>':''}${i.estimated?'<span class="tag">estimate</span>':''}${isOdd(i)?'<small class="w">Check this amount</small>':f&&FRIENDLY[f.type]?`<small class="${f.type==='amount'?'w':''}">${FRIENDLY[f.type]}</small>`:''}</td><td class="o num">${orig}</td></tr>`;
+    h+=`<tr><td class="q num"><span data-a="r:${k}">${esc(i.scaled||'')}</span></td><td>${esc(i.name)}${i.adjusted?'<span class="tag">eased back</span>':''}${i.estimated?'<span class="tag">estimate</span>':''}${isOdd(i)?'<small class="w">Check this amount</small>':f&&FRIENDLY[f.type]?`<small class="${f.type==='amount'?'w':''}">${FRIENDLY[f.type]}</small>`:''}</td><td class="o num">${orig}</td></tr>`;
   });
   return h;
 }
@@ -807,6 +861,8 @@ function build(fresh){
   recipe.yield=snapN($('#yield'),recipe.yield||4);
   const want=snapN($('#want'),plan&&plan.mode===mode?plan.want:wants[mode]||defWant(mode)), sh=$('#sheet'), R=fresh?' rise':'';
   wants[mode]=want;
+  // amounts as they stand now, by item, to compare after the redraw
+  const old=flash&&!fresh?new Map([...sh.querySelectorAll('[data-a]')].map((e)=>[e.dataset.a,e.textContent])):null,oldMeta=$('#sMeta').textContent;
   const oddN=new Set(recipe.ingredients.filter(isOdd).map((i)=>i.name));
   drawHead();
   let h='';
@@ -822,13 +878,13 @@ function build(fresh){
     const seen={};p.grocery.forEach((g)=>{const n=seen[g.name]=(seen[g.name]||0)+1;g.key=n>1?g.name+' #'+n:g.name}); // "ginger paste" can be on the list twice
     const names=new Set(p.grocery.map((g)=>g.key));[...have].forEach((k)=>{if(!names.has(k))have.delete(k)}); // a tick goes only when its item does
     const list=p.grocery.map((g)=>g.amt==='for serving'?`${g.name} (for serving)`:`${g.amt?g.amt+' ':''}${g.name}`).join('\n');
-    h+=`<div data-panel="shop"><div class="card${R}"><h3>Grocery list <button class="link noprint" data-copy>Copy</button></h3><ul class="checks">${p.grocery.map((g)=>`<li><label><input type="checkbox" data-k="${esc(g.key)}"${have.has(g.key)?' checked':''}><span>${g.amt==='for serving'?`${esc(g.name)} <span class="muted">for serving</span>`:`<b class="num">${esc(g.amt)}</b> ${esc(g.name)}`}${oddN.has(g.name)?'<span class="tag">check amount</span>':''}</span></label></li>`).join('')}</ul><textarea hidden id="glist">${esc(list)}</textarea></div></div>`;
+    h+=`<div data-panel="shop"><div class="card${R}"><h3><span>Grocery list<small class="cnt" id="gcount" aria-live="polite"></small></span><button class="link noprint" data-copy>Copy</button></h3><ul class="checks">${p.grocery.map((g)=>`<li><label><input type="checkbox" data-k="${esc(g.key)}"${have.has(g.key)?' checked':''}><span><span class="tx">${g.amt==='for serving'?`${esc(g.name)} <span class="muted">for serving</span>`:`<b class="num" data-a="s:${esc(g.key)}">${esc(g.amt)}</b> ${esc(g.name)}`}${oddN.has(g.name)?'<span class="tag">check amount</span>':''}</span></span></label></li>`).join('')}</ul><textarea hidden id="glist">${esc(list)}</textarea></div></div>`;
     // cook
     h+=`<div data-panel="cook">`;
-    if(p.pots.length)h+=`<div class="card${R}"><h3>Pots and pans</h3><ul class="plain">${p.pots.map((x)=>`<li>${esc(x)}</li>`).join('')}</ul></div>`;
-    h+=`<div class="card${R}"><h3>Cook order</h3><ol class="order">${p.order.map((o)=>`<li><div>${esc(o.t)}<small>${esc(o.d)}</small></div><span class="t num">${o.min?o.min+' min':''}</span></li>`).join('')}</ol></div></div>`;
+    if(p.pots.length)h+=`<div class="card${R}"><h3>Pots and pans</h3><ul class="plain">${p.pots.map((x,k)=>`<li data-a="p:${k}">${esc(x)}</li>`).join('')}</ul></div>`;
+    h+=`<div class="card${R}"><h3>Cook order</h3><ol class="order">${p.order.map((o,k)=>`<li><div>${esc(o.t)}<small data-a="d:${k}">${esc(o.d)}</small></div><span class="t num" data-a="m:${k}">${o.min?o.min+' min':''}</span></li>`).join('')}</ol></div></div>`;
     // store
-    h+=`<div data-panel="store"><div class="card${R}"><h3>Where it goes</h3><div class="split"><div><h4>${IC.freezer}Freezer</h4><p>${esc(p.split.freezer.join(' ')||'Nothing this time.')}</p></div><div><h4>${IC.fridge}Fridge</h4><p>${esc(p.split.fridge.join(' '))}</p></div><div><h4>${IC.fresh}Fresh at serving</h4><p>${esc(p.split.fresh.join(', ')||'Nothing extra.')}</p></div></div></div></div>`;
+    h+=`<div data-panel="store"><div class="card${R}"><h3>Where it goes</h3><div class="split"><div><h4>${IC.freezer}Freezer</h4><p data-a="f:z">${esc(p.split.freezer.join(' ')||'Nothing this time.')}</p></div><div><h4>${IC.fridge}Fridge</h4><p data-a="f:r">${esc(p.split.fridge.join(' '))}</p></div><div><h4>${IC.fresh}Fresh at serving</h4><p>${esc(p.split.fresh.join(', ')||'Nothing extra.')}</p></div></div></div></div>`;
     // recipe: what was read, next to what it became
     h+=`<div data-panel="recipe"><div class="card${R}"><h3>Amounts <small>original on the right</small></h3><table class="tbl">${ingRows(p.items)}</table></div>${steps}</div>`;
   }else{
@@ -840,13 +896,23 @@ function build(fresh){
   }
   sh.innerHTML=h;
   sh.querySelectorAll('.rise').forEach((el,k)=>watch(el,Math.min(k,4)*60));
-  sh.querySelectorAll('.checks input').forEach((c)=>c.onchange=()=>{have[c.checked?'add':'delete'](c.dataset.k);touched=true;remember(plan.want)});
-  const cp=sh.querySelector('[data-copy]');if(cp)cp.onclick=()=>{navigator.clipboard.writeText($('#glist').value).then(()=>{cp.textContent='Copied';setTimeout(()=>cp.textContent='Copy',1600)},()=>{cp.textContent='Copy failed'})};
+  sh.querySelectorAll('.checks input').forEach((c)=>c.onchange=()=>{have[c.checked?'add':'delete'](c.dataset.k);touched=true;drawCount();remember(plan.want)});
+  drawCount();
+  const cp=sh.querySelector('[data-copy]');if(cp)cp.onclick=()=>{navigator.clipboard.writeText($('#glist').value).then(()=>{cp.innerHTML=CHECK_IC+'Copied';clearTimeout(cp.t);cp.t=setTimeout(()=>cp.textContent='Copy',1600)},()=>{cp.textContent='Copy failed'})};
   sh.querySelectorAll('[data-tab]').forEach((b)=>b.onclick=()=>setTab(b.dataset.tab));
   setTab(mode==='batch'?tab:'recipe',true);
+  syncEnds();
+  if(old){ // only what is on screen, and only what changed
+    sh.querySelectorAll('[data-a]').forEach((e)=>{if(e.offsetParent&&old.has(e.dataset.a)&&old.get(e.dataset.a)!==e.textContent)e.classList.add('chg')});
+    const m=$('#sMeta');if(m.textContent!==oldMeta){m.classList.remove('chg');m.offsetWidth;m.classList.add('chg')}
+  }
   remember(want);
   $$('[data-inst]').forEach(fillInst);
 }
+const CHECK_IC='<svg class="ck" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 4.8"/></svg>';
+$('#sheet').addEventListener('animationend',(e)=>e.target.classList.remove('chg'));
+// how far along the shop is: "4 of 15", then "All set"
+function drawCount(){const c=$('#gcount');if(!c)return;const n=$$('#sheet .checks input').length,k=$$('#sheet .checks input:checked').length,all=n>0&&k===n;c.textContent=all?'All set':k?`${k} of ${n}`:'';c.classList.toggle('all',all)}
 function setTab(t,quiet){
   if(mode==='batch')tab=t;
   $$('#tabs [data-tab]').forEach((b)=>b.setAttribute('aria-pressed',b.dataset.tab===t));
@@ -898,8 +964,14 @@ function renderSaved(){
   $('#savedList').innerHTML=a.map((r)=>`<li><button class="open" data-id="${esc(r.id)}"><b>${esc(r.title||'Recipe')}</b><span class="num">${r.m==='scale'?`${esc(r.w)} servings`:`${esc(r.w)} meals`} · ${new Date(r.at).toLocaleDateString(undefined,{month:'short',day:'numeric'})}</span></button><button class="rm" data-rm="${esc(r.id)}" aria-label="Remove ${esc(r.title||'recipe')}">${X_IC}</button></li>`).join('');
   $$('#savedList .open').forEach((b)=>b.onclick=()=>{const r=allB().find((x)=>x.id===b.dataset.id);if(r){from='saved';openRec(r);track('Reopen saved')}});
   $$('#savedList .rm').forEach((b)=>b.onclick=()=>{const all=allB(),i=all.findIndex((x)=>x.id===b.dataset.rm);if(i<0)return;const gone=all.splice(i,1)[0];putB(all);
+    const li=b.closest('li'),hh=li.offsetHeight,pos=[...li.parentNode.children].indexOf(li),was=[li.querySelector('.open b').textContent,li.querySelector('.open span').textContent];
     if(gone.id===curId){curId=null;plan=null;try{sessionStorage.removeItem('bd-open')}catch(e){}} // gone means gone: Forward must not bring it back
     renderSaved();const rows=$$('#savedList .open');(rows[Math.min(i,rows.length-1)]||(rows.length?$('#mineH'):$('#choose'))).focus();
+    if(!reduce&&hh&&rows.length){ // the list and the focus are already right; a copy of the row folds shut in its old place
+      const g=document.createElement('li'),ul=$('#savedList');g.className='gone';g.setAttribute('aria-hidden','true');g.style.height=hh+'px';
+      g.innerHTML=`<div class="gopen"><b>${esc(was[0])}</b><span class="num">${esc(was[1])}</span></div><div class="grm">${X_IC}</div>`;
+      ul.insertBefore(g,ul.children[pos]||null);g.offsetHeight;g.style.height='0px';g.style.opacity='0';setTimeout(()=>g.remove(),220);
+    }
     toast(`Removed ${gone.title||'recipe'}`,()=>{const now=allB();now.splice(Math.min(i,now.length),0,gone);putB(now);renderSaved()})});
   $('#tip').classList.toggle('hidden',!(a.length&&isIOS()&&!isHome()&&!tipOff()));
 }
@@ -985,9 +1057,11 @@ async function openFromHash(h){
   try{if(m[1].length>MAXT*8)throw 0;const o=await decode(m[1]);if(!o||typeof o.t!=='string'||!o.t.trim()||o.t.length>MAXT)throw 0;from='link';track('Open shared link');openRec({text:o.t,y:o.y,w:o.w,m:o.m==='scale'?'scale':'batch'},true)}
   catch(e){toast("That link didn't open")}
 }
-const menu=$('#menu');let menuFrom=null;
-function openMenu(){if(!plan)return;menuFrom=document.activeElement;menu.querySelector('[data-share]').classList.toggle('hidden',!navigator.share);menu.classList.remove('hidden');(menu.querySelector('.mrow:not(.hidden)')).focus()}
-function closeMenu(){if(menu.classList.contains('hidden'))return;menu.classList.add('hidden');if(menuFrom&&menuFrom.focus)menuFrom.focus()}
+const menu=$('#menu');let menuFrom=null,menuT=null;
+function menuOpen(){return !menu.classList.contains('hidden')&&!menu.classList.contains('out')} // a sheet that is fading out counts as closed
+function openMenu(){if(!plan||menuOpen())return;clearTimeout(menuT);menu.classList.remove('out');menuFrom=document.activeElement;menu.querySelector('[data-share]').classList.toggle('hidden',!navigator.share);menu.classList.remove('hidden');(menu.querySelector('.mrow:not(.hidden)')).focus()}
+// focus goes back straight away; the sheet is hidden once it has slid away
+function closeMenu(){if(!menuOpen())return;menu.classList.add('out');clearTimeout(menuT);menuT=setTimeout(()=>{menu.classList.add('hidden');menu.classList.remove('out')},reduce?200:250);if(menuFrom&&menuFrom.focus)menuFrom.focus()}
 $('#dShare').onclick=openMenu;
 $('#menuX').onclick=closeMenu;
 menu.addEventListener('click',(e)=>{if(e.target===menu)closeMenu()});
@@ -996,19 +1070,24 @@ menu.querySelector('[data-link]').onclick=()=>{closeMenu();copyLink()};
 menu.querySelector('[data-print]').onclick=()=>{closeMenu();setTimeout(()=>{try{print()}catch(e){}},50)};
 
 /* cook mode */
-let cs=0, lock=null, csteps=[];
+let cs=0, lock=null, csteps=[], cookT=null;
+function cookOpen(){const c=$('#cook');return !c.classList.contains('hidden')&&!c.classList.contains('out')} // fading out counts as closed
 async function wake(){try{if('wakeLock' in navigator&&document.visibilityState==='visible'){lock=await navigator.wakeLock.request('screen');$('#cAwake').textContent='Your screen stays on.'}else $('#cAwake').textContent=''}catch(e){$('#cAwake').textContent=''}}
-document.addEventListener('visibilitychange',()=>{if(!$('#cook').classList.contains('hidden')&&document.visibilityState==='visible')wake()});
+document.addEventListener('visibilitychange',()=>{if(cookOpen()&&document.visibilityState==='visible')wake()});
 function openCook(){
-  if(!plan||!$('#cook').classList.contains('hidden'))return;
+  if(!plan||cookOpen())return;
+  clearTimeout(cookT);if($('#cook').classList.contains('out')){$('#cook').classList.add('hidden');$('#cook').classList.remove('out');$('#cook').offsetHeight} // reopened while it was still fading out
   csteps=plan.mode==='batch'?plan.p.order.map((o)=>({t:o.t,d:o.d,min:o.min,use:o.use||[]})):recipe.steps.map((s)=>({t:s.text,d:'',min:0}));
   if(!csteps.length)csteps=[{t:'No steps found',d:'Add them under Edit the text.',min:0}];
   track('Cook mode');keep();
   cs=0;$('#cook').classList.remove('hidden');document.body.style.overflow='hidden';
+  try{history.scrollRestoration='manual'}catch(e){} // closing steps back in history; without this the browser moves the recipe page to an old scroll position behind the fade
   history.pushState({v:view,cook:1},'');wake();drawStep(0);$('#cNext').focus();
 }
 function closeCook(fromPop){
-  $('#cook').classList.add('hidden');document.body.style.overflow='';
+  if(!cookOpen())return;
+  // drops 12px and fades, then hides; scroll, wake lock and focus are put back straight away
+  const c=$('#cook');c.classList.add('out');cookT=setTimeout(()=>{c.classList.add('hidden');c.classList.remove('out')},reduce?200:250);document.body.style.overflow='';
   try{if(lock)lock.release()}catch(e){}lock=null;
   $('#dCook').focus({preventScroll:true});
   if(!fromPop&&history.state&&history.state.cook){quiet=true;history.back()}
@@ -1039,13 +1118,19 @@ function trap(box,e){
   if(!box.contains(on)){e.preventDefault();a.focus()}else if(e.shiftKey&&on===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&on===z){e.preventDefault();a.focus()}
 }
 addEventListener('keydown',(e)=>{
-  if(e.key==='Tab'){if(!menu.classList.contains('hidden'))trap(menu.querySelector('.mbox'),e);else if(!$('#cook').classList.contains('hidden'))trap($('#cook'),e);return}
-  if(e.key==='Escape'&&!menu.classList.contains('hidden')){closeMenu();return}
-  if($('#cook').classList.contains('hidden'))return;
+  if(e.key==='Tab'){if(menuOpen())trap(menu.querySelector('.mbox'),e);else if(cookOpen())trap($('#cook'),e);return}
+  if(e.key==='Escape'&&menuOpen()){closeMenu();return}
+  if(!cookOpen())return;
   if(e.key==='ArrowRight')$('#cNext').click();else if(e.key==='ArrowLeft')$('#cBack').click();else if(e.key==='Escape')closeCook();
 });
 let tx=null;$('#cBody').addEventListener('touchstart',(e)=>{tx=e.touches[0].clientX},{passive:true});
 $('#cBody').addEventListener('touchend',(e)=>{if(tx==null)return;const dx=e.changedTouches[0].clientX-tx;tx=null;if(Math.abs(dx)>60){if(dx<0)$('#cNext').click();else $('#cBack').click()}},{passive:true});
+
+/* recipe name in the top bar once the title has scrolled under it */
+function syncBar(){const r=$('#sTitle').getBoundingClientRect();$('.bar').classList.toggle('t',view==='sheet'&&r.height>0&&r.bottom<52)}
+new IntersectionObserver(syncBar,{rootMargin:'-52px 0px 0px 0px'}).observe($('#sTitle'));
+$('#barTitle').onclick=()=>scrollTo({top:0,behavior:reduce?'auto':'smooth'});
+document.addEventListener('touchstart',()=>{},{passive:true}); // iOS Safari only shows :active press states when the page listens for touches
 
 const SAMPLE=`Brothy chicken and rice
 Serves 4

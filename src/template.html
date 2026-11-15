@@ -670,7 +670,7 @@ async function readShots(again){
     try{text=await aiRead(list,run)}catch(e){why=typeof e.code==='string'?e.code:'error'}
     if(run!==job||why==='cancel')return;
     if(text==null)track('AI read',{shots:list.length,result:why});
-    if(why==='none'){none();return}
+    if(why==='none'&&again){none();return} // the AI saw no recipe: on a first read, try this device before giving up
     if(why==='badfile'){if(again)back();else fail("Those files couldn't be opened",'Choose screenshots (PNG or JPG).');return}
   }
   if(text!=null){
@@ -680,8 +680,10 @@ async function readShots(again){
     const was=[src,srcWhy];src='ai';srcWhy='';job=null;
     const ok=load(text,again);
     track('AI read',{shots:list.length,result:ok?'ok':'none'}); // what the cook ended up seeing
-    if(ok)addState('pick');else{[src,srcWhy]=was;none()}
-    return;
+    if(ok){addState('pick');return}
+    [src,srcWhy]=was;
+    if(again){none();return}
+    text=null;why='none';job=run; // the AI's text held no ingredients: try this device too (this read is still the live one)
   }
   if(again){back();if(why!=='choice')toast(WHY[why]||WHY.error);return}
   // fallback: read on this device
@@ -693,6 +695,7 @@ async function readShots(again){
   ok=ok&&load(text);
   if(why!=='off')track('Device read',{why,ok:ok?'yes':'no'});
   if(ok){addState('pick');return}
+  if(why==='none'){none();return}
   if(navigator.onLine===false)fail("Couldn't read those","You're offline.",true);
   else fail("Couldn't read those",'Try clearer screenshots, or paste the text.');
 }
@@ -741,7 +744,7 @@ function drawHead(){
   $('#yieldNote').classList.toggle('hidden',!(recipe.yieldGuessed&&!yieldSet));
   // alerts: only things the cook needs to act on
   const al=[];
-  if(src==='device'&&shots.length)al.push([(WHY[srcWhy]?WHY[srcWhy]+' ':'')+'Read on this device, so check the amounts.',READER?'ai':'']);
+  if(src==='device'&&shots.length)al.push([(WHY[srcWhy]?WHY[srcWhy]+' ':'')+'Read on this device, so check the amounts.',READER&&srcWhy!=='none'?'ai':'']);
   if(skipped&&shots.length)al.push([`${files(skipped)} couldn't be opened.`]);
   if(extra&&shots.length)al.push(['Only the first 6 screenshots were read.']);
   if(cutOff())al.push(['The steps look cut off. Add the next screenshot too.']);

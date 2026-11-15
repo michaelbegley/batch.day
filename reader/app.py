@@ -22,16 +22,17 @@ MAX_IMAGE_BYTES = 1_500_000
 
 PROMPT = (
     "These are screenshots of one recipe, possibly overlapping. Transcribe the recipe as plain text.\n"
+    "A list of ingredients with amounts counts as a recipe, even with no title, no steps, or the steps cut off.\n"
     "Rules:\n"
-    "- First line: the recipe title. Then the servings or yield line if shown.\n"
+    "- First line: the recipe title if one is shown; if not, skip it and start with the ingredients. Then the servings or yield line if shown.\n"
     "- Keep section headers (like 'Sauce' or 'For the rice') on their own line.\n"
     "- One ingredient per line, copying every amount and unit exactly. Write fractions as ½ ¼ ¾ ⅓ ⅔ ⅛.\n"
-    "- Then the steps, numbered 1. 2. 3.\n"
+    "- Then the steps, numbered 1. 2. 3., if any are shown.\n"
     "- Merge overlapping screenshots and drop repeated lines.\n"
     "- If the screenshots hold more than one recipe, put a line of three dashes (---) between recipes.\n"
-    "- Leave out hashtags, @mentions and captions that are not part of the recipe.\n"
+    "- Ignore ads, buttons, ratings, prep and cook times, hashtags, @mentions and captions that are not part of the recipe.\n"
     "- Do not add, guess or change anything. No commentary.\n"
-    "- If there is no recipe, reply with exactly NO_RECIPE."
+    "- Only if there are no ingredients at all, reply with exactly NO_RECIPE."
 )
 
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
@@ -109,7 +110,8 @@ async def read(req: Request):
                     text = (r.json()["choices"][0]["message"]["content"] or "").strip()
                     if text.startswith("```"):
                         text = text.strip("`").split("\n", 1)[-1]
-                    if text == "NO_RECIPE" or not text:
+                    if not text or text.strip(" .`*").upper() == "NO_RECIPE":
+                        print("no recipe:", model, len(images), "images", flush=True)   # counts only, never the images or text
                         return err(422, "No recipe found in those screenshots.")
                     return {"text": text, "model": model}
                 last = f"{model}: {r.status_code}"

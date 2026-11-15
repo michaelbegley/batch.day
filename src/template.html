@@ -515,7 +515,7 @@ details.edit[open] summary{margin-bottom:8px}
         <div id="pick">
           <input type="file" id="file" accept="image/*" multiple hidden>
           <button class="btn" id="choose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="15.5" cy="8.5" r="1.5"/></svg>Choose screenshots</button>
-          <p class="hint">Sent to an AI reader, not kept.</p>
+          <p class="hint">Sent to an AI reader. We don't keep them.</p>
           <div class="tip offer hidden" id="tourOffer"><p><b>Quick tour</b></p><span class="instrow"><button class="pillb soft" id="tourYes">Show me</button><button class="link" id="tourNo">Skip</button></span></div>
         </div>
         <div class="hidden" id="pastebox">
@@ -597,7 +597,7 @@ details.edit[open] summary{margin-bottom:8px}
         <button aria-pressed="true" data-m="batch">Batch day</button>
         <button aria-pressed="false" data-m="scale">Just scale</button>
       </div>
-      <div class="set"><label for="want" id="wantLabel">Meals</label>
+      <div class="set"><label for="want"><span id="wantLabel">Meals</span><small id="wantNote">14 is lunch and dinner for a week</small></label>
         <div class="step"><button data-t="want" data-d="-1" aria-label="Fewer">−</button><input id="want" class="num" inputmode="numeric" autocomplete="off" value="14"><button data-t="want" data-d="1" aria-label="More">+</button></div></div>
       <div class="set minor"><label for="yield">Recipe serves<small class="hidden" id="yieldNote">Our guess</small></label>
         <div class="step"><button data-t="yield" data-d="-1" aria-label="Fewer servings">−</button><input id="yield" class="num" inputmode="numeric" autocomplete="off" value="4"><button data-t="yield" data-d="1" aria-label="More servings">+</button></div></div>
@@ -1011,6 +1011,7 @@ $('#reparse').onclick=()=>{if(parts.length)parts[pick]=$('#text').value.split(SP
 function syncMode(){
   $$('#mode button').forEach((b)=>b.setAttribute('aria-pressed',b.dataset.m===mode));
   $('#wantLabel').textContent=mode==='batch'?'Meals':'Servings';
+  $('#wantNote').classList.toggle('hidden',mode!=='batch');
   moveSeg();
 }
 function setMode(m){

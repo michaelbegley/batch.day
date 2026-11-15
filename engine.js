@@ -62,13 +62,15 @@
     ['box', /^(box(es)?)\b/],
     ['bag', /^(bags?)\b/],
     ['bottle', /^(bottles?)\b/],
+    ['carton', /^(cartons?)\b/],
+    ['container', /^(containers?|tubs?)\b/],
     ['handful', /^(handfuls?)\b/],
     ['inch', /^(inch(es)?|in\.)(\s*(piece|knob|chunk)s?)?(\s+of)?(?=\s)/],
     ['head', /^(heads?)\b/],
     ['sprig', /^(sprigs?)\b/],
   ];
   // things you buy whole: round up to what the store sells
-  const PACK = ['can', 'jar', 'box', 'bag', 'bottle', 'package'];
+  const PACK = ['can', 'jar', 'box', 'bag', 'bottle', 'package', 'carton', 'container'];
   // "(15 oz)", "(14.5-ounce)", "(200 g)" right before or after a package word
   const SIZE_RE = /^\(\s*(\d+(?:\.\d+)?)\s*-?\s*(oz|ounces?|ounce|g|grams?|ml|lbs?|pounds?|fl\.?\s*oz)\.?\s*\)\s*/i;
   function sizeOf(n, u) {
@@ -103,7 +105,7 @@
     // package sizes: "1 (15 oz) can beans", "2 (14.5-ounce) cans", "1 jar (15 oz) pesto", "1 28-ounce can tomatoes"
     let size = null, sm;
     if (qty != null && (sm = rest.match(SIZE_RE))) { size = sizeOf(+sm[1], sm[2]); rest = rest.slice(sm[0].length).trim(); }
-    else if (qty != null && (sm = rest.match(/^(\d+(?:\.\d+)?)\s*-?\s*(ounces?|ounce|oz|g|grams?)\.?\s+(?=(cans?|jars?|box(es)?|bags?|bottles?|packages?|pkgs?)\b)/i))) { size = sizeOf(+sm[1], sm[2]); rest = rest.slice(sm[0].length).trim(); }
+    else if (qty != null && (sm = rest.match(/^(\d+(?:\.\d+)?)\s*-?\s*(ounces?|ounce|oz|g|grams?)\.?\s+(?=(cans?|jars?|box(es)?|bags?|bottles?|packages?|pkgs?|cartons?|containers?|tubs?)\b)/i))) { size = sizeOf(+sm[1], sm[2]); rest = rest.slice(sm[0].length).trim(); }
     else if (qty != null && (sm = rest.match(/^-?\s*(ounces?|ounce|oz)\.?\s+(?=(cans?|jars?|box(es)?|bags?|bottles?|packages?|pkgs?)\b)/i))) { size = sizeOf(qty, 'oz'); qty = 1; qtyHi = null; rest = rest.slice(sm[0].length).trim(); }
     if (qty == null) rest = rest.replace(/^(a|an)\s+(?=(pinch|handful|bunch|head|sprig)\b)/i, '');
     for (const [u, re] of UNITS) {
@@ -171,6 +173,29 @@
   // savory proteins that make a bake a meal: never room temp
   const PERISH = /\b(beans?|lentils?|tofu|tempeh|chickpeas?|refried|cheese|cheddar|mozzarella|parmesan|ricotta|feta|cream cheese|cottage|custard|whipped cream|heavy cream|sour cream|pumpkin puree|cream filling)\b/;
   const isMeat = (n) => MEAT.test(String(n).toLowerCase()) && !/\b(broth|stock|bouillon|soup|base|seasoning|flavou?r|powder|gravy)\b/i.test(n);
+  const SAFE = new RegExp('^(?:' + [
+    '(all[- ]purpose |bread |cake |self[- ]rising |whole wheat |white |almond |oat )?flour', 'cornmeal', 'cornstarch', 'oats?', 'rolled oats', 'quick oats',
+    '((granulated|white|brown|light brown|dark brown|powdered|confectioners.?|cane|coconut|caster|turbinado|raw) )?sugar', 'honey', 'maple syrup', 'molasses', '(light |dark )?corn syrup', 'golden syrup',
+    '(unsalted |salted |softened |melted |cold )*butter', '(vegetable |canola |neutral |coconut |olive )?oil', 'shortening',
+    '(large )?eggs?', '(large )?egg (yolks?|whites?)',
+    '(whole |2% |skim |low[- ]fat )?milk', 'buttermilk', 'water', '(warm )?water',
+    'baking (powder|soda)', '(active dry |instant )?yeast', '(kosher |sea |table )?salt', '(pure )?vanilla( extract)?', '(almond|lemon|orange) extract',
+    '(ground )?(cinnamon|nutmeg|ginger|allspice|cloves|cardamom)', 'pumpkin pie spice', 'espresso powder', 'instant coffee',
+    '((semi|bitter)[- ]?sweet |milk |dark |white )?chocolate( chips| chunks)?', '(unsweetened |dutch[- ]process )?cocoa( powder)?', 'sprinkles',
+    '(chopped |toasted )?(walnuts|pecans|almonds|hazelnuts|peanuts|macadamia nuts|nuts)', 'peanut butter', '(raisins|dried cranberries|dried cherries|dates|currants)',
+    '(ripe |mashed |overripe )*bananas?', 'apples?', 'applesauce', '(fresh |frozen )?(blueberries|raspberries|strawberries|berries|cranberries)', '(shredded |grated )?(carrots?|zucchini)',
+    '(lemon|orange|lime) (zest|juice)', 'zest of (a |one )?(lemon|orange|lime)', '(shredded |sweetened )?coconut', '(jam|jelly|preserves)', 'poppy seeds', 'chia seeds', 'flax( seeds| meal)?'
+  ].join('|') + ')$');
+  function shelfStable(ings, title) {
+    if (/\b(pies?|custards?|flan|puddings?|cheesecakes?|tarts?|bars|quiche|tres leches|cream|frosting|icing|filling|eclairs?|cannoli|tiramisu|trifle)\b/i.test(title)) return false;
+    if (!ings.every((i) => SAFE.test(String(i.name).toLowerCase().replace(/[,(].*$/, '').replace(/\s+/g, ' ').trim()))) return false;
+    if (!ings.some((i) => /\b(sugar|honey|maple|molasses|syrup|chocolate)\b/i.test(i.name))) return false; // no sweetener: biscuits, savory muffins go in the fridge
+    // more egg and milk than flour is a custard, not a cake
+    const cups = (i) => (i.qty == null ? 0 : i.unit && VOL_TSP[i.unit] ? mid(i) * VOL_TSP[i.unit] / 48 : !i.unit && /\beggs?\b|yolks?|whites?/i.test(i.name) ? mid(i) * 0.25 : 0);
+    const wet = ings.filter((i) => /\b(eggs?|yolks?|whites?|milk|buttermilk)\b/i.test(i.name)).reduce((a, i) => a + cups(i), 0);
+    const dry = ings.filter((i) => /\b(flour|cornmeal|oats)\b/i.test(i.name)).reduce((a, i) => a + cups(i), 0);
+    return wet <= dry;
+  }
   function isBaking(ings, title) {
     const names = ings.map((i) => i.name).join(' ').toLowerCase();
     const t = (title || '').toLowerCase();
@@ -200,6 +225,7 @@
       const line = cleanLine(raw);
       if (!line) continue;
       if (/^(less|more|search\b|add comment|comment recipe|#)/i.test(line)) continue;
+      if (/^(jump to recipe|print recipe|pin recipe|save recipe|rate (this )?recipe|share( this)?( recipe)?|skip to (content|recipe)|go to recipe|watch (the )?video|leave a review)\b/i.test(line) && line.length < 40) continue; // web page buttons pasted with the recipe
       const ym = line.match(/\b(serves|servings?|makes|yield[s]?)\s*:?\s*(\d+)(?:\s*(?:-|to)\s*(\d+))?/i);
       if (ym) {
         r.yield = ym[3] ? (+ym[2] + +ym[3]) / 2 : +ym[2]; r.yieldText = line;
@@ -272,8 +298,9 @@
     if (lastStep && !/[.!)]$/.test(lastStep.text.trim())) r.flags.push({ type: 'cutoff', line: lastStep.text.slice(-40), msg: 'Steps look cut off' });
     r.baking = isBaking(r.ingredients, r.title || (lines.find((l) => l.trim()) || ''));
     // a bake with meat, fish, beans, cheese or cream (or no sugar at all) is stored like a meal, never at room temp
-    { const n = r.ingredients.map((i) => i.name + ' ' + (i.note || '')).join(' ').toLowerCase();
-      r.savoryBake = r.baking && (r.ingredients.some((i) => isMeat(i.name)) || PERISH.test(n) || !/\b(sugar|honey|maple|chocolate|molasses|syrup)\b/.test(n)); }
+    // Room temp only for a plain sweet bake where every ingredient is on a short safe list (an allow list, so an
+    // ingredient we don't know, like "ground chuck" or "pumpkin", always means the fridge). Pies, custards, bars and puddings: fridge.
+    r.savoryBake = r.baking && !shelfStable(r.ingredients, r.title || '');
     if (!r.yield) {
       const prot = r.ingredients.filter((i) => i.cls === 'protein' && i.qty && (i.unit === 'lb' || i.unit === 'oz' || i.unit === 'g' || i.unit === 'kg'));
       if (prot.length) {
@@ -387,14 +414,14 @@
     return [cupFrac(tsp / 48), 'cup'];
   }
   function fmtWt(oz) {
-    if (oz >= 16) return [Math.round(oz / 16 * 4) / 4, 'lb'];
+    if (oz >= 16) return [Math.ceil(oz / 16 * 4 - 0.15) / 4, 'lb']; // up to the quarter pound, so you're not short
     return [Math.max(.5, Math.round(oz * 2) / 2), 'oz'];
   }
   function fmtMetric(q, u) {
     if (u === 'g' || u === 'kg') { const g = q * (u === 'kg' ? 1000 : 1); return g >= 1000 ? [Math.round(g / 100) / 10, 'kg'] : [Math.max(5, Math.round(g / 5) * 5), 'g']; }
     const ml = q * (u === 'l' ? 1000 : 1); return ml >= 1000 ? [Math.round(ml / 100) / 10, 'l'] : [Math.max(5, Math.round(ml / 5) * 5), 'ml'];
   }
-  const PLURAL = { cup: 'cups', clove: 'cloves', can: 'cans', slice: 'slices', stalk: 'stalks', bunch: 'bunches', package: 'packages', pinch: 'pinches', jar: 'jars', box: 'boxes', bag: 'bags', bottle: 'bottles', handful: 'handfuls', head: 'heads', sprig: 'sprigs', inch: 'inches' };
+  const PLURAL = { cup: 'cups', clove: 'cloves', can: 'cans', slice: 'slices', stalk: 'stalks', bunch: 'bunches', package: 'packages', pinch: 'pinches', jar: 'jars', box: 'boxes', carton: 'cartons', container: 'containers', bag: 'bags', bottle: 'bottles', handful: 'handfuls', head: 'heads', sprig: 'sprigs', inch: 'inches' };
   function show(n, u) {
     const label = n > 1 && PLURAL[u] ? PLURAL[u] : u;
     const num = ['g', 'kg', 'ml', 'l'].includes(u) ? String(n) : fmtNum(n);
@@ -418,7 +445,7 @@
   const upTo = (q, step, tol) => Math.max(step, Math.ceil(q / step - tol) * step);
   function scaleIngredient(ing, f, baking) {
     const out = Object.assign({}, ing);
-    if (ing.qty == null) { out.scaled = ing.toTaste ? 'to taste' : (['finisher', 'salt', 'oil'].includes(ing.cls) || Math.abs(f - 1) < .05 ? '' : `${Math.round(f * 10) / 10}× usual`); return out; }
+    if (ing.qty == null) { out.scaled = ing.toTaste ? 'to taste' : (!['spice', 'aromatic', 'veg', 'protein'].includes(ing.cls) || Math.abs(f - 1) < .05 || /\b(rind|bay|stick|pod)\b/i.test(ing.name) ? '' : `${Math.round(f * 10) / 10}× usual`); return out; }
     const q = mid(ing) * factorFor(ing.cls, f, baking, ing);
     out.adjusted = f > 2 && !baking && EASE[ing.cls] && eases(ing);
     let n = q, u = ing.unit;
@@ -484,7 +511,7 @@
     if (baking) {
       const batches = Math.ceil(f / 2);
       plan.notes.push(f > 2
-        ? `Baking doesn't scale well past 2x. Make ${batches} batches of ${fmtNum(f / batches)}x instead of one giant one.`
+        ? `Baking doesn't scale well past 2x. Make ${batches} batches of ${(() => { const e = f / batches, n = fmtNum(e), back = numVal(n.replace(/^(\d)([¼½¾⅓⅔⅛])/, '$1 $2').replace(/ (.)$/, (m, c) => ' ' + c)); return Math.abs((isNaN(back) ? e : back) - e) > 0.02 ? String(Math.round(e * 100) / 100) : n; })()}x instead of one giant one.`
         : 'Baking: measure carefully. Same oven temperature; check doneness a few minutes early.' + (Math.abs(f - Math.round(f)) > 0.1 && Math.abs(f - 0.5) > 0.05 ? ' Pick a pan that keeps the batter about as deep as the recipe\'s, or the time changes.' : ''));
     }
 
@@ -593,7 +620,8 @@
       if (savoryBake) plan.order.push({ t: 'Cool, then portion', d: 'Into the fridge within 2 hours.', min: 20 });
     }
     plan.totalMin = plan.order.reduce((s, o) => s + o.min, 0);
-    if (!baking && (bigJob || searBatches > 10 || plan.totalMin > 300)) plan.notes.push('This is a very big cook for one day. Think about splitting it into two sessions.');
+    const handsOn = plan.order.filter((o) => !/^(Let it cook|Roast on sheet pans|Into the oven|Start the rice)/.test(o.t)).reduce((s, o) => s + o.min, 0);
+    if (!baking && (bigJob || searBatches > 10 || handsOn > 240)) plan.notes.push('This is a very big cook for one day. Think about splitting it into two sessions.');
 
     // what goes in at each step, with batch amounts
     if (!baking && !nocook) {
@@ -611,7 +639,7 @@
         else if (/^Season the/.test(o.t)) u = take((i) => i.cls !== 'oil' && i.cls !== 'finisher' && (realSec(pSec) ? i.section === pSec && !['liquid', 'grain', 'veg'].includes(i.cls) : (isMeat(i.name) || i.cls === 'salt')));
         else if (/^Season everything/.test(o.t)) u = take((i) => i.cls !== 'finisher');
         else if (/^Sear/.test(o.t)) u = take((i) => i.cls === 'oil');
-        else if (/^Aromatics/.test(o.t)) u = take((i) => i.cls !== 'finisher' && (hasSec(/aromatic/i) ? /aromatic/i.test(i.section || '') : i.cls === 'aromatic' || i.cls === 'spice'));
+        else if (/^Aromatics/.test(o.t)) u = take((i) => i.cls !== 'finisher' && (hasSec(/aromatic/i) ? /aromatic/i.test(i.section || '') : i.cls === 'aromatic' || i.cls === 'spice' || (i.cls === 'oil' && !sears)));
         else if (/^Bloom/.test(o.t)) u = take((i) => /paste/i.test(i.name));
         else if (/^Liquids/.test(o.t)) { const ls = liquid.length ? liquid[0].section : null; u = take((i) => i.cls === 'liquid' || (realSec(ls) && i.section === ls && i.cls !== 'finisher' && !isTender(i)) || (!realSec(ls) && ['protein', 'veg', 'grain', 'other'].includes(i.cls) && !isMeat(i.name) && !isTender(i) && !(plan.rice && isRiceName(i.name)))); }
         else if (/^Boil the pasta/.test(o.t)) u = take((i) => NOODLE.test(i.name) && !/cooked|leftover/i.test(i.name));
@@ -636,8 +664,10 @@
     if (!baking) {
       const fz = meals - fridgeMeals;
       const noodles = items.some((i) => NOODLE.test(i.name));
-      plan.split.fridge.push(`${S(fridgeMeals, 'meal')} for this week (eat within 4 days)`);
-      if (fz > 0) {
+      if (nocook) {
+        plan.split.fridge.push(`${S(meals, 'meal')}: eat within 4 days.` + (meals > 4 ? ` It doesn't freeze well, so make only what you'll eat by then.` : ''));
+      } else plan.split.fridge.push(`${S(fridgeMeals, 'meal')} for this week: into the fridge within 2 hours, eat within 4 days`);
+      if (fz > 0 && !nocook) {
         let line = `${S(fz, 'meal')}: ` + (liquid.length ? (meat.length ? 'protein and broth together' : 'in freezer containers, leave a little room at the top') : 'in freezer containers');
         if (plan.rice) line += ', rice in its own bag';
         line += '.';
@@ -656,7 +686,7 @@
       }
     }
     // the same split as numbers, for My freezer
-    plan.portions = baking && !savoryBake ? null : { fridge: fridgeMeals, freezer: meals - fridgeMeals };
+    plan.portions = nocook ? { fridge: meals, freezer: 0 } : baking && !savoryBake ? null : { fridge: fridgeMeals, freezer: meals - fridgeMeals };
 
     // grocery: everything with an amount, finishers per bowl; the same item twice (ginger paste in the marinade and the sauce) becomes one line
     const kindOf = (i) => (i.qty == null ? null : i.unit && VOL_TSP[i.unit] && !['ml', 'l'].includes(i.unit) ? 'vol' : i.unit && WT_OZ[i.unit] && !['g', 'kg'].includes(i.unit) ? 'wt' : ['g', 'kg'].includes(i.unit) ? 'g' : ['ml', 'l'].includes(i.unit) ? 'ml' : 'u:' + (i.unit || '') + (i.size ? i.size.n + i.size.u : ''));

@@ -53,6 +53,26 @@ ok(/room temp/.test(store(B('Banana muffins\nMakes 12\n3 bananas\n1/3 cup butter
 // F2-09 oven rounds
 { const p = B('Sheet pan veg\nServes 4\n2 lb potatoes\n1 lb carrots\n2 tbsp oil\n1. Roast on a sheet pan for 35 minutes.', 40); ok(p.pots.some((x) => /rounds in the oven/.test(x)), 'oven rounds'); }
 
+// F3-01/F3-02: room temp only for a plain sweet bake on the safe list; any unknown meat, pumpkin, custard, pie: fridge
+for (const m of ['ground chuck', 'chuck roast', 'sirloin', 'mince', 'pastrami', 'carnitas', 'andouille', 'crawfish', 'lox', 'herring', 'swordfish', 'guanciale', 'soppressata', 'rabbit', 'octopus', 'spam', 'bologna', 'pulled pork', 'turkey pepperoni', 'crab meat'])
+  ok(!/room temp/i.test(store(B('Little cakes\nServes 8\n1 lb ' + m + '\n2 cups flour\n1 cup sugar\n2 eggs\n1 tsp baking powder\n1/2 cup butter\n1 cup milk', 14))), 'no room temp with ' + m);
+for (const t of ['Pumpkin pie\nServes 8\n1 can pumpkin\n3/4 cup sugar\n2 eggs\n1 can evaporated milk\n1 cup flour', 'Flan cake\nServes 8\n1 cup flour\n1 cup sugar\n6 eggs\n2 cups milk\n1 tsp baking powder', 'Lemon bars\nServes 12\n1 cup flour\n1 cup sugar\n4 eggs\n1/2 cup lemon juice\n1/2 cup butter', 'Custard cake\nServes 8\n1 cup flour\n1/2 cup sugar\n4 eggs\n3 cups milk\n1 tsp baking powder', 'Savory muffins\nServes 12\n2 cups flour\n1 tbsp baking powder\n1 egg\n1 cup milk\n1/2 cup butter'])
+  ok(!/room temp/i.test(store(B(t, 14))), t.split('\n')[0] + ': fridge');
+for (const t of ['Chocolate chip cookies\nMakes 24\n2 1/4 cups flour\n1 tsp baking soda\n1 tsp salt\n1 cup butter\n3/4 cup sugar\n3/4 cup brown sugar\n2 eggs\n1 tsp vanilla\n2 cups chocolate chips', 'Banana bread\nMakes 10\n3 ripe bananas\n1/3 cup melted butter\n3/4 cup sugar\n1 egg\n1 tsp vanilla\n1 tsp baking soda\n1 1/2 cups flour'])
+  ok(/room temp/i.test(store(B(t, 30))), t.split('\n')[0] + ': room temp kept');
+// F3-03 no-cook food is not frozen
+{ const p = B('Chickpea salad\nServes 4\n2 cans chickpeas\n2 cucumbers\n1 cup feta\n1. Toss everything together.', 14); ok(!p.split.freezer.length && p.portions.freezer === 0, 'salad not frozen'); }
+// F3-04 cartons and containers
+{ const r = P('Soup\nServes 4\n1 (32 oz) carton vegetable broth\n1 (15 oz) container ricotta cheese'); ok(r.ingredients[0].unit === 'carton' && r.ingredients[0].name === 'vegetable broth' && r.ingredients[1].unit === 'container' && r.ingredients[1].name === 'ricotta cheese', 'carton/container: ' + r.ingredients.map((i) => i.unit + ' ' + i.name).join('|')); }
+// F3-05 slow cooker hours are hands-off
+{ const p = B('Pulled pork\nServes 8\n4 lb pork shoulder\n1 cup broth\n1. Cook on low for 8 hours.', 14); ok(!p.notes.some((x) => /two sessions/.test(x)), 'slow cooker is not a big cook'); }
+// F3-06 baking batches cover the total
+{ const n = B('Muffins\nMakes 12\n2 cups flour\n1 cup sugar\n1 egg\n1 tsp baking soda', 25).notes[0]; ok(/2 batches of 1\.04x/.test(n), 'batch factor exact: ' + n); }
+// F3-07 oil goes in with the aromatics when nothing is seared
+{ const p = B('Veg soup\nServes 4\n2 tbsp olive oil\n1 onion\n2 carrots\n6 cups broth\n1. Saute the onion in oil. 2. Simmer 20 minutes.', 8); ok((p.order.find((o) => /^Aromatics/.test(o.t)).use || []).some((u) => /oil/.test(u.name)), 'oil with aromatics'); }
+// ftu F1: weights round up to the quarter pound
+{ const p = B('Chili\nServes 6\n2 lb ground beef', 10); ok(p.items[0].scaled === '3½ lb', 'beef 3⅓ -> 3½ lb, got ' + p.items[0].scaled); }
+
 // B-04 bakes that must be detected
 const shortbread = 'Shortbread\nMakes 16\n2 cups flour\n1 cup butter\n1/2 cup sugar\n1/4 tsp salt';
 const crust = 'Pie crust\nMakes 1\n2 1/2 cups flour\n1 cup cold butter\n1 tsp salt\n6 tbsp ice water';

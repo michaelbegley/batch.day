@@ -46,7 +46,7 @@ function ricepot(c) {
   return { set: { cups: c }, big: p ? `${p} qt pot` : `${k} pots`, sub: [N(c, 'cup') + ' of dry rice', 'about ' + N(c * 3, 'meal')].concat(p ? [] : [`${k} pots or rounds`]) };
 }
 function bake(makes, want) {
-  const f = want / makes, n = Math.ceil(f / 2), each = E.fmtNum(f / n);
+  const f = want / makes, n = Math.ceil(f / 2), e = f / n, fe = E.fmtNum(e), FRv = { '¼': .25, '½': .5, '¾': .75, '⅓': 1 / 3, '⅔': 2 / 3, '⅛': .125 }, back = (+(/^\d+/.exec(fe) || [0])[0]) + (FRv[fe.slice(-1)] || 0), each = Math.abs(back - e) > 0.02 ? String(Math.round(e * 100) / 100) : fe; // a batch size that is not near a fraction is shown to 2 decimals
   const note = E.batchDay(P('Cookies\nServes ' + makes + '\n2 cups flour\n1 tsp baking soda\n1 cup sugar\n1 egg'), want).notes.join(' ');
   if (f > 2) same(`bake ${makes}->${want}`, `Make ${n} batches of ${each}x`, note); else same(`bake ${makes}->${want}`, 'Baking: measure carefully', note);
   return f > 2 ? { set: { makes, want }, big: `${n} batches`, sub: [`${each}× the recipe`] } : { set: { makes, want }, big: '1 batch', sub: [`${FX(f)}× the recipe`, 'Measure carefully'] };

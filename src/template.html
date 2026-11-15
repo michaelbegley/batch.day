@@ -347,6 +347,41 @@ details.edit[open] summary{margin-bottom:8px}
 .done{text-align:center;align-items:center}
 .done svg{width:64px;height:64px;color:var(--accent);margin-bottom:16px}
 
+/* share picture: a sheet with the size, the picture and one button */
+.pbox{padding:16px;display:flex;flex-direction:column;gap:16px;max-height:100%;overflow:auto}
+.pbox .seg{margin:0;flex:none}
+.pprev{display:grid;place-items:center;background:var(--bg2);border-radius:12px;padding:16px;flex:none}
+.pprev img{display:block;height:min(48vh,400px);width:auto;max-width:100%;border-radius:8px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06)}
+.pbox .btn{flex:none}
+.pbox .link{align-self:center;margin:-8px 0;padding:0 12px;color:var(--ink2);font-weight:400;flex:none}
+
+/* freezer labels: the label on screen is the label that prints (2.625 x 1 in) */
+.lprev{display:flex;justify-content:center;background:var(--bg2);border-radius:16px;padding:16px;margin-bottom:8px}
+.lprev .lbl{width:min(2.625in,100%);border-radius:8px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06)}
+.lbl{width:2.625in;height:1in;padding:.08in .14in;display:flex;flex-direction:column;justify-content:space-between;background:#fff;color:#000;font:400 8.5pt/1.25 var(--font);overflow:hidden;text-align:left}
+.lbl>div{display:flex;align-items:baseline;gap:.08in;min-width:0}
+.lbl b{flex:1;min-width:0;font-size:11pt;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lbl span{flex:none;white-space:nowrap;font-variant-numeric:tabular-nums}
+.lbl i{flex:1;min-width:.25in;height:1em;border-bottom:.75pt solid #000} /* a line to write on */
+.lbl .rh{flex:1;white-space:normal;font-size:7.5pt;line-height:1.2;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.labels .set{border-top:0}
+.date{min-height:44px;border:0;border-radius:12px;background:var(--bg2);padding:0 12px;font-size:16px;min-width:0;color-scheme:light dark}
+[data-theme=dark] .date{color-scheme:dark}[data-theme=light] .date{color-scheme:light}
+.labels .btn{margin-top:8px}
+.labels .hint{margin-top:8px}
+.labels .gfoot{margin-top:0}
+#labels{display:none}
+
+/* a link out to a store, with its disclosure in the same tap target */
+.affrow{display:flex;justify-content:center;border-top:1px solid var(--line);margin-top:8px;padding-top:8px}
+.split+.affrow{margin-top:16px}
+.aff{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:44px;padding:4px 12px;border-radius:12px;text-decoration:none;color:var(--ink);font-size:15px;line-height:20px;text-align:center;transition:box-shadow .15s var(--fade)}
+.aff span{display:inline-flex;align-items:center;gap:4px}
+.aff svg{width:12px;height:12px;flex:none;color:var(--ink2)}
+.aff small{font-size:12px;line-height:16px;color:var(--ink2)}
+.aff:active{box-shadow:inset 0 0 0 999px var(--press);transition-duration:0s}
+@media (hover:hover){.aff:hover{background:var(--bg2)}}
+
 /* rows answer a touch: grey fill straight away, fading over 150ms on release */
 .checks label:active,.stp:active,.ptog:active,.saved .open:active,.mrow:active,.chip:active,.seg button:active,.rm:active{box-shadow:inset 0 0 0 999px var(--press);transition-duration:0s}
 
@@ -367,6 +402,7 @@ details.edit[open] summary{margin-bottom:8px}
   .uses li{grid-template-columns:1fr;gap:0}.cook .body{padding:16px}.cook h2{font-size:24px}.cook p{font-size:17px}
   .cook .nav .btn{min-width:0;padding:0 12px;font-size:15px}.cook .nav .btn.soft{flex:0 1 auto}
   .dock .btn{white-space:normal;line-height:1.2;padding:0 8px}.dock .btn.soft span{display:none}.dock .btn.soft{padding:0 16px}
+  .lprev{display:none}.pprev img{height:auto}
   .links{flex-wrap:wrap;gap:0 24px}.toast{white-space:normal}
   .checks li{flex-wrap:wrap}.checks label{flex:1 1 100%}.stp{margin:0 0 8px;padding:0}
 }
@@ -385,6 +421,13 @@ details.edit[open] summary{margin-bottom:8px}
   .pan.shut{display:block}.ptog svg{display:none}
   body{background:#fff;color:#000}main{padding:0}.card{box-shadow:none;break-inside:avoid;border:1px solid #ddd}
   .rise{opacity:1!important;transform:none!important}[data-panel]{display:block!important}
+  /* freezer labels print alone, on Avery 5160: US letter, 3 across and 10 down, each 2.625 x 1 in; 0.5 in at the top, 0.1875 in at the sides, 0.125 in between columns, none between rows */
+  body.plabels{background:#fff;margin:0}
+  body.plabels>*:not(#labels){display:none!important}
+  body.plabels #labels{display:block}
+  .lsheet{width:8.5in;padding:.5in .1875in 0;display:grid;grid-template-columns:repeat(3,2.625in);grid-auto-rows:1in;column-gap:.125in;row-gap:0;align-content:start;break-after:page;page-break-after:always}
+  .lsheet:last-child{break-after:auto;page-break-after:auto}
+  .lsheet .lbl{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
 </head>
@@ -516,10 +559,21 @@ details.edit[open] summary{margin-bottom:8px}
   <div class="mbox">
     <button class="mrow" data-share><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l14-6-6 14-2-6z"/></svg>Send</button>
     <button class="mrow" data-link><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M8.5 11.5a3.5 3.5 0 0 0 5 0l2.5-2.5a3.5 3.5 0 0 0-5-5l-1 1"/><path d="M11.5 8.5a3.5 3.5 0 0 0-5 0L4 11a3.5 3.5 0 0 0 5 5l1-1"/></svg>Copy link</button>
+    <button class="mrow" data-pic><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="14" height="14" rx="3"/><path d="M3 13l4-4 3 3 2-2 5 5"/><circle cx="12.5" cy="7.5" r="1"/></svg>Share picture</button>
     <button class="mrow" data-print><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6 8V3h8v5M6 14H3V8h14v6h-3"/><path d="M6 11h8v6H6z"/></svg>Print</button>
     <button class="mrow mx" id="menuX">Cancel</button>
   </div>
 </div>
+
+<div class="menu hidden" id="pic" role="dialog" aria-modal="true" aria-label="Share picture">
+  <div class="mbox pbox">
+    <div class="seg" id="picSize" role="group" aria-label="Size"><span class="pill"></span><button data-s="story" aria-pressed="true">Story</button><button data-s="pin" aria-pressed="false">Pinterest</button></div>
+    <div class="pprev"><img id="picImg" alt="" width="1080" height="1920"></div>
+    <button class="btn" id="picGo" disabled>Save picture</button>
+    <button class="link" id="picX">Cancel</button>
+  </div>
+</div>
+<div id="labels" aria-hidden="true"></div>
 
 <div class="cook hidden" id="cook" role="dialog" aria-modal="true" aria-label="Cook mode">
   <div class="top"><span id="cStep"></span><button class="x" id="cClose" aria-label="Close cook mode"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13"/></svg></button></div>
@@ -562,6 +616,18 @@ sw.onclick=()=>{const t=curTheme()==='dark'?'light':'dark';root.dataset.theme=t;
 /* ads: only on the recipe page, one unit, below everything; never on the home, reading or cook screens.
    AD_SLOT stays empty until the AdSense unit exists (create it in AdSense after approval; keep Auto ads off). */
 const AD_SLOT='';
+/* store links: off until the ids exist. An empty string means the row is not put on the page at all.
+   instacart: the tracking URL "Shop on Instacart" opens. amazonTag: the Associates tag on the "Freezer containers" search.
+   Later, AFF.instacartApi=true asks /api/shop-list for a cart link first and falls back to the URL above. */
+const AFF={instacart:'',amazonTag:'batchrecipes-20'};
+// tests only: a page on localhost can pass stub values in window.__BD_AFF. Never read on the live site
+try{const o=/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&window.__BD_AFF;if(o&&Object.getPrototypeOf(o)===Object.prototype)Object.assign(AFF,o)}catch(e){}
+if(typeof AFF.instacart!=='string'||!/^https:\/\/[^\s"'<>]+$/.test(AFF.instacart))AFF.instacart='';
+if(typeof AFF.amazonTag!=='string'||!/^[\w-]{1,40}$/.test(AFF.amazonTag))AFF.amazonTag='';
+AFF.instacartApi=AFF.instacartApi===true;
+const AFF_NOTE='We may earn from purchases',AMZ_NOTE='As an Amazon Associate I earn from qualifying purchases.'; // Amazon asks for these exact words
+const OUT_IC='<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5h5v5M9.5 2.5L2.5 9.5"/></svg>';
+function affRow(id,href,label,note){return `<div class="affrow noprint"><a class="aff" id="${id}" href="${esc(href)}" target="_blank" rel="sponsored noopener"><span>${label}${OUT_IC}</span><small>${note||AFF_NOTE}</small></a></div>`}
 const SHORTCUT_LINK=''; // iCloud link to the Add to Reminders shortcut; empty = iPhone uses the share sheet like everyone else
 let adDone=false;
 function placeAd(){
@@ -587,7 +653,7 @@ addEventListener('popstate',(e)=>{
   const toCook=()=>setTimeout(()=>$('#dCook').focus({preventScroll:true}),0); // a history step can drop focus, so set it after
   if(cookOpen()){closeCook(true);toCook();return}
   if(quiet){quiet=false;toCook();return} // our own history.back() after closing cook mode
-  closeMenu();stopRead();addState('pick');show((e.state&&e.state.v)||'add',false); // Back while reading is Cancel
+  closeMenu();closePic();stopRead();addState('pick');show((e.state&&e.state.v)||'add',false); // Back while reading is Cancel
 });
 let quiet=false;
 const startHash=location.hash;
@@ -922,7 +988,7 @@ function build(fresh){
     if(p.pots.length)h+=`<div class="card${R}"><h3>Pots and pans</h3><ul class="plain">${p.pots.map((x,k)=>`<li data-a="p:${k}">${esc(x)}</li>`).join('')}</ul></div>`;
     h+=`<div class="card${R}"><h3>Cook order</h3><ol class="order">${p.order.map((o,k)=>`<li><div>${esc(o.t)}<small data-a="d:${k}">${esc(o.d)}</small></div><span class="t num" data-a="m:${k}">${o.min?o.min+' min':''}</span></li>`).join('')}</ol></div></div>`;
     // store
-    h+=`<div data-panel="store"><div class="card${R}"><h3>Where it goes</h3><div class="split"><div><h4>${IC.freezer}Freezer</h4><p data-a="f:z">${esc(p.split.freezer.join(' ')||'Nothing this time.')}</p></div><div><h4>${IC.fridge}Fridge</h4><p data-a="f:r">${esc(p.split.fridge.join(' '))}</p></div><div><h4>${IC.fresh}Fresh at serving</h4><p>${esc(p.split.fresh.join(', ')||'Nothing extra.')}</p></div></div></div></div>`;
+    h+=`<div data-panel="store"><div class="card${R}"><h3>Where it goes</h3><div class="split"><div><h4>${IC.freezer}Freezer</h4><p data-a="f:z">${esc(p.split.freezer.join(' ')||'Nothing this time.')}</p></div><div><h4>${IC.fridge}Fridge</h4><p data-a="f:r">${esc(p.split.fridge.join(' '))}</p></div><div><h4>${IC.fresh}Fresh at serving</h4><p>${esc(p.split.fresh.join(', ')||'Nothing extra.')}</p></div></div>${AFF.amazonTag&&portioned(p)?affRow('affGear','https://www.amazon.com/s?k=freezer+meal+prep+containers&tag='+encodeURIComponent(AFF.amazonTag),'Freezer containers',AMZ_NOTE):''}</div>${labelCard(R)}</div>`;
     // recipe: what was read, next to what it became
     h+=`<div data-panel="recipe"><div class="card${R}"><h3>Amounts <small>original on the right</small></h3><table class="tbl">${ingRows(p.items)}</table></div>${steps}</div>`;
   }else{
@@ -934,7 +1000,7 @@ function build(fresh){
   }
   sh.innerHTML=h;
   sh.querySelectorAll('.rise').forEach((el,k)=>watch(el,Math.min(k,4)*60));
-  wireShop();
+  wireShop();wireLabels();
   sh.querySelectorAll('[data-tab]').forEach((b)=>b.onclick=()=>setTab(b.dataset.tab));
   setTab(mode==='batch'?tab:'recipe',true);
   syncEnds();
@@ -961,6 +1027,7 @@ function shopHTML(R){
     +S.groups.map((s)=>`<h4 class="aisle">${esc(s.name)}</h4><ul class="checks">${s.items.map((g)=>li(g,false)).join('')}</ul>`).join('')
     +(S.pantry.length?`<div class="pantry${S.groups.length?'':' only'}"><button class="ptog" id="ptog" aria-expanded="${panOpen}" aria-controls="pan"><span>Check your pantry <span class="muted num" id="pcount">(${S.pantry.length})</span></span>${CHEV_IC}</button><ul class="checks pan${panOpen?'':' shut'}" id="pan">${S.pantry.map((g)=>li(g,true)).join('')}</ul></div>`:'')
     +(plan.p.grocery.length?`<div class="gfoot noprint"><button class="link" id="stEdit">${stEd?'Done':'Mark staples'}</button></div>`:'')
+    +(AFF.instacart&&plan.p.grocery.length?affRow('affShop',AFF.instacart,'Shop on Instacart'):'')
     +`<textarea hidden id="glist">${esc(text)}</textarea></div>`;
 }
 function wireShop(){
@@ -969,6 +1036,7 @@ function wireShop(){
   drawCount();
   const al=sh.querySelector('[data-addlist]');if(al){al.classList.toggle('hidden',!navigator.share);al.onclick=()=>{if(isIOS()&&SHORTCUT_LINK){$('#gpick').classList.toggle('hidden');return}sendList('share')};sh.querySelector('[data-other]').onclick=()=>sendList('share');sh.querySelector('[data-rem]').onclick=()=>sendList('rem')}
   const cp=sh.querySelector('[data-copy]');if(cp)cp.onclick=()=>{navigator.clipboard.writeText($('#glist').value).then(()=>{cp.innerHTML=CHECK_IC+'Copied';clearTimeout(cp.t);cp.t=setTimeout(()=>cp.textContent='Copy',1600)},()=>{cp.textContent='Copy failed'})};
+  const af=$('#affShop');if(af)af.onclick=shopOut;
   const pt=$('#ptog');if(pt)pt.onclick=()=>{panOpen=!panOpen;pt.setAttribute('aria-expanded',panOpen);$('#pan').classList.toggle('shut',!panOpen)};
   const ed=$('#stEdit');if(ed)ed.onclick=()=>{stEd=!stEd;ed.textContent=stEd?'Done':'Mark staples';ed.closest('.card').classList.toggle('ed',stEd)};
   // "Always have" moves an item to the pantry group, or back; it is remembered by name for every recipe
@@ -1211,6 +1279,202 @@ async function openFromHash(h){
   try{if(m[1].length>MAXT*8)throw 0;const o=await decode(m[1]);if(!o||typeof o.t!=='string'||!o.t.trim()||o.t.length>MAXT)throw 0;from='link';track('Open shared link');openRec({text:o.t,y:o.y,w:o.w,m:o.m==='scale'?'scale':'batch'},true)}
   catch(e){toast("That link didn't open")}
 }
+
+/* store links. Shop on Instacart: the list still to buy goes on the clipboard, then the store opens in a new tab */
+function needItems(){const all=plan.shop.buy.length?plan.shop.buy:plan.shop.pantry,left=all.filter((g)=>!have.has(g.key));return left.length?left:all}
+function portioned(p){return p.order.some((o)=>/portion|container/i.test(o.t+' '+o.d))||p.split.freezer.some((x)=>/\bmeals\b/.test(x))}
+function shopOut(e){
+  e.preventDefault();if(!plan||plan.mode!=='batch'||!AFF.instacart)return;
+  const items=needItems().map((g)=>({name:g.name,text:g.amt==='for serving'?g.name:`${g.amt?g.amt+' ':''}${g.name}`}));
+  let c=null;try{c=navigator.clipboard.writeText(items.map((i)=>i.text).join('\n'))}catch(er){}
+  if(c&&c.then)c.then(()=>toast('List copied'),()=>{});
+  track('Shop link',{to:'instacart'});
+  if(!AFF.instacartApi){window.open(AFF.instacart,'_blank','noopener');return}
+  // the tab is opened now, while the tap still counts, and pointed at the cart when the answer is in. Off (503) or any failure: the plain link
+  const w=window.open('','_blank'),go=(u)=>{if(w){try{w.opener=null}catch(er){}try{w.location.replace(u);return}catch(er){}}window.open(u,'_blank','noopener')};
+  const ac=window.AbortController?new AbortController():null,tm=setTimeout(()=>{if(ac)ac.abort()},8000);
+  fetch('/api/shop-list',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:recipe.title,items}),signal:ac?ac.signal:undefined})
+    .then((r)=>r.ok?r.json():null).then((j)=>j&&typeof j.url==='string'&&/^https:\/\/[^\s"'<>]+$/.test(j.url)?j.url:'').catch(()=>'')
+    .then((u)=>{clearTimeout(tm);go(u||AFF.instacart)});
+}
+$('#sheet').addEventListener('click',(e)=>{const a=e.target.closest&&e.target.closest('#affGear');if(a)track('Shop link',{to:'amazon'})});
+
+/* files out of the page: the share sheet on phones that will share a file, a download everywhere else */
+function fileOut(files){
+  const can=(()=>{if(!(matchMedia('(pointer:coarse)').matches&&navigator.share&&navigator.canShare))return false;try{return navigator.canShare({files})}catch(e){return false}})();
+  const down=()=>{files.forEach((f,k)=>setTimeout(()=>{const u=URL.createObjectURL(f),a=document.createElement('a');a.href=u;a.download=f.name;a.style.display='none';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),10000)},k*300));return 'download'};
+  if(!can)return Promise.resolve(down());
+  return navigator.share({files}).then(()=>'share',(e)=>e&&e.name==='AbortError'?'':down());
+}
+function slug(s){return String(s||'').normalize('NFKD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)||'recipe'}
+function pngOf(cv){return new Promise((ok)=>{try{cv.toBlob((b)=>ok(b),'image/png')}catch(e){ok(null)}})}
+// the page's own web font once it has loaded (document.fonts), else the system stack the page is using
+function cvFont(){
+  let f='';try{document.fonts.forEach((x)=>{if(x.status==='loaded'&&/inter/i.test(x.family)&&(!f||/display/i.test(x.family)))f=x.family.replace(/["']/g,'')})}catch(e){}
+  return (f?`"${f}",`:'')+(getComputedStyle(document.body).fontFamily||'system-ui,sans-serif');
+}
+function cvSet(c,px,wt,ff,track){c.font=`${wt} ${px}px ${ff}`;if('letterSpacing' in c)c.letterSpacing=(track?Math.round(px*track*10)/10:0)+'px'}
+// words onto lines no wider than w; a word that is too wide on its own is cut by the letter. Past max lines the last one ends in an ellipsis
+function cvWrap(c,text,w,max){
+  const out=[];let line='';
+  const put=(word)=>{
+    const tryL=line?line+' '+word:word;if(c.measureText(tryL).width<=w){line=tryL;return}
+    if(line){out.push(line);line=''}
+    if(c.measureText(word).width<=w){line=word;return}
+    let part='';for(const ch of word){if(part&&c.measureText(part+ch).width>w){out.push(part);part=ch}else part+=ch}line=part;
+  };
+  String(text).trim().split(/\s+/).forEach(put);if(line)out.push(line);
+  if(out.length>max){let l=out[max-1]+' '+out[max];out.length=max;while(l.length>1&&c.measureText(l+'…').width>w)l=l.slice(0,-1).trimEnd();out[max-1]=l+'…'}
+  return out;
+}
+// the same number of lines, but as even in length as they will go, so a title never ends on one stray word
+function cvBal(c,text,w,max){const base=cvWrap(c,text,w,max);if(base.length<2||/…$/.test(base[base.length-1]))return base;let lo=w/base.length,hi=w,best=base;for(let i=0;i<12;i++){const mid=(lo+hi)/2,l=cvWrap(c,text,mid,max);if(l.length===base.length&&!/…$/.test(l[l.length-1])){best=l;hi=mid}else lo=mid}return best}
+// text centred by its ink, not its advance box, so left and right margins match to the pixel; returns the ink's top and bottom
+function cvMid(c,text,cx,y,draw){c.textAlign='left';const m=c.measureText(text),x=cx-(m.actualBoundingBoxRight-m.actualBoundingBoxLeft)/2;if(draw!==false)c.fillText(text,x,y);return {x,top:y-m.actualBoundingBoxAscent,bottom:y+m.actualBoundingBoxDescent,asc:m.actualBoundingBoxAscent}}
+function cvFit(c,text,w){let s=String(text);if(c.measureText(s).width<=w)return s;while(s.length>1&&c.measureText(s+'…').width>w)s=s.slice(0,-1).trimEnd();return s+'…'}
+
+/* share picture: the dish, how many meals, the pot and the name, drawn on a canvas. Always the light look, whatever the theme */
+const PIC={story:{w:1080,h:1920,x:64,y:256,r:64},pin:{w:1000,h:1500,x:48,y:48,r:56}}; // the white card's inset and corner. A story keeps 256 clear top and bottom, where the apps lay their own buttons
+const POT=['M20 16c-2-3 2-5 0-8','M28 16c-2-3 2-5 0-8','M36 16c-2-3 2-5 0-8','M10 24h36','M13 24v16a6 6 0 0 0 6 6h18a6 6 0 0 0 6-6V24','M6 28h7M43 28h7']; // the one mark (brand/mark.py PATHS), on its 56 grid
+const PIC_INK='#1d1d1f',PIC_ACC='#c2410c',PIC_BG='#f5f5f7',PIC_CARD='#ffffff';
+function picCount(){const n=plan.want;return plan.mode==='batch'?`${n} ${n===1?'meal':'meals'}`:`${n} ${n===1?'serving':'servings'}`}
+function drawPic(size){
+  const S=PIC[size],W=S.w,H=S.h,u=W/1080,cv=document.createElement('canvas'),c=cv.getContext('2d'),ff=cvFont(),cx=W/2,pad=Math.round(96*u),side=S.x+Math.round(80*u),maxW=W-2*side;
+  cv.width=W;cv.height=H;c.fillStyle=PIC_BG;c.fillRect(0,0,W,H);
+  c.fillStyle=PIC_CARD;c.beginPath();if(c.roundRect)c.roundRect(S.x,S.y,W-2*S.x,H-2*S.y,S.r);else c.rect(S.x,S.y,W-2*S.x,H-2*S.y);c.fill();
+  c.textAlign='center';c.textBaseline='alphabetic';
+  const title=recipe.title||'Recipe',count=picCount();
+  const cost=null; // Phase 2: cost per meal ("$2.10 a meal"). Its place is the line under the count; nothing is drawn while this is null
+  // sizes
+  const k=6*u,potH=40*k,gap1=Math.round(64*u),gap2=Math.round(48*u),gap3=Math.round(32*u); // pot: 38 tall on its grid, plus the stroke
+  let tpx=Math.round(88*u),lines;for(;;){cvSet(c,tpx,600,ff,-.025);lines=cvBal(c,title,maxW,3);if(lines.length<=2||tpx<=Math.round(64*u))break;tpx-=Math.round(8*u)}
+  const tlh=Math.round(tpx*1.1),capT=cvMid(c,lines[0],cx,0,false).asc; // gaps are measured to the letters, not to the line box
+  let npx=Math.round(208*u);for(;;){cvSet(c,npx,600,ff,-.035);if(c.measureText(count).width<=maxW||npx<=Math.round(96*u))break;npx-=Math.round(8*u)}
+  const mN=cvMid(c,count,cx,0,false),capN=mN.asc,dipN=cost?0:mN.bottom,cpx=Math.round(56*u),costH=cost?gap3+cpx:0;
+  // the word mark sits one pad above the card's foot; the block is centred in what is left, one pad clear at each end
+  const wpx=Math.round(48*u),wBase=H-S.y-pad;cvSet(c,wpx,600,ff,-.02);const wTop=Math.round(wBase-cvMid(c,'batch.recipes',cx,0,false).asc);
+  const blockH=potH+gap1+capT+(lines.length-1)*tlh+gap2+capN+dipN+costH;
+  const free0=S.y+pad,free1=wTop-pad,y0=Math.round(free0+Math.max(0,(free1-free0-blockH)/2));
+  // pot: the drawing is x 6..50, y 8..46 on the 56 grid
+  c.save();c.translate(cx-28*k,y0+k-8*k);c.scale(k,k);c.strokeStyle=PIC_ACC;c.lineWidth=2;c.lineCap='round';c.lineJoin='round';POT.forEach((d)=>c.stroke(new Path2D(d)));c.restore();
+  let y=y0+potH+gap1+capT;
+  c.fillStyle=PIC_INK;cvSet(c,tpx,600,ff,-.025);lines.forEach((l,i)=>cvMid(c,l,cx,y+i*tlh));
+  y+=(lines.length-1)*tlh+gap2+capN;
+  cvSet(c,npx,600,ff,-.035);cvMid(c,count,cx,y);
+  const slot={x:side,y:Math.round(y+gap3),w:maxW,h:cpx}; // reserved for cost per meal
+  if(cost){cvSet(c,cpx,400,ff,-.02);c.fillStyle='#6e6e73';cvMid(c,cost,cx,y+gap3+Math.round(cpx*.8))}
+  // batch.recipes, with the dot in the accent
+  cvSet(c,wpx,600,ff,-.02);
+  const a=c.measureText('batch').width,d=c.measureText('.').width,mb=c.measureText('batch'),mr=c.measureText('recipes');let x=cx-(a+d+mr.actualBoundingBoxRight-mb.actualBoundingBoxLeft)/2; // drawn in three pieces, so centred from the pieces
+  c.fillStyle=PIC_INK;c.fillText('batch',x,wBase);x+=a;c.fillStyle=PIC_ACC;c.fillText('.',x,wBase);x+=d;c.fillStyle=PIC_INK;c.fillText('recipes',x,wBase);
+  cv.dataset.geo=JSON.stringify({w:W,h:H,card:[S.x,S.y,W-2*S.x,H-2*S.y],side,top:y0,bottom:Math.round(y),free:[free0,free1],word:[wTop,wBase],slot,lines:lines.length});
+  return cv;
+}
+const pic=$('#pic');let picFrom=null,picT=null,picSize='story',picFile=null,picN=0;
+function picOpen(){return !pic.classList.contains('hidden')&&!pic.classList.contains('out')}
+function picDraw(){
+  const n=++picN,go=$('#picGo'),img=$('#picImg'),S=PIC[picSize];go.disabled=true;picFile=null;
+  $$('#picSize button').forEach((b)=>b.setAttribute('aria-pressed',b.dataset.s===picSize));slide($('#picSize'));
+  let cv=null;try{cv=drawPic(picSize)}catch(e){}
+  if(!cv){closePic();toast("Couldn't make the picture");return}
+  img.dataset.geo=cv.dataset.geo;
+  pngOf(cv).then((b)=>{
+    if(n!==picN||!picOpen())return;if(!b){closePic();toast("Couldn't make the picture");return}
+    picFile=new File([b],`batch-recipes-${slug(recipe.title)}-${picSize}.png`,{type:'image/png'});
+    if(img.src&&/^blob:/.test(img.src))URL.revokeObjectURL(img.src);
+    img.width=S.w;img.height=S.h;img.alt=`${recipe.title||'Recipe'}, ${picCount()}`;img.src=URL.createObjectURL(picFile);go.disabled=false;
+  });
+}
+function openPic(){
+  if(!plan||picOpen())return;clearTimeout(picT);pic.classList.remove('out');picFrom=document.activeElement;
+  const sh=matchMedia('(pointer:coarse)').matches&&navigator.share&&navigator.canShare;$('#picGo').textContent=sh?'Share':'Save picture';
+  pic.classList.remove('hidden');picDraw();$('#picSize [aria-pressed=true]').focus();
+}
+function closePic(){if(!picOpen())return;picN++;pic.classList.add('out');clearTimeout(picT);picT=setTimeout(()=>{pic.classList.add('hidden');pic.classList.remove('out')},reduce?200:250);if(picFrom&&picFrom.focus)picFrom.focus()}
+$$('#picSize button').forEach((b)=>b.onclick=()=>{if(b.dataset.s===picSize)return;picSize=b.dataset.s;picDraw()});
+$('#picX').onclick=closePic;
+pic.addEventListener('click',(e)=>{if(e.target===pic)closePic()});
+$('#picGo').onclick=()=>{const f=picFile,size=picSize;if(!f)return;keep();fileOut([f]).then((how)=>{if(!how)return;track('Share picture',{size,how});closePic();if(how==='download')toast('Picture saved')})};
+addEventListener('resize',()=>{if(picOpen())slide($('#picSize'))});
+
+/* freezer labels: one per meal. Use by is a line to write on; this page has no storage times of its own to print there (Phase 2 fills it from USDA data) */
+const two=(n)=>String(n).padStart(2,'0');
+let lblDate=(()=>{const d=new Date();return `${d.getFullYear()}-${two(d.getMonth()+1)}-${two(d.getDate())}`})(); // cooked today, until changed
+function lblWhen(){const m=/^(\d{4})-(\d\d)-(\d\d)$/.exec(lblDate);if(!m)return '';const d=new Date(+m[1],m[2]-1,+m[3]);return isNaN(d)?'':d.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})}
+// a reheat line only when the recipe's own text has one; nothing is made up here
+function reheatLine(){
+  for(const t of recipe.steps.map((s)=>s.text).concat(recipe.notes||[])){
+    const m=String(t).match(/(?:[^.!?\n]|\.(?=\d))*\breheat(?:[^.!?\n]|\.(?=\d))*[.!?]?/i);
+    if(m){const s=m[0].trim().replace(/\s+/g,' ');if(s&&s.length<=110)return s[0].toUpperCase()+s.slice(1)}
+  }
+  return '';
+}
+function lblData(){return {title:recipe.title||'Recipe',n:plan.want,when:lblWhen(),rh:reheatLine()}}
+function lblHTML(d,k){return `<div class="lbl"><div><b dir="auto">${esc(d.title)}</b><span>${k} of ${d.n}</span></div><div><span>Cooked${d.when?' '+esc(d.when):''}</span>${d.when?'':'<i></i>'}<span>Use by</span><i></i></div><div>${d.rh?`<span class="rh">${esc(d.rh)}</span>`:'<i></i>'}</div></div>`}
+function labelCard(R){
+  const d=lblData();
+  return `<div class="card labels noprint${R}"><h3>Freezer labels</h3><div class="lprev" id="lblPrev" aria-hidden="true">${lblHTML(d,1)}</div>`
+    +`<div class="set"><label for="lblDate">Cooked</label><input class="date num" type="date" id="lblDate" value="${esc(lblDate)}"></div>`
+    +`<button class="btn soft" id="lblPrint">Print labels</button><p class="hint">Avery 5160, 30 a sheet. Print at 100%.</p>`
+    +`<div class="gfoot"><button class="link" id="lblImg">Save as image</button></div></div>`;
+}
+function wireLabels(){
+  const i=$('#lblDate');if(!i)return;
+  i.onchange=i.oninput=()=>{lblDate=i.value;$('#lblPrev').innerHTML=lblHTML(lblData(),1)};
+  $('#lblPrint').onclick=printLabels;$('#lblImg').onclick=saveLabels;
+}
+// print: only the labels, laid out for Avery 5160. The page rule is added for this print alone, so printing the recipe keeps its own margins
+let lblStyle=null;
+function labelsOff(){document.body.classList.remove('plabels');$('#labels').innerHTML='';if(lblStyle){lblStyle.remove();lblStyle=null}}
+function printLabels(){
+  if(!plan||plan.mode!=='batch')return;const d=lblData();let h='';
+  for(let a=1;a<=d.n;a+=30){h+='<div class="lsheet">';for(let k=a;k<Math.min(d.n+1,a+30);k++)h+=lblHTML(d,k);h+='</div>'}
+  labelsOff();$('#labels').innerHTML=h;document.body.classList.add('plabels');
+  lblStyle=document.createElement('style');lblStyle.textContent='@page{size:8.5in 11in;margin:0}';document.head.appendChild(lblStyle);
+  track('Labels',{how:'print'});keep();
+  setTimeout(()=>{try{print()}catch(e){}},50);
+}
+addEventListener('afterprint',labelsOff);
+// image: one label per row in a strip, 300 dots per inch (788 x 300 each), for label-printer apps. 30 rows to a file
+const LW=788,LH=300;
+function drawLabel(c,d,k,ff,y0){
+  const s=LH/96,px=.14*LH,py=.08*LH,x1=LW-px,pt=(n)=>n*LH/72,line=(xa,xb,y)=>{c.fillRect(xa,y-pt(.75),xb-xa,pt(.75))};
+  c.fillStyle='#000';c.textBaseline='alphabetic';
+  // row 1: the dish and "1 of 14"
+  const f1=pt(11),f2=pt(8.5),f3=pt(7.5),g=.08*LH,b1=y0+py+f1*.95;
+  cvSet(c,f2,400,ff,0);const num=`${k} of ${d.n}`,nw=c.measureText(num).width;c.textAlign='right';c.fillText(num,x1,b1);
+  cvSet(c,f1,600,ff,0);c.textAlign='left';c.fillText(cvFit(c,d.title,x1-px-nw-g),px,b1);
+  // row 2: cooked, use by
+  const b2=y0+LH/2+f2*.36;cvSet(c,f2,400,ff,0);let x=px;
+  const ck='Cooked'+(d.when?' '+d.when:'');c.fillText(ck,x,b2);x+=c.measureText(ck).width+g;
+  const ub='Use by',uw=c.measureText(ub).width;
+  if(!d.when){const mid=x+(x1-x-uw-2*g)/2;line(x,mid,b2+pt(1.5));x=mid+g}
+  c.fillText(ub,x,b2);x+=uw+g;line(x,x1,b2+pt(1.5));
+  // row 3: the recipe's own reheat line, or a line to write on
+  const b3=y0+LH-py-pt(1.5);
+  if(d.rh){cvSet(c,f3,400,ff,0);const ls=cvWrap(c,d.rh,x1-px,2);ls.forEach((l,i)=>c.fillText(l,px,b3-(ls.length-1-i)*f3*1.2))}
+  else line(px,x1,b3+pt(1.5));
+}
+function labelStrips(){
+  const d=lblData(),ff=cvFont(),out=[];
+  for(let a=1;a<=d.n;a+=30){
+    const rows=Math.min(30,d.n-a+1),cv=document.createElement('canvas'),c=cv.getContext('2d');cv.width=LW;cv.height=rows*LH;
+    c.fillStyle='#fff';c.fillRect(0,0,LW,cv.height);
+    for(let r=0;r<rows;r++){if(r){c.fillStyle='#d2d2d7';c.fillRect(0,r*LH-1,LW,2)}drawLabel(c,d,a+r,ff,r*LH)}
+    out.push(cv);
+  }
+  return out;
+}
+function saveLabels(){
+  if(!plan||plan.mode!=='batch')return;keep();
+  let cvs=[];try{cvs=labelStrips()}catch(e){}
+  if(!cvs.length){toast("Couldn't make the labels");return}
+  const base=`freezer-labels-${slug(recipe.title)}`;
+  Promise.all(cvs.map(pngOf)).then((bs)=>{
+    if(bs.some((b)=>!b)){toast("Couldn't make the labels");return}
+    return fileOut(bs.map((b,i)=>new File([b],bs.length>1?`${base}-${i+1}.png`:`${base}.png`,{type:'image/png'}))).then((how)=>{if(!how)return;track('Labels',{how});if(how==='download')toast('Labels saved')});
+  });
+}
 const menu=$('#menu');let menuFrom=null,menuT=null;
 function menuOpen(){return !menu.classList.contains('hidden')&&!menu.classList.contains('out')} // a sheet that is fading out counts as closed
 function openMenu(){if(!plan||menuOpen())return;clearTimeout(menuT);menu.classList.remove('out');menuFrom=document.activeElement;menu.querySelector('[data-share]').classList.toggle('hidden',!navigator.share);menu.classList.remove('hidden');(menu.querySelector('.mrow:not(.hidden)')).focus()}
@@ -1221,7 +1485,8 @@ $('#menuX').onclick=closeMenu;
 menu.addEventListener('click',(e)=>{if(e.target===menu)closeMenu()});
 menu.querySelector('[data-share]').onclick=()=>{closeMenu();shareIt()};
 menu.querySelector('[data-link]').onclick=()=>{closeMenu();copyLink()};
-menu.querySelector('[data-print]').onclick=()=>{closeMenu();setTimeout(()=>{try{print()}catch(e){}},50)};
+menu.querySelector('[data-pic]').onclick=()=>{closeMenu();openPic()};
+menu.querySelector('[data-print]').onclick=()=>{closeMenu();labelsOff();setTimeout(()=>{try{print()}catch(e){}},50)};
 
 /* cook mode */
 let cs=0, lock=null, csteps=[], cookT=null;
@@ -1272,8 +1537,9 @@ function trap(box,e){
   if(!box.contains(on)){e.preventDefault();a.focus()}else if(e.shiftKey&&on===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&on===z){e.preventDefault();a.focus()}
 }
 addEventListener('keydown',(e)=>{
-  if(e.key==='Tab'){if(menuOpen())trap(menu.querySelector('.mbox'),e);else if(cookOpen())trap($('#cook'),e);return}
+  if(e.key==='Tab'){if(menuOpen())trap(menu.querySelector('.mbox'),e);else if(picOpen())trap(pic.querySelector('.mbox'),e);else if(cookOpen())trap($('#cook'),e);return}
   if(e.key==='Escape'&&menuOpen()){closeMenu();return}
+  if(e.key==='Escape'&&picOpen()){closePic();return}
   if(!cookOpen())return;
   if(e.key==='ArrowRight')$('#cNext').click();else if(e.key==='ArrowLeft')$('#cBack').click();else if(e.key==='Escape')closeCook();
 });

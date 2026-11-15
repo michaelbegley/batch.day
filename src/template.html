@@ -203,6 +203,8 @@ textarea:focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transpar
 /* the line is a background on an inline box, so it follows the words onto a second line */
 .checks .tx{background:linear-gradient(currentColor,currentColor) 0 54%/0 1.5px no-repeat;transition:background-size .15s var(--fade),color .25s var(--fade)}
 .checks input:checked+span .tx{background-size:100% 1.5px;transition:background-size .25s var(--fade) .05s,color .25s var(--fade)}
+.card h3 .acts{display:flex;gap:4px}
+.pick{display:flex;justify-content:flex-end;gap:12px;margin:-8px 0 4px}
 .card h3 .cnt{margin-left:8px;font-variant-numeric:tabular-nums}
 .card h3 .cnt.all{color:var(--accent);font-weight:600}
 /* an amount that just changed slides up 6px and fades in */
@@ -540,6 +542,7 @@ sw.onclick=()=>{const t=curTheme()==='dark'?'light':'dark';root.dataset.theme=t;
 /* ads: only on the recipe page, one unit, below everything; never on the home, reading or cook screens.
    AD_SLOT stays empty until the AdSense unit exists (create it in AdSense after approval; keep Auto ads off). */
 const AD_SLOT='';
+const SHORTCUT_LINK=''; // iCloud link to the Add to Reminders shortcut; empty = iPhone uses the share sheet like everyone else
 let adDone=false;
 function placeAd(){
   if(adDone||!AD_SLOT)return;adDone=true;
@@ -895,7 +898,7 @@ function build(fresh){
     const seen={};p.grocery.forEach((g)=>{const n=seen[g.name]=(seen[g.name]||0)+1;g.key=n>1?g.name+' #'+n:g.name}); // "ginger paste" can be on the list twice
     const names=new Set(p.grocery.map((g)=>g.key));[...have].forEach((k)=>{if(!names.has(k))have.delete(k)}); // a tick goes only when its item does
     const list=p.grocery.map((g)=>g.amt==='for serving'?`${g.name} (for serving)`:`${g.amt?g.amt+' ':''}${g.name}`).join('\n');
-    h+=`<div data-panel="shop"><div class="card${R}"><h3><span>Grocery list<small class="cnt" id="gcount" aria-live="polite"></small></span><button class="link noprint" data-copy>Copy</button></h3><ul class="checks">${p.grocery.map((g)=>`<li><label><input type="checkbox" data-k="${esc(g.key)}"${have.has(g.key)?' checked':''}><span><span class="tx">${g.amt==='for serving'?`${esc(g.name)} <span class="muted">for serving</span>`:`<b class="num" data-a="s:${esc(g.key)}">${esc(g.amt)}</b> ${esc(g.name)}`}${oddN.has(g.name)?'<span class="tag">check amount</span>':''}</span></span></label></li>`).join('')}</ul><textarea hidden id="glist">${esc(list)}</textarea></div></div>`;
+    h+=`<div data-panel="shop"><div class="card${R}"><h3><span>Grocery list<small class="cnt" id="gcount" aria-live="polite"></small></span><span class="acts noprint"><button class="link hidden" data-addlist>Add to list</button><button class="link" data-copy>Copy</button></span></h3><div class="pick noprint hidden" id="gpick"><button class="link" data-rem>Reminders</button><button class="link" data-other>Other apps</button></div><ul class="checks">${p.grocery.map((g)=>`<li><label><input type="checkbox" data-k="${esc(g.key)}"${have.has(g.key)?' checked':''}><span><span class="tx">${g.amt==='for serving'?`${esc(g.name)} <span class="muted">for serving</span>`:`<b class="num" data-a="s:${esc(g.key)}">${esc(g.amt)}</b> ${esc(g.name)}`}${oddN.has(g.name)?'<span class="tag">check amount</span>':''}</span></span></label></li>`).join('')}</ul><textarea hidden id="glist">${esc(list)}</textarea></div></div>`;
     // cook
     h+=`<div data-panel="cook">`;
     if(p.pots.length)h+=`<div class="card${R}"><h3>Pots and pans</h3><ul class="plain">${p.pots.map((x,k)=>`<li data-a="p:${k}">${esc(x)}</li>`).join('')}</ul></div>`;
@@ -915,6 +918,7 @@ function build(fresh){
   sh.querySelectorAll('.rise').forEach((el,k)=>watch(el,Math.min(k,4)*60));
   sh.querySelectorAll('.checks input').forEach((c)=>c.onchange=()=>{have[c.checked?'add':'delete'](c.dataset.k);touched=true;drawCount();if(c.checked)HAP.buzz($('#gcount')&&$('#gcount').classList.contains('all')?'done':'tick');remember(plan.want)});
   drawCount();
+  const al=sh.querySelector('[data-addlist]');if(al){al.classList.toggle('hidden',!navigator.share);al.onclick=()=>{if(isIOS()&&SHORTCUT_LINK){$('#gpick').classList.toggle('hidden');return}sendList('share')};sh.querySelector('[data-other]').onclick=()=>sendList('share');sh.querySelector('[data-rem]').onclick=()=>sendList('rem')}
   const cp=sh.querySelector('[data-copy]');if(cp)cp.onclick=()=>{navigator.clipboard.writeText($('#glist').value).then(()=>{cp.innerHTML=CHECK_IC+'Copied';clearTimeout(cp.t);cp.t=setTimeout(()=>cp.textContent='Copy',1600)},()=>{cp.textContent='Copy failed'})};
   sh.querySelectorAll('[data-tab]').forEach((b)=>b.onclick=()=>setTab(b.dataset.tab));
   setTab(mode==='batch'?tab:'recipe',true);
@@ -1062,6 +1066,17 @@ function plainText(){
     if(recipe.steps.length){L.push('');recipe.steps.forEach((s,k)=>L.push(`${k+1}. ${s.text}`))}
   }
   return L.join('\n');
+}
+// grocery list out to the phone's list apps: one item per line, only what's not ticked yet
+const SHORTCUT_NAME='Add to Reminders';
+function needList(){const all=plan.p.grocery,left=all.filter((g)=>!have.has(g.key));return (left.length?left:all).map((g)=>g.amt==='for serving'?g.name:`${g.amt?g.amt+' ':''}${g.name}`).join('\n')}
+async function sendList(how){
+  if(!plan||plan.mode!=='batch')return;keep();const text=needList();track('Add to list',{how});
+  if(how==='rem'){
+    let got=false;try{got=localStorage.getItem('bd-sc')==='1'}catch(e){}
+    if(!got){try{localStorage.setItem('bd-sc','1')}catch(e){}location.href=SHORTCUT_LINK;return}
+    location.href='shortcuts://run-shortcut?name='+encodeURIComponent(SHORTCUT_NAME)+'&input=text&text='+encodeURIComponent(text);return}
+  try{await navigator.share({text})}catch(e){if(e&&e.name==='AbortError')return;try{await navigator.clipboard.writeText(text);toast('Copied')}catch(e2){}}
 }
 async function shareIt(){
   track('Share',{how:'send'});keep();

@@ -391,6 +391,34 @@ details.edit[open] summary{margin-bottom:8px}
 .labels .hint{margin-top:8px}
 .labels .gfoot{margin-top:0}
 #labels{display:none}
+/* a label with a code: words on the left, the code top right on the label's own padding, the count under it */
+.lbl.q{flex-direction:row;justify-content:flex-start;gap:.1in}
+.lbl .lt{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:space-between;align-items:stretch;gap:0}
+.lbl .lt>div{display:flex;align-items:baseline;gap:.08in;min-width:0}
+.lbl .lq{flex:none;width:.62in;display:flex;flex-direction:column;justify-content:space-between;align-items:center;gap:0;align-self:stretch}
+.lbl .lq svg{display:block;width:.62in;height:.62in;flex:none}
+.lbl .lq span{line-height:1}
+/* my freezer: what's left, on the home page; and "I cooked this" on the Store tab and at the end of cook mode */
+.fz{margin:24px 0 0}
+.fz h3{justify-content:flex-start;margin-bottom:0}
+.fz h3 svg{width:20px;height:20px;flex:none;color:var(--accent)}
+.fzsum{margin:0;font-size:15px;line-height:20px;color:var(--ink2)}
+.fz .saved{margin-top:8px}
+.fz .aisle+.saved{margin-top:0}
+.fz .saved .open b{display:block}
+.ate{flex:none;min-height:44px;padding:0 16px;border:0;border-radius:980px;background:var(--bg2);color:var(--ink);font-size:15px;font-weight:600;white-space:nowrap;cursor:pointer;transition:transform .15s var(--ease)}
+.ate:active{transform:scale(.96)}
+.pillb.soft{background:var(--bg2);color:var(--ink)}
+.didc .set{border-top:0}
+.didp{margin:0 0 8px;font-size:15px;line-height:20px;color:var(--ink2)}
+.didc .btn{margin-top:8px}
+.didc .tip{margin-top:8px}
+.didc .gfoot{margin-top:8px;margin-bottom:-12px}
+.done .cdid{margin-top:24px;display:flex;flex-direction:column;align-items:center;gap:12px;font-size:15px;line-height:20px;color:var(--ink2)}
+.cdid .instrow{margin:0}
+.cdid .cdone{display:inline-flex;align-items:center;gap:8px;min-height:44px;color:var(--ink);font-weight:600}
+.done .cdid svg{width:16px;height:16px;margin:0}
+#noB{margin:0 0 16px}
 
 /* a link out to a store, with its disclosure in the same tap target */
 .affrow{display:flex;justify-content:center;border-top:1px solid var(--line);margin-top:8px;padding-top:8px}
@@ -423,6 +451,7 @@ details.edit[open] summary{margin-bottom:8px}
   .cook .nav .btn{min-width:0;padding:0 12px;font-size:15px}.cook .nav .btn.soft{flex:0 1 auto}
   .dock .btn{white-space:normal;line-height:1.2;padding:0 8px}.dock .btn.soft span{display:none}.dock .btn.soft{padding:0 16px}
   .lprev{display:none}.pprev img{height:auto}
+  .fz .saved li{flex-wrap:wrap}.fz .saved .open{flex:1 1 100%}.ate{margin:0 0 8px}
   .links{flex-wrap:wrap;gap:0 24px}.toast{white-space:normal}
   .checks li{flex-wrap:wrap}.checks label{flex:1 1 100%}.stp{margin:0 0 8px;padding:0}
 }
@@ -471,6 +500,7 @@ details.edit[open] summary{margin-bottom:8px}
         <p class="sub">Turn a recipe screenshot into a grocery list, a cook order and a freezer plan.</p>
       </div>
 
+      <div class="alert hidden" id="noB" role="status"><div id="noBText"></div></div>
       <div class="card" id="dropcard">
         <div id="pick">
           <input type="file" id="file" accept="image/*" multiple hidden>
@@ -487,6 +517,12 @@ details.edit[open] summary{margin-bottom:8px}
       <div class="links">
         <button class="link" id="pasteToggle">Paste text</button>
         <button class="link" id="sample">Try a sample</button>
+      </div>
+
+      <div class="card fz hidden" id="fz">
+        <h3 id="fzH" tabindex="-1"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M10 2v16M3 6l14 8M17 6L3 14"/></svg>My freezer</h3>
+        <p class="fzsum num" id="fzSum"></p>
+        <div id="fzList"></div>
       </div>
 
       <ol class="flow" aria-label="How it works">
@@ -679,7 +715,7 @@ function show(v,push){
   try{if(v==='sheet'&&curId)sessionStorage.setItem('bd-open',curId);else sessionStorage.removeItem('bd-open')}catch(e){}
   if(push){const rd=history.state&&history.state.reading;history[rd?'replaceState':'pushState']({v},'','#'+(v==='add'?'':v))} // the reading screen's entry becomes the recipe's
   scrollTo(0,0);syncBar();
-  if(v==='sheet'){placeAd();if(full)remember(plan.want);$('#sTitle').focus({preventScroll:true});requestAnimationFrame(()=>{moveSeg();moveTabs()})}
+  if(v==='sheet'){$('#noB').classList.add('hidden');placeAd();if(full)remember(plan.want);$('#sTitle').focus({preventScroll:true});requestAnimationFrame(()=>{moveSeg();moveTabs()})}
 }
 addEventListener('popstate',(e)=>{
   const toCook=()=>setTimeout(()=>$('#dCook').focus({preventScroll:true}),0); // a history step can drop focus, so set it after
@@ -948,7 +984,18 @@ addEventListener('resize',()=>{moveSeg();moveTabs()});
 // whole numbers 1 to 999; anything that isn't a plain number goes back to the last good value
 function snapN(i,fb){const s=i.value.trim();let v=/^[+-]?\d+(\.\d+)?$/.test(s)?Math.round(parseFloat(s)):fb;v=Math.min(999,Math.max(1,v||1));i.value=v;return v}
 let flash=false; // set while a stepper or number box redraws the page, so changed amounts can show it
-function changed(id){if(!recipe)return;touched=true;if(id==='yield')yieldSet=true;flash=true;try{build()}finally{flash=false}}
+/* a tap that lands while a number box is still being edited: the box's change comes first (on blur), and redrawing the page then
+   would pull the button out from under the finger, so the tap was lost. Now the numbers are updated at once (soft) and the page is drawn after the tap has landed */
+let press=false,late=false,pressT=null;
+function changed(id,soft){if(!recipe)return;touched=true;if(id==='yield')yieldSet=true;
+  if(soft){build(false,true);pressT=pressT||setTimeout(pressEnd,1500);return} // 1.5 s is the backstop if the press never ends in a click
+  flash=true;try{build()}finally{flash=false}}
+function pressEnd(){clearTimeout(pressT);pressT=null;press=false;if(late&&recipe&&plan){flash=true;try{build()}finally{flash=false}}late=false}
+// a press lasts from pointerdown until its click has been handled. On a phone the box only loses focus after the finger lifts, so pointerup must not end it
+document.addEventListener('pointerdown',(e)=>{clearTimeout(pressT);pressT=null;press=!(e.target&&e.target.closest&&e.target.closest('.step input'))},true); // a tap into a number box is not a tap on a button
+document.addEventListener('pointerup',()=>{clearTimeout(pressT);pressT=setTimeout(pressEnd,400)},true); // the click follows at once; 400 ms covers a slow phone and a press that never becomes a click
+document.addEventListener('pointercancel',()=>{clearTimeout(pressT);pressT=setTimeout(pressEnd,400)},true);
+document.addEventListener('click',()=>{if(press||late){clearTimeout(pressT);pressT=setTimeout(pressEnd,0)}},true); // 0: after the button's own handler has run
 // at 1 or 999 the button that can't go further dims
 /* haptics: a light tap on Android (navigator.vibrate). iPhone Safari has no vibration API; the hidden-switch trick
    (Safari 17.4 to iOS 26.4) is tried quietly and does nothing on newer iOS. Off switch in the footer, saved as bd-hap. */
@@ -981,7 +1028,7 @@ $$('.step button').forEach((b)=>{ // tap = one step; press and hold = keeps coun
   b.addEventListener('contextmenu',(e)=>e.preventDefault());
   b.onclick=()=>{if(held){held=false;return}bump()};
 });
-['yield','want'].forEach((id)=>{const i=$('#'+id);i.addEventListener('change',()=>changed(id));i.addEventListener('focus',()=>i.select())});
+['yield','want'].forEach((id)=>{const i=$('#'+id);i.addEventListener('change',()=>changed(id,press));i.addEventListener('focus',()=>i.select())});
 
 const IC={freezer:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M10 2v16M3 6l14 8M17 6L3 14"/></svg>',fridge:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="10" height="16" rx="2"/><path d="M5 8h10M8 5v1M8 11v2"/></svg>',fresh:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16C4 8 9 4 16 4c0 7-4 12-12 12z"/><path d="M4 16l6-6"/></svg>'};
 function ingRows(items){
@@ -996,20 +1043,20 @@ function ingRows(items){
   return h;
 }
 // builds the whole page from the recipe and the two numbers; runs on every change
-function build(fresh){
+function build(fresh,soft){
   recipe.yield=snapN($('#yield'),recipe.yield||4);
   const want=snapN($('#want'),plan&&plan.mode===mode?plan.want:wants[mode]||defWant(mode)), sh=$('#sheet'), R=fresh?' rise':'';
   wants[mode]=want;
   // amounts as they stand now, by item, to compare after the redraw
   const old=flash&&!fresh?new Map([...sh.querySelectorAll('[data-a]')].map((e)=>[e.dataset.a,e.textContent])):null,oldMeta=$('#sMeta').textContent;
-  drawHead();
+  if(!soft){late=false;drawHead()}
+  const say=(a,b)=>{if(soft)return;$('#sMeta').textContent=a;$('#pSum').textContent=b};
   let h='';
   const steps=recipe.steps.length?`<div class="card${R}"><h3>Steps</h3><ol class="osteps">${recipe.steps.map((s)=>`<li>${esc(s.text)}</li>`).join('')}</ol></div>`:'';
   if(mode==='batch'){
     const p=E.batchDay(recipe,want);plan={mode,p,want};
     const mins=Math.round(p.totalMin/5)*5;
-    $('#sMeta').textContent=`${fmtX(p.factor)}× the recipe${mins?` · about ${mins} minutes`:''}`;
-    $('#pSum').textContent=`${want} meals · ${fmtX(p.factor)}× the recipe${mins?` · about ${mins} minutes`:''}`;
+    say(`${fmtX(p.factor)}× the recipe${mins?` · about ${mins} minutes`:''}`,`${want} meals · ${fmtX(p.factor)}× the recipe${mins?` · about ${mins} minutes`:''}`);
     p.notes.forEach((n)=>h+=`<div class="note">${esc(n)}</div>`);
     h+=`<div class="seg tabs noprint" id="tabs" role="group" aria-label="Sections"><span class="pill"></span>${[['shop','Shop'],['cook','Cook'],['store','Store'],['recipe','Recipe']].map((t)=>`<button data-tab="${t[0]}">${t[1]}</button>`).join('')}</div>`;
     // shop
@@ -1021,19 +1068,19 @@ function build(fresh){
     if(p.pots.length)h+=`<div class="card${R}"><h3>Pots and pans</h3><ul class="plain">${p.pots.map((x,k)=>`<li data-a="p:${k}">${esc(x)}</li>`).join('')}</ul></div>`;
     h+=`<div class="card${R}"><h3>Cook order</h3><ol class="order">${p.order.map((o,k)=>`<li><div>${esc(o.t)}<small data-a="d:${k}">${esc(o.d)}</small></div><span class="t num" data-a="m:${k}">${o.min?o.min+' min':''}</span></li>`).join('')}</ol></div></div>`;
     // store
-    h+=`<div data-panel="store"><div class="card${R}"><h3>Where it goes</h3><div class="split"><div><h4>${IC.freezer}Freezer</h4><p data-a="f:z">${esc(p.split.freezer.join(' ')||'Nothing this time.')}</p></div><div><h4>${IC.fridge}Fridge</h4><p data-a="f:r">${esc(p.split.fridge.join(' '))}</p></div><div><h4>${IC.fresh}Fresh at serving</h4><p>${esc(p.split.fresh.join(', ')||'Nothing extra.')}</p></div></div>${AFF.amazonTag&&portioned(p)?affRow('affGear','https://www.amazon.com/s?k=freezer+meal+prep+containers&tag='+encodeURIComponent(AFF.amazonTag),'Freezer containers',AMZ_NOTE):''}</div>${labelCard(R)}</div>`;
+    h+=`<div data-panel="store"><div class="card${R}"><h3>Where it goes</h3><div class="split"><div><h4>${IC.freezer}Freezer</h4><p data-a="f:z">${esc(p.split.freezer.join(' ')||'Nothing this time.')}</p></div><div><h4>${IC.fridge}Fridge</h4><p data-a="f:r">${esc(p.split.fridge.join(' '))}</p></div><div><h4>${IC.fresh}Fresh at serving</h4><p>${esc(p.split.fresh.join(', ')||'Nothing extra.')}</p></div></div>${AFF.amazonTag&&portioned(p)?affRow('affGear','https://www.amazon.com/s?k=freezer+meal+prep+containers&tag='+encodeURIComponent(AFF.amazonTag),'Freezer containers',AMZ_NOTE):''}</div>${labelCard(R)}${cookCard(R)}</div>`;
     // recipe: what was read, next to what it became
     h+=`<div data-panel="recipe"><div class="card${R}"><h3>Amounts <small>original on the right</small></h3><table class="tbl">${ingRows(p.items)}</table></div>${steps}</div>`;
   }else{
     const s=E.scaleAll(recipe,want);plan={mode,s,want};
-    $('#sMeta').textContent=`${fmtX(s.factor)}× the recipe`;
-    $('#pSum').textContent=`${want} servings · ${fmtX(s.factor)}× the recipe`;
+    say(`${fmtX(s.factor)}× the recipe`,`${want} servings · ${fmtX(s.factor)}× the recipe`);
     if(recipe.baking&&s.factor>2)h+=`<div class="note">Baking doesn't scale well past 2×. Make ${Math.ceil(s.factor/2)} batches instead of one big one.</div>`;
     h+=`<div class="card${R}"><h3>Ingredients <small>original on the right</small></h3><table class="tbl">${ingRows(s.items)}</table></div>${steps}`;
   }
+  if(soft){late=true;remember(want);return} // the plan is new, the page is still the old one: it is drawn once the tap has landed
   sh.innerHTML=h;
   sh.querySelectorAll('.rise').forEach((el,k)=>watch(el,Math.min(k,4)*60));
-  wireShop();wireLabels();
+  wireShop();wireLabels();wireCooked();
   sh.querySelectorAll('[data-tab]').forEach((b)=>b.onclick=()=>setTab(b.dataset.tab));
   setTab(mode==='batch'?tab:'recipe',true);
   syncEnds();
@@ -1107,11 +1154,14 @@ function okB(x){return !!x&&typeof x==='object'&&typeof x.text==='string'&&!!x.t
 // entries that can't be shown are skipped in the list but kept in storage; nothing is ever dropped here
 function allB(){junk=[];try{const a=JSON.parse(localStorage.getItem(KEY));if(!Array.isArray(a))return[];const ok=[];a.forEach((x)=>{if(okB(x))ok.push(Object.assign(x,{id:String(x.id),k:Array.isArray(x.k)?x.k.filter((s)=>typeof s==='string'):[]}));else junk.push(x)});return ok}catch(e){return[]}}
 function putB(a){try{localStorage.setItem(KEY,JSON.stringify(a.concat(junk)));return true}catch(e){return false}}
+// the id this batch has, or will have when it is saved. The same text keeps the id it was saved under, so printed labels and freezer rows still find it
+let pendId=null,pendFor=null;
+function batchId(){if(curId)return curId;const t=$('#text').value,s=allB().find((x)=>x.text===t);if(s)return s.id;if(pendFor!==t||!pendId){pendFor=t;pendId=Date.now().toString(36)}return pendId}
 function remember(want){
   const note=$('#savedNote');
   if((from==='sample'||from==='tour')&&!touched&&!curId){note.classList.add('hidden');full=false;$('#fullNote').classList.add('hidden');return} // a look at the sample isn't a batch
   const text=$('#text').value,a0=allB();
-  const rec={id:curId||Date.now().toString(36),title:recipe.title,text,y:recipe.yield,w:want,m:mode,at:Date.now(),k:[...have]};
+  const rec={id:batchId(),title:recipe.title,text,y:recipe.yield,w:want,m:mode,at:Date.now(),k:[...have]};
   const a=a0.filter((x)=>x.id!==rec.id&&x.text!==text);
   full=a.length===a0.length&&a0.length>=CAP; // a new batch and no room: keep it open, save nothing, drop nothing
   $('#fullNote').classList.toggle('hidden',!full);
@@ -1165,7 +1215,7 @@ const BK_APP='batch.recipes',BK_V=1,BK_MAX=2e6;
 function cleanB(x){const o={id:String(x.id),text:x.text,w:+x.w,m:x.m==='scale'?'scale':'batch',at:+x.at,k:Array.isArray(x.k)?x.k.filter((t)=>typeof t==='string'):[]};if(typeof x.title==='string')o.title=x.title;if(isFinite(+x.y)&&+x.y>0)o.y=+x.y;return o}
 function backupData(){
   let th=null;try{th=localStorage.getItem('bd-theme')}catch(e){}
-  return {app:BK_APP,v:BK_V,at:new Date().toISOString(),batches:allB().map(cleanB),settings:{theme:th==='dark'||th==='light'?th:null,staples:[...staples()]}};
+  return {app:BK_APP,v:BK_V,at:new Date().toISOString(),batches:allB().map(cleanB),freezer:allF(),settings:{theme:th==='dark'||th==='light'?th:null,staples:[...staples()]}};
 }
 async function backUp(){
   const d=new Date(),two=(n)=>String(n).padStart(2,'0'),name=`batch-recipes-backup-${d.getFullYear()}-${two(d.getMonth()+1)}-${two(d.getDate())}.json`,json=JSON.stringify(backupData());
@@ -1188,17 +1238,18 @@ function readBackup(txt){
   const st=o.settings==null?{}:o.settings;if(typeof st!=='object'||Array.isArray(st))return null;
   if(st.theme!=null&&st.theme!=='dark'&&st.theme!=='light')return null;
   if(st.staples!=null&&!(Array.isArray(st.staples)&&st.staples.length<=500&&st.staples.every((x)=>typeof x==='string')))return null;
-  return {batches:o.batches.map(cleanB),theme:st.theme||null,staples:(st.staples||[]).map(E.stapleKey).filter(Boolean)};
+  if(o.freezer!=null&&!(Array.isArray(o.freezer)&&o.freezer.length<=FZCAP&&o.freezer.every(okF)))return null;
+  return {batches:o.batches.map(cleanB),freezer:(o.freezer||[]).map(cleanF),theme:st.theme||null,staples:(st.staples||[]).map(E.stapleKey).filter(Boolean)};
 }
 // merge: same batch (by id, or the very same text) keeps the newer one; nothing already here is removed
 function restore(txt){
   const d=txt.length>BK_MAX?null:readBackup(txt);
   if(!d){track('Restore',{ok:'no',n:0});toast(txt.length>BK_MAX?'That file is too big':"That file isn't a batch.recipes backup");return}
   const cur=allB(),byId=new Map(cur.map((x)=>[x.id,x])),byText=new Map(cur.map((x)=>[x.text,x]));
-  let added=0,newer=0,left=0;
+  let added=0,newer=0,left=0;const moved=new Map(); // a batch that is already here under another id: its freezer rows follow it
   d.batches.sort((a,b)=>b.at-a.at).forEach((b)=>{
     const old=byId.get(b.id)||byText.get(b.text);
-    if(old){
+    if(old){if(old.id!==b.id)moved.set(b.id,old.id);
       if(b.at>old.at){b.id=old.id;cur[cur.indexOf(old)]=b;byId.set(b.id,b);byText.delete(old.text);byText.set(b.text,b);newer++;
         if(b.id===curId){curId=null;plan=null;try{sessionStorage.removeItem('bd-open')}catch(e){}}} // the open copy is now the older one
       return;
@@ -1210,8 +1261,14 @@ function restore(txt){
   if((added||newer)&&!putB(cur)){track('Restore',{ok:'no',n:0});toast("Couldn't save on this device");return}
   const set=staples(),s0=set.size;d.staples.forEach((k)=>set.add(k));if(set.size>s0)putStaples(set);
   if(d.theme&&!flag('bd-theme')){root.dataset.theme=d.theme;setFlag('bd-theme',d.theme);syncSwitch()}
-  const n=added+newer;track('Restore',{ok:'yes',n});renderSaved();
-  toast(left?`My batches is full. Added ${added} of ${added+left}.`:n?`Restored ${n} ${n===1?'batch':'batches'}`:set.size>s0?'Restored':'Nothing new in that file');
+  // my freezer: merged by entry id, the newer copy of an entry wins, nothing here is removed
+  const fcur=allF(),fById=new Map(fcur.map((e)=>[e.id,e]));let fN=0;
+  d.freezer.forEach((e)=>{if(moved.has(e.bid))e.bid=moved.get(e.bid);const o=fById.get(e.id);
+    if(o){if(e.at>o.at){fcur[fcur.indexOf(o)]=e;fById.set(e.id,e);fN++}return}
+    if(fcur.length>=FZCAP)return;fcur.push(e);fById.set(e.id,e);fN++});
+  if(fN&&!putF(fcur))fN=0;
+  const n=added+newer;track('Restore',{ok:'yes',n});renderSaved();renderFz();
+  toast(left?`My batches is full. Added ${added} of ${added+left}.`:n?`Restored ${n} ${n===1?'batch':'batches'}`:set.size>s0||fN?'Restored':'Nothing new in that file');
   if(n&&allB().length){$('#mine').scrollIntoView({block:'nearest',behavior:reduce?'auto':'smooth'});$('#mineH').focus({preventScroll:true})}
 }
 {const bf=$('#bfile'),pickFile=()=>bf.click();
@@ -1250,7 +1307,7 @@ const TOUR=[
   {t:()=>$('#dCook'),s:CAN_WAKE?'Cook one step at a time. The screen stays on.':'Cook one step at a time.'},
   {t:()=>$('#dShare'),s:'Save it or share it.'}];
 let touring=false,ti=0,tSide='',tKey='',tRaf=0,tFrom=null,offerGone=false;
-function offerSync(){$('#tourOffer').classList.toggle('hidden',!(NEWBIE&&!offerGone&&!touring&&!flag('bd-tour')&&!allB().length&&!/^#r=/.test(startHash)))}
+function offerSync(){$('#tourOffer').classList.toggle('hidden',!(NEWBIE&&!offerGone&&!touring&&!flag('bd-tour')&&!allB().length&&!/^#[rb]=/.test(startHash)))}
 function tourEdges(el){const dock=$('#dock');return {top:$('.bar').getBoundingClientRect().bottom+8,bot:(view==='sheet'&&!dock.contains(el)?dock.getBoundingClientRect().top:innerHeight)-8}}
 // keeps the ring on the control and the bubble beside it, whatever scrolls, slides in or resizes underneath
 function tourPos(){
@@ -1383,7 +1440,16 @@ async function shareIt(){
   const text=plainText()+(url?`\n\nOpen in batch.recipes:\n${url}`:'');
   try{await navigator.share({title:recipe.title,text})}catch(e){if(e&&e.name==='AbortError')return;try{await navigator.clipboard.writeText(text);toast('Copied')}catch(e2){}}
 }
+// a label's code: #b=<batch id> opens that batch if it is saved here
+const NOT_HERE=()=>`This batch isn't saved on this ${/Mobi|Android|iPhone|iPod/.test(navigator.userAgent)?'phone':'device'}`;
+function openBatch(id,how){
+  const r=id?allB().find((x)=>x.id===id):null;track('Freezer open',{from:how,ok:r?'yes':'no'});
+  if(r){from='saved';openRec(r,true);return true}
+  if(how==='label'){$('#noBText').textContent=NOT_HERE()+'.';$('#noB').classList.remove('hidden')}else toast(NOT_HERE());
+  return false;
+}
 async function openFromHash(h){
+  if(/^#b=/.test(h)){let id='';try{id=decodeURIComponent(h.slice(3))}catch(e){}openBatch(id.slice(0,200),'label');return}
   const m=h.match(/^#r=([\w-]+)$/);if(!m){if(/^#r=/.test(h))toast("That link didn't open");return}
   try{if(m[1].length>MAXT*8)throw 0;const o=await decode(m[1]);if(!o||typeof o.t!=='string'||!o.t.trim()||o.t.length>MAXT)throw 0;from='link';track('Open shared link');openRec({text:o.t,y:o.y,w:o.w,m:o.m==='scale'?'scale':'batch'},true)}
   catch(e){toast("That link didn't open")}
@@ -1518,8 +1584,15 @@ function reheatLine(){
   }
   return '';
 }
-function lblData(){return {title:recipe.title||'Recipe',n:plan.want,when:lblWhen(),rh:reheatLine()}}
-function lblHTML(d,k){return `<div class="lbl"><div><b dir="auto">${esc(d.title)}</b><span>${k} of ${d.n}</span></div><div><span>Cooked${d.when?' '+esc(d.when):''}</span>${d.when?'':'<i></i>'}<span>Use by</span><i></i></div><div>${d.rh?`<span class="rh">${esc(d.rh)}</span>`:'<i></i>'}</div></div>`}
+// the code on a label opens this batch on the phone that saved it. No code when the address is too long for a small one
+function lblQR(){try{return window.BatchQR.make('https://batch.recipes/#b='+encodeURIComponent(batchId()))}catch(e){return null}}
+// beside the code the dish has 1.625 in. It goes from 11pt down to 9pt to fit, then ends in an ellipsis
+const LQ=.62,LTW=2.625-.14-.14-LQ-.1;let fitC=null;
+function lblFit(title){try{fitC=fitC||document.createElement('canvas').getContext('2d');const ff=cvFont();for(const pt of [11,10.5,10,9.5,9]){cvSet(fitC,pt*96/72,600,ff,0);if(fitC.measureText(title).width<=LTW*96-2)return pt}}catch(e){}return 9}
+function lblData(){const title=recipe.title||'Recipe',qr=lblQR();return {title,n:plan.want,when:lblWhen(),rh:reheatLine(),qr,pt:qr?lblFit(title):11}}
+function lblHTML(d,k){
+  if(d.qr)return `<div class="lbl q"><div class="lt"><div><b dir="auto" style="font-size:${d.pt}pt">${esc(d.title)}</b></div><div><span>Cooked${d.when?' '+esc(d.when):''}</span>${d.when?'':'<i></i>'}</div><div><span>Use by</span><i></i></div><div>${d.rh?`<span class="rh">${esc(d.rh)}</span>`:'<i></i>'}</div></div><div class="lq"><svg viewBox="0 0 ${d.qr.size} ${d.qr.size}" shape-rendering="crispEdges" aria-hidden="true"><path fill="#000" d="${window.BatchQR.path(d.qr)}"/></svg><span>${k} of ${d.n}</span></div></div>`;
+  return `<div class="lbl"><div><b dir="auto">${esc(d.title)}</b><span>${k} of ${d.n}</span></div><div><span>Cooked${d.when?' '+esc(d.when):''}</span>${d.when?'':'<i></i>'}<span>Use by</span><i></i></div><div>${d.rh?`<span class="rh">${esc(d.rh)}</span>`:'<i></i>'}</div></div>`}
 function labelCard(R){
   const d=lblData();
   return `<div class="card labels noprint${R}"><h3>Freezer labels</h3><div class="lprev" id="lblPrev" aria-hidden="true">${lblHTML(d,1)}</div>`
@@ -1529,7 +1602,7 @@ function labelCard(R){
 }
 function wireLabels(){
   const i=$('#lblDate');if(!i)return;
-  i.onchange=i.oninput=()=>{lblDate=i.value;$('#lblPrev').innerHTML=lblHTML(lblData(),1)};
+  i.onchange=i.oninput=()=>{lblDate=i.value;$('#lblPrev').innerHTML=lblHTML(lblData(),1);const o=$('#ckDate');if(o)o.value=lblDate;didAsk=false;drawDid()};
   $('#lblPrint').onclick=printLabels;$('#lblImg').onclick=saveLabels;
 }
 // print: only the labels, laid out for Avery 5160. The page rule is added for this print alone, so printing the recipe keeps its own margins
@@ -1549,6 +1622,18 @@ const LW=788,LH=300;
 function drawLabel(c,d,k,ff,y0){
   const s=LH/96,px=.14*LH,py=.08*LH,x1=LW-px,pt=(n)=>n*LH/72,line=(xa,xb,y)=>{c.fillRect(xa,y-pt(.75),xb-xa,pt(.75))};
   c.fillStyle='#000';c.textBaseline='alphabetic';
+  if(d.qr){ // the same layout as the printed label: four rows of words, the code top right, the count under it
+    const q=d.qr,qs=LQ*LH,qx=x1-qs,qy=y0+py,xr=qx-.1*LH,f1=pt(d.pt),f2=pt(8.5),f3=pt(7.5);
+    for(let yy=0;yy<q.size;yy++)for(let xx=0;xx<q.size;xx++)if(q.dark(xx,yy)){const xa=Math.round(qx+xx*qs/q.size),ya=Math.round(qy+yy*qs/q.size);c.fillRect(xa,ya,Math.round(qx+(xx+1)*qs/q.size)-xa,Math.round(qy+(yy+1)*qs/q.size)-ya)}
+    cvSet(c,f2,400,ff,0);c.textAlign='center';c.fillText(`${k} of ${d.n}`,qx+qs/2,y0+LH-py-f2*.3);c.textAlign='left';
+    cvSet(c,f3,400,ff,0);const rl=d.rh?cvWrap(c,d.rh,xr-px,2):[];
+    const hs=[f1*1.25,f2*1.25,f2*1.25,rl.length?rl.length*f3*1.2:f2*1.25],gap=(LH-2*py-hs.reduce((a,b)=>a+b,0))/3;let y=y0+py;
+    cvSet(c,f1,600,ff,0);c.fillText(cvFit(c,d.title,xr-px),px,y+f1*1.02);y+=hs[0]+gap;
+    cvSet(c,f2,400,ff,0);const ck='Cooked'+(d.when?' '+d.when:'');c.fillText(ck,px,y+f2*.98);if(!d.when)line(px+c.measureText(ck).width+.08*LH,xr,y+f2*.98+pt(1.5));y+=hs[1]+gap;
+    c.fillText('Use by',px,y+f2*.98);line(px+c.measureText('Use by').width+.08*LH,xr,y+f2*.98+pt(1.5));y+=hs[2]+gap;
+    if(rl.length){cvSet(c,f3,400,ff,0);rl.forEach((l,i)=>c.fillText(l,px,y+f3*.95+i*f3*1.2))}else line(px,xr,y+f2*.98+pt(1.5));
+    return;
+  }
   // row 1: the dish and "1 of 14"
   const f1=pt(11),f2=pt(8.5),f3=pt(7.5),g=.08*LH,b1=y0+py+f1*.95;
   cvSet(c,f2,400,ff,0);const num=`${k} of ${d.n}`,nw=c.measureText(num).width;c.textAlign='right';c.fillText(num,x1,b1);
@@ -1583,6 +1668,98 @@ function saveLabels(){
     if(bs.some((b)=>!b)){toast("Couldn't make the labels");return}
     return fileOut(bs.map((b,i)=>new File([b],bs.length>1?`${base}-${i+1}.png`:`${base}.png`,{type:'image/png'}))).then((how)=>{if(!how)return;track('Labels',{how});if(how==='download')toast('Labels saved')});
   });
+}
+/* my freezer: what was cooked and how much is left, kept on this device (bd-freezer). One entry per cook day:
+   {id, bid (the batch), title, date cooked, fz / fr (left in the freezer / fridge), fz0 / fr0 (as cooked), at}. zx / rx mark a row that was removed.
+   No storage or use-by times here: this page has none of its own to give (Phase 2 brings USDA data) */
+const FZK='bd-freezer',FZCAP=500;let fzJunk=[];
+const isDay=(s)=>typeof s==='string'&&/^\d{4}-\d\d-\d\d$/.test(s),okN=(n)=>Number.isInteger(n)&&n>=0&&n<=999;
+function okF(x){return !!x&&typeof x==='object'&&!Array.isArray(x)&&typeof x.id==='string'&&!!x.id&&x.id.length<=40&&typeof x.title==='string'&&x.title.length<=300&&isDay(x.date)&&(x.bid==null||(typeof x.bid==='string'&&x.bid.length<=200))
+  &&okN(x.fz)&&okN(x.fr)&&okN(x.fz0)&&okN(x.fr0)&&x.fz<=x.fz0&&x.fr<=x.fr0&&x.fz0+x.fr0>0&&isFinite(+x.at)&&+x.at>0}
+function cleanF(x){const o={id:x.id,bid:x.bid==null?null:x.bid,title:x.title,date:x.date,fz:x.fz,fr:x.fr,fz0:x.fz0,fr0:x.fr0,at:+x.at};if(x.zx)o.zx=1;if(x.rx)o.rx=1;return o}
+// entries that can't be shown are skipped but left in storage, like saved batches
+function allF(){fzJunk=[];try{const a=JSON.parse(localStorage.getItem(FZK));if(!Array.isArray(a))return[];const ok=[];a.forEach((x)=>{if(okF(x))ok.push(cleanF(x));else fzJunk.push(x)});return ok}catch(e){return[]}}
+function putF(a){try{localStorage.setItem(FZK,JSON.stringify(a.concat(fzJunk)));return true}catch(e){return false}}
+const fzHas=(e,p)=>e['f'+p+'0']>0&&!e[p+'x']; // p is z (freezer) or r (fridge)
+const meals=(n)=>`${n} ${n===1?'meal':'meals'}`;
+function fzDay(s){const m=/^(\d{4})-(\d\d)-(\d\d)$/.exec(s),d=m?new Date(+m[1],m[2]-1,+m[3]):null;if(!d||isNaN(d))return '';return d.toLocaleDateString(undefined,d.getFullYear()===new Date().getFullYear()?{month:'short',day:'numeric'}:{month:'short',day:'numeric',year:'numeric'})}
+// the home card: fridge first, then the freezer, each oldest first. Hidden when there is nothing in it
+function renderFz(){
+  const a=allF().sort((x,y)=>x.date<y.date?-1:x.date>y.date?1:x.at-y.at),fr=a.filter((e)=>fzHas(e,'r')),fz=a.filter((e)=>fzHas(e,'z'));
+  $('#fz').classList.toggle('hidden',!(fr.length+fz.length));
+  const nz=fz.reduce((s,e)=>s+e.fz,0),nr=fr.reduce((s,e)=>s+e.fr,0);
+  $('#fzSum').textContent=nz?`${meals(nz)} in the freezer`:nr?`${meals(nr)} in the fridge`:'Nothing left';
+  const row=(e,p)=>{const n=e['f'+p],t=e.title||'Recipe';return `<li><button class="open" data-fo="${esc(e.id)}"><b dir="auto">${esc(t)}</b><span class="num"><span data-n="${esc(e.id)}:${p}">${n?n+' left':'None left'}</span> · Cooked ${esc(fzDay(e.date))}</span></button><button class="ate" data-${n?'ate':'frm'}="${esc(e.id)}" data-p="${p}" aria-label="${n?'Ate one':'Remove'}, ${esc(t)}">${n?'Ate one':'Remove'}</button></li>`};
+  const list=(rows,p)=>`<ul class="saved">${rows.map((e)=>row(e,p)).join('')}</ul>`;
+  $('#fzList').innerHTML=(fr.length?`<h4 class="aisle">In the fridge</h4>${list(fr,'r')}`:'')+(fz.length?(fr.length?'<h4 class="aisle">In the freezer</h4>':'')+list(fz,'z'):'');
+  $$('#fzList [data-fo]').forEach((b)=>b.onclick=()=>{const e=allF().find((x)=>x.id===b.dataset.fo);openBatch(e&&e.bid,'card')});
+  $$('#fzList [data-ate]').forEach((b)=>b.onclick=()=>fzAte(b.dataset.ate,b.dataset.p));
+  $$('#fzList [data-frm]').forEach((b)=>b.onclick=()=>fzRemove(b.dataset.frm,b.dataset.p));
+}
+function fzFocus(id,p){const b=$(`#fzList .ate[data-p="${p}"][data-ate="${CSS.escape(id)}"],#fzList .ate[data-p="${p}"][data-frm="${CSS.escape(id)}"]`)||$('#fzList .ate')||($('#fz').classList.contains('hidden')?$('#choose'):$('#fzH'));if(b)b.focus({preventScroll:true})}
+function fzFlash(id,p){const n=$(`#fzList [data-n="${CSS.escape(id+':'+p)}"]`);if(n)n.classList.add('chg');$('#fzSum').classList.remove('chg');$('#fzSum').offsetWidth;$('#fzSum').classList.add('chg')}
+function fzAte(id,p){
+  const a=allF(),e=a.find((x)=>x.id===id),k='f'+p;if(!e||!(e[k]>0))return;
+  e[k]--;e.at=Date.now();if(!putF(a)){toast("Couldn't save on this device");return}
+  HAP.buzz('tick');track('Ate one');renderFz();fzFocus(id,p);fzFlash(id,p);
+  toast(e[k]?`Ate one. ${e[k]} left`:'Ate one. None left',()=>{const b=allF(),x=b.find((y)=>y.id===id);if(!x||x[k]>=x[k+'0'])return;x[k]++;x.at=Date.now();putF(b);renderFz();fzFlash(id,p)},4000);
+}
+// Remove takes the row away; the entry goes once both of its rows have
+function fzRemove(id,p){
+  const a=allF(),i=a.findIndex((x)=>x.id===id);if(i<0)return;const e=a[i],was=cleanF(e);
+  e[p+'x']=1;e.at=Date.now();if(!fzHas(e,'z')&&!fzHas(e,'r'))a.splice(i,1);
+  if(!putF(a)){toast("Couldn't save on this device");return}
+  renderFz();fzFocus(id,p);
+  toast(`Removed ${e.title||'recipe'}`,()=>{const b=allF(),j=b.findIndex((x)=>x.id===id);if(j<0)b.push(was);else b[j]=was;putF(b);renderFz()});
+}
+$('#fz').addEventListener('animationend',(e)=>e.target.classList.remove('chg'));
+/* "I cooked this": on the Store tab and on cook mode's last screen. The split comes from the plan; the date is the labels' Cooked date */
+function fzPortions(){const p=plan&&plan.mode==='batch'&&plan.p.portions;return p&&p.fridge+p.freezer>0?p:null}
+function cookDay(){if(isDay(lblDate))return lblDate;const d=new Date();return `${d.getFullYear()}-${two(d.getMonth()+1)}-${two(d.getDate())}`}
+function fzDup(){const b=batchId(),day=cookDay();return allF().some((e)=>e.bid===b&&e.date===day)}
+function fzMine(){const b=batchId();return allF().some((e)=>e.bid===b)}
+function cooked(){
+  const po=fzPortions();if(!po)return null;keep();
+  const a=allF();if(a.length>=FZCAP){toast('My freezer is full. Remove a few first.');return null}
+  const e={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),bid:curId||null,title:String(recipe.title||'Recipe').slice(0,300),date:cookDay(),fz:po.freezer,fr:po.fridge,fz0:po.freezer,fr0:po.fridge,at:Date.now()};
+  a.push(e);if(!putF(a)){toast("Couldn't save on this device");return null}
+  track('Cooked',{portions:po.freezer+po.fridge});HAP.buzz('done');renderFz();return e;
+}
+function uncook(id){const a=allF(),i=a.findIndex((x)=>x.id===id);if(i<0)return;a.splice(i,1);putF(a);renderFz()}
+function fzSay(po){return po.freezer&&po.fridge?`${meals(po.freezer)} for the freezer, ${po.fridge} for the fridge.`:po.freezer?`${meals(po.freezer)} for the freezer.`:`${meals(po.fridge)} for the fridge.`}
+let didAsk=false;
+function cookCard(R){
+  const po=fzPortions();if(!po)return '';
+  return `<div class="card didc noprint${R}"><h3>My freezer</h3><p class="didp num" data-a="f:n">${esc(fzSay(po))}</p>`
+    +`<div class="set"><label for="ckDate">Cooked</label><input class="date num" type="date" id="ckDate" value="${esc(lblDate)}"></div><div id="didBox"></div></div>`;
+}
+function drawDid(focus){
+  const box=$('#didBox');if(!box)return;
+  box.innerHTML=didAsk
+    ?`<div class="tip"><b>Already added for ${esc(fzDay(cookDay()))}.</b> Add it again?<span class="instrow"><button class="pillb" id="didAgain">Add again</button><button class="link" id="didNo">Cancel</button></span></div>`
+    :`<button class="btn soft" id="didGo">I cooked this</button>${fzMine()?'<div class="gfoot"><button class="link" id="didSee">See My freezer</button></div>':''}`;
+  const add=()=>{didAsk=false;const e=cooked();drawDid(true);if(e)toast('Added to My freezer',()=>{uncook(e.id);drawDid()})};
+  const go=$('#didGo');if(go)go.onclick=()=>{if(fzDup()){didAsk=true;drawDid(true)}else add()};
+  const ag=$('#didAgain');if(ag){ag.onclick=add;$('#didNo').onclick=()=>{didAsk=false;drawDid(true)}}
+  const see=$('#didSee');if(see)see.onclick=()=>{addState('pick');show('add',true);$('#fz').scrollIntoView({block:'center',behavior:'auto'});$('#fzH').focus({preventScroll:true})};
+  if(focus)(ag||go).focus({preventScroll:true});
+}
+function wireCooked(){
+  const i=$('#ckDate');if(!i)return;
+  i.onchange=i.oninput=()=>{lblDate=i.value;const o=$('#lblDate');if(o)o.value=lblDate;const pv=$('#lblPrev');if(pv)pv.innerHTML=lblHTML(lblData(),1);didAsk=false;drawDid()};
+  drawDid();
+}
+// the same, quietly, when the last step is done
+let cDidState='';
+function drawCDid(focus){
+  const box=$('#cDidBox');if(!box)return;
+  box.innerHTML=cDidState==='done'?`<span class="cdone" role="status">${CHECK_IC}In My freezer</span>`
+    :cDidState==='ask'?`<span>Already added today. Add it again?</span><span class="instrow"><button class="pillb" id="cDidAgain">Add again</button><button class="link" id="cDidNo">Cancel</button></span>`
+    :`<button class="pillb soft" id="cDid">I cooked this</button>`;
+  const add=()=>{cDidState=cooked()?'done':'';drawCDid(true);drawDid()};
+  const go=$('#cDid');if(go)go.onclick=()=>{if(fzDup()){cDidState='ask';drawCDid(true)}else add()};
+  const ag=$('#cDidAgain');if(ag){ag.onclick=add;$('#cDidNo').onclick=()=>{cDidState='';drawCDid(true)}}
+  if(focus)(ag||go||$('#cNext')).focus({preventScroll:true});
 }
 const menu=$('#menu');let menuFrom=null,menuT=null;
 function menuOpen(){return !menu.classList.contains('hidden')&&!menu.classList.contains('out')} // a sheet that is fading out counts as closed
@@ -1625,7 +1802,8 @@ function drawStep(dir){
   b.className='body'+(dir>0?' go':dir<0?' back':'');
   if(cs>=n){
     b.className+=' done';
-    b.innerHTML=`<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="28"/><path d="M20 33l8 8 16-17"/></svg><h2>That’s the week, done.</h2><p>Label the bags with today’s date.</p>`;
+    b.innerHTML=`<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="28"/><path d="M20 33l8 8 16-17"/></svg><h2>That’s the week, done.</h2><p>Label the bags with today’s date.</p>${fzPortions()?'<div class="cdid" id="cDidBox"></div>':''}`;
+    cDidState='';drawCDid();
     $('#cStep').textContent='Done';$('#cLive').textContent='Done. That’s the week, done.';$('#cProg').style.width='100%';$('#cNext').textContent='Close';$('#cBack').disabled=false;return;
   }
   const s=csteps[cs];
@@ -1704,9 +1882,10 @@ Directions
 // once per browser session, and never in the session that made the first batch
 {let seen=false;try{seen=sessionStorage.getItem('bd-rv')==='1';sessionStorage.setItem('bd-rv','1')}catch(e){}if(!seen){track('Visit');if(allB().length)track('Returning visit')}} // Visit: once per session, carries src
 renderSaved();
-if(/^#r=/.test(startHash))openFromHash(startHash);
+renderFz();
+if(/^#[rb]=/.test(startHash))openFromHash(startHash);
 else{let oid=null;try{oid=sessionStorage.getItem('bd-open')}catch(e){}const r=oid&&allB().find((x)=>x.id===oid);if(r&&startHash==='#sheet'){from='saved';openRec(r,false);history.replaceState({v:'sheet'},'','#sheet')}}
-addEventListener('hashchange',()=>{if(/^#r=/.test(location.hash)){const h=location.hash;history.replaceState({v:view},'',location.pathname+location.search);openFromHash(h)}});
+addEventListener('hashchange',()=>{if(/^#[rb]=/.test(location.hash)){const h=location.hash;history.replaceState({v:view},'',location.pathname+location.search);openFromHash(h)}});
 })();
 </script>
 </body>

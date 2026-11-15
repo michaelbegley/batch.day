@@ -1,6 +1,6 @@
 import os
 READER=(open('reader.txt').read().strip() if os.path.exists('reader.txt') else '')  # e.g. https://user-space.hf.space
-t=open('template.html').read().replace('/*READER*/',READER); e=open('engine.js').read()
+t=open('template.html').read().replace('/*READER*/',READER); e=open('engine.js').read()+'\n'+open('qr.js').read()  # the label QR encoder rides in the same inline script as the engine
 open('site/index.html','w').write(t.replace('/*ENGINE*/',e))
 open('site/favicon.svg','w').write('''<svg xmlns="http://www.w3.org/2000/svg" viewBox="1.804 0.804 52.391 52.391"><style>g{stroke:#c2410c}@media(prefers-color-scheme:dark){g{stroke:#ff7a3d}}</style><g fill="none" stroke="#c2410c" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16c-2-3 2-5 0-8"/><path d="M28 16c-2-3 2-5 0-8"/><path d="M36 16c-2-3 2-5 0-8"/><path d="M10 24h36"/><path d="M13 24v16a6 6 0 0 0 6 6h18a6 6 0 0 0 6-6V24"/><path d="M6 28h7M43 28h7"/></g></svg>''')  # from /home/claude/brand/mark.py: the one 3-steam pot
 open('site/404.html','w').write('<!DOCTYPE html><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=/"><title>batch.recipes</title>')

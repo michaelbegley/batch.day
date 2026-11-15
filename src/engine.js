@@ -417,6 +417,8 @@
       plan.split.fridge.push('Keep covered at room temp 2 days or fridge 5 days');
       plan.split.freezer.push('Most bakes freeze well wrapped tight (frost after thawing)');
     }
+    // the same split as numbers, for My freezer
+    plan.portions = baking ? null : { fridge: fridgeMeals, freezer: meals - fridgeMeals };
 
     // grocery: everything with an amount, finishers per bowl
     items.forEach((i) => {

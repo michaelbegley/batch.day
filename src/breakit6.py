@@ -135,7 +135,7 @@ async def main():
         async with pg.expect_download() as d: await pg.click('#bkUp')
         dl=await d.value; data=json.load(open(await dl.path())); today=datetime.date.today().isoformat()
         log('backup: desktop downloads batch-recipes-backup-YYYY-MM-DD.json',bool(re.fullmatch(r'batch-recipes-backup-\d{4}-\d\d-\d\d\.json',dl.suggested_filename)) and today in dl.suggested_filename,dl.suggested_filename)
-        log('backup: the file is {app, v, at, batches, settings} and nothing else',list(data)==['app','v','at','batches','settings'] and data['app']=='batch.recipes' and data['v']==1 and bool(re.match(r'\d{4}-\d\d-\d\dT[\d:.]+Z$',data['at'])) and list(data['settings'])==['theme','staples'],list(data))
+        log('backup: the file is {app, v, at, batches, freezer, settings} and nothing else',list(data)==['app','v','at','batches','freezer','settings'] and data['app']=='batch.recipes' and data['v']==1 and bool(re.match(r'\d{4}-\d\d-\d\dT[\d:.]+Z$',data['at'])) and list(data['settings'])==['theme','staples'],list(data))
         log('backup: batches carry their ticks; settings carry theme and staples; unreadable entries and other keys stay out',[x['id'] for x in data['batches']]==['b1','b2'] and data['batches'][0]['k']==['rice'] and sorted(data['batches'][0])==['at','id','k','m','text','title','w','y'] and data['settings']=={'theme':'dark','staples':['soy sauce','olive oil']} and 'tiktok' not in json.dumps(data) and 'hap' not in json.dumps(data),data['settings'])
         e=await ev(pg,'Backup'); log('backup: toast "Backup saved", event Backup {how: download}',(await toast(pg))=='Backup saved' and len(e)==1 and e[0]['how']=='download',e)
         log('backup: no errors, no CSP block on the download',not errs,errs); await ctx.close()

@@ -203,9 +203,9 @@ async def main():
         today=datetime.date.today(); us=today.strftime('%b ')+str(today.day)+today.strftime(', %Y')
         lt=' '.join((await pg.inner_text('#lblPrev .lbl')).split())
         log('labels: card on the Store tab with a label preview',await pg.is_visible('.labels') and await pg.is_visible('#lblPrint') and await pg.is_visible('#lblImg'))
-        log('labels: dish, 1 of 14, cooked today, use by left to write in',lt==f'Brothy chicken and rice 1 of 14 Cooked {us} Use by',lt)
-        st=await pg.evaluate("(()=>{const r=[...document.querySelectorAll('#lblPrev .lbl>div')];return {rows:r.length,useLine:r[1].lastElementChild.tagName==='I'&&r[1].lastElementChild.previousElementSibling.textContent==='Use by',third:r[2].children.length===1&&r[2].firstElementChild.tagName==='I'&&!r[2].textContent.trim()}})()")
-        log('labels: use by is a blank line, and so is the reheat row (the sample has none)',st=={'rows':3,'useLine':True,'third':True},st)
+        log('labels: dish, 1 of 14, cooked today, use by left to write in',lt==f'Brothy chicken and rice Cooked {us} Use by 1 of 14',lt)  # with the QR (breakit9) the count sits under the code
+        st=await pg.evaluate("(()=>{const r=[...document.querySelectorAll('#lblPrev .lbl .lt>div')];return {rows:r.length,useLine:r[2].lastElementChild.tagName==='I'&&r[2].lastElementChild.previousElementSibling.textContent==='Use by',third:r[3].children.length===1&&r[3].firstElementChild.tagName==='I'&&!r[3].textContent.trim()}})()")
+        log('labels: use by is a blank line, and so is the reheat row (the sample has none)',st=={'rows':4,'useLine':True,'third':True},st)
         log('labels: no storage time anywhere on the label',not any(w in lt.lower() for w in ('month','week','days','best','within')))
         log('labels: date box holds today',await pg.input_value('#lblDate')==today.isoformat())
         await pg.fill('#lblDate','2026-12-03'); await pg.wait_for_timeout(150); l2=' '.join((await pg.inner_text('#lblPrev .lbl')).split())
@@ -213,7 +213,7 @@ async def main():
         await meals(pg,31); l3=' '.join((await pg.inner_text('#lblPrev .lbl')).split())
         log('labels: follows the meal count, keeps the date','1 of 31' in l3 and 'Dec 3, 2026' in l3 and await pg.input_value('#lblDate')=='2026-12-03',l3)
         await pg.fill('#lblDate',''); await pg.wait_for_timeout(150)
-        log('labels: no date leaves a line to write on',await pg.evaluate("(()=>{const r=document.querySelectorAll('#lblPrev .lbl>div')[1];return r.firstElementChild.textContent==='Cooked'&&r.children[1].tagName==='I'&&r.querySelectorAll('i').length===2})()"))
+        log('labels: no date leaves a line to write on',await pg.evaluate("(()=>{const r=document.querySelectorAll('#lblPrev .lbl .lt>div')[1];return r.firstElementChild.textContent==='Cooked'&&r.children[1].tagName==='I'&&r.querySelectorAll('i').length===1})()"))
         await pg.fill('#lblDate','2026-12-03'); await meals(pg,14)
         # print
         await pg.click('#lblPrint'); await pg.wait_for_timeout(300)
@@ -223,7 +223,7 @@ async def main():
         G="""(()=>{const R=(n)=>Math.round(n*100)/100,ls=[...document.querySelectorAll('#labels .lbl')],r=ls.map(e=>e.getBoundingClientRect()),sh=[...document.querySelectorAll('.lsheet')];
           const vis=[...document.body.children].filter(e=>getComputedStyle(e).display!=='none').map(e=>e.id||e.tagName);
           return {n:ls.length,sheets:sh.map(s=>s.children.length),vis,w:[...new Set(r.map(x=>R(x.width)))],h:[...new Set(r.map(x=>R(x.height)))],lefts:[...new Set(r.map(x=>R(x.left)))],top:R(r[0].top-sh[0].getBoundingClientRect().top),rowStep:r.length>3?R(r[3].top-r[0].top):null,sheetW:R(sh[0].getBoundingClientRect().width),
-           page:[...document.querySelectorAll('style')].some(s=>/@page\\{size:8\\.5in 11in;margin:0\\}/.test(s.textContent)),nums:ls.map(e=>e.querySelector('span').textContent),border:getComputedStyle(ls[0]).borderTopWidth,shadow:getComputedStyle(ls[0]).boxShadow}})()"""
+           page:[...document.querySelectorAll('style')].some(s=>/@page\\{size:8\\.5in 11in;margin:0\\}/.test(s.textContent)),nums:ls.map(e=>(e.querySelector('.lq span')||e.querySelector('span')).textContent),border:getComputedStyle(ls[0]).borderTopWidth,shadow:getComputedStyle(ls[0]).boxShadow}})()"""
         g=await pg.evaluate(G)
         log('labels: only the labels print',g['vis']==['labels'],g['vis'])
         log('labels: one per meal, numbered 1 of 14 to 14 of 14',g['n']==14 and g['sheets']==[14] and g['nums']==[f'{k} of 14' for k in range(1,15)],g['nums'][:3])
@@ -265,7 +265,7 @@ async def main():
         for nm,rec,exp in (('recipe has one',REHEAT,'To reheat, microwave 2.5 minutes and stir.'),('preheat is not reheat',PREHEAT,''),('too long for a label: left blank',LONGRH,'')):
             ctx,pg,errs=await fresh(b,mobile=False); await paste(pg,rec)
             if await pg.get_attribute('#mode [data-m=batch]','aria-pressed')!='true': await pg.click('#mode [data-m=batch]'); await pg.wait_for_timeout(300)
-            await tab(pg,'store'); r=await pg.evaluate("(()=>{const d=document.querySelectorAll('#lblPrev .lbl>div')[2];return {t:d.textContent.trim(),blank:!!d.querySelector('i')}})()")
+            await tab(pg,'store'); r=await pg.evaluate("(()=>{const d=document.querySelectorAll('#lblPrev .lbl .lt>div')[3];return {t:d.textContent.trim(),blank:!!d.querySelector('i')}})()")
             log(f'labels: reheat line, {nm}',r['t']==exp and r['blank']==(exp==''),r); await ctx.close()
         ctx,pg,errs=await fresh(b,mobile=False); await paste(pg,HTMLT); await tab(pg,'store')
         r=await pg.evaluate("({t:document.querySelector('#lblPrev b').textContent,tags:document.querySelectorAll('#lblPrev b *').length})")

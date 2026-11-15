@@ -271,6 +271,7 @@ details.edit[open] summary{margin-bottom:8px}
 .foot{display:flex;justify-content:center;gap:24px;padding:40px 0 0;font-size:13px}
 .foot a{color:var(--ink2);text-decoration:none;min-height:44px;min-width:44px;justify-content:center;display:inline-flex;align-items:center}
 .foot a:hover{color:var(--ink)}
+.foot .hapsw{color:var(--ink2);font-size:13px;min-height:44px}
 
 .toast{position:fixed;left:50%;bottom:24px;z-index:60;transform:translate(-50%,16px);opacity:0;pointer-events:none;background:var(--ink);color:var(--bg);border-radius:24px;padding:8px 20px;min-height:48px;max-width:calc(100vw - 32px);font-size:15px;line-height:20px;display:flex;gap:8px;align-items:center;transition:opacity .25s var(--fade),transform .35s var(--ease)}
 .toast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
@@ -426,7 +427,7 @@ details.edit[open] summary{margin-bottom:8px}
           <li>Baking isn't eased back, and gets a warning past double.</li>
         </ul>
       </section>
-      <footer class="foot"><a href="about">About</a><a href="privacy">Privacy</a></footer>
+      <footer class="foot"><a href="about">About</a><a href="privacy">Privacy</a><button class="link hapsw hidden" id="hapSw" aria-pressed="true">Vibration on</button></footer>
     </div>
 
     <section class="reading hidden" id="reading" data-state="read" aria-labelledby="rdTitle">
@@ -827,13 +828,29 @@ function snapN(i,fb){const s=i.value.trim();let v=/^[+-]?\d+(\.\d+)?$/.test(s)?M
 let flash=false; // set while a stepper or number box redraws the page, so changed amounts can show it
 function changed(id){if(!recipe)return;touched=true;if(id==='yield')yieldSet=true;flash=true;try{build()}finally{flash=false}}
 // at 1 or 999 the button that can't go further dims
+/* haptics: a light tap on Android (navigator.vibrate). iPhone Safari has no vibration API; the hidden-switch trick
+   (Safari 17.4 to iOS 26.4) is tried quietly and does nothing on newer iOS. Off switch in the footer, saved as bd-hap. */
+const HAP=(()=>{
+  let on=true;try{on=localStorage.getItem('bd-hap')!=='0'}catch(e){}
+  const canVib=typeof navigator.vibrate==='function'&&!/iP(hone|ad|od)/.test(navigator.userAgent);
+  const ios=!canVib&&(/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1));
+  let lab=null;
+  const sw=()=>{if(lab)return lab;lab=document.createElement('label');lab.setAttribute('aria-hidden','true');
+    lab.style.cssText='position:fixed;left:-9999px;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none';
+    const i=document.createElement('input');i.type='checkbox';i.setAttribute('switch','');i.tabIndex=-1;lab.append(i);
+    lab.addEventListener('click',(e)=>e.stopPropagation());document.body.append(lab);return lab};
+  const P={tick:8,firm:18,done:[10,70,10]};
+  const buzz=(k)=>{if(!on)return;try{if(canVib)navigator.vibrate(P[k]||8);else if(ios){sw().click();if(k==='done')setTimeout(()=>sw().click(),90)}}catch(e){}};
+  return {buzz,get on(){return on},set(v){on=v;try{localStorage.setItem('bd-hap',v?'1':'0')}catch(e){}},works:canVib||ios};
+})();
+{const b=$('#hapSw');if(b&&HAP.works){b.classList.remove('hidden');const draw=()=>{b.textContent=HAP.on?'Vibration on':'Vibration off';b.setAttribute('aria-pressed',HAP.on)};draw();b.onclick=()=>{HAP.set(!HAP.on);draw();HAP.buzz('done')}}} // vibration is not motion; it has its own switch
 function syncEnds(){$$('.step button').forEach((b)=>{const v=parseInt($('#'+b.dataset.t).value,10),end=+b.dataset.d<0?v<=1:v>=999;b.classList.toggle('end',end)})} // a class, not disabled: the button still answers with a nudge
 function nudge(i,d){i.classList.remove('nl','nr');i.offsetWidth;i.classList.add(d<0?'nl':'nr')}
 $$('.step button').forEach((b)=>{ // tap = one step; press and hold = keeps counting, faster after 1.5 s
   const id=b.dataset.t,d=+b.dataset.d,inp=$('#'+id);
   // one count; false at 1 or 999. light (while holding) changes only the number: the page is drawn once, on release
   const bump=(light)=>{if(!recipe)return false;const v=snapN(inp,id==='yield'?recipe.yield:(plan?plan.want:defWant(mode))),n=Math.min(999,Math.max(1,v+d));
-    inp.value=n;if(n===v)nudge(inp,d);syncEnds();if(!light)changed(id);return n!==v};
+    inp.value=n;if(n===v){nudge(inp,d);HAP.buzz('firm')}else HAP.buzz('tick');syncEnds();if(!light)changed(id);return n!==v};
   let t1,t2,t3,held=false,moved=false;
   const stop=()=>{clearTimeout(t1);clearInterval(t2);clearTimeout(t3);if(moved){moved=false;changed(id)}};
   const run=(ms)=>{clearInterval(t2);t2=setInterval(()=>{if(bump(true))moved=true;else{clearInterval(t2);clearTimeout(t3)}},ms)};
@@ -896,7 +913,7 @@ function build(fresh){
   }
   sh.innerHTML=h;
   sh.querySelectorAll('.rise').forEach((el,k)=>watch(el,Math.min(k,4)*60));
-  sh.querySelectorAll('.checks input').forEach((c)=>c.onchange=()=>{have[c.checked?'add':'delete'](c.dataset.k);touched=true;drawCount();remember(plan.want)});
+  sh.querySelectorAll('.checks input').forEach((c)=>c.onchange=()=>{have[c.checked?'add':'delete'](c.dataset.k);touched=true;drawCount();if(c.checked)HAP.buzz($('#gcount')&&$('#gcount').classList.contains('all')?'done':'tick');remember(plan.want)});
   drawCount();
   const cp=sh.querySelector('[data-copy]');if(cp)cp.onclick=()=>{navigator.clipboard.writeText($('#glist').value).then(()=>{cp.innerHTML=CHECK_IC+'Copied';clearTimeout(cp.t);cp.t=setTimeout(()=>cp.textContent='Copy',1600)},()=>{cp.textContent='Copy failed'})};
   sh.querySelectorAll('[data-tab]').forEach((b)=>b.onclick=()=>setTab(b.dataset.tab));
@@ -1108,8 +1125,8 @@ function drawStep(dir){
   $('#cBack').disabled=cs===0;$('#cNext').textContent=cs===n-1?'Finish':'Next';
 }
 $('#dCook').onclick=openCook;
-$('#cNext').onclick=()=>{if(cs>=csteps.length){closeCook();return}cs++;drawStep(1)};
-$('#cBack').onclick=()=>{if(cs>0){cs--;drawStep(-1)}};
+$('#cNext').onclick=()=>{if(cs>=csteps.length){closeCook();return}cs++;HAP.buzz(cs>=csteps.length?'done':'tick');drawStep(1)};
+$('#cBack').onclick=()=>{if(cs>0){cs--;HAP.buzz('tick');drawStep(-1)}};
 $('#cClose').onclick=()=>closeCook();
 // keep Tab inside the open sheet or cook mode
 function trap(box,e){

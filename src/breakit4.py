@@ -134,7 +134,8 @@ async def main():
         pr={'grocery row':await pressed('.checks label'),'tab':await pressed('[data-tab=store]')}
         await pg.tap('#dShare'); await pg.wait_for_timeout(450); pr['share row']=await pressed('[data-print]'); await pg.wait_for_timeout(400)  # releasing off the row lands on the backdrop, which closes the sheet
         if await pg.is_visible('#menuX'): await pg.tap('#menuX'); await pg.wait_for_timeout(400)
-        log('7 no tap flash; rows, tabs and share rows fill while pressed and clear on release',hl and all(pr.values()),f'highlight off={hl} {pr}')
+        # tabs: no fill on press (15 Nov, Michael): the sliding pill is the only feedback, so nothing pops up under the finger before the pill arrives
+        log('7 no tap flash; rows and share rows fill while pressed and clear on release; tabs never fill (the pill slides)',hl and pr['grocery row'] and pr['share row'] and not pr['tab'],f'highlight off={hl} {pr}')
         await pg.tap('[data-copy]'); await pg.wait_for_timeout(350); t1=await pg.inner_text('[data-copy]'); svg=await pg.locator('[data-copy] svg.ck').count(); clip=await pg.evaluate('navigator.clipboard.readText()')
         await pg.wait_for_timeout(1700); t2=await pg.inner_text('[data-copy]'); svg2=await pg.locator('[data-copy] svg').count()
         log('7 Copy swaps to a check and "Copied", then back',t1.strip()=='Copied' and svg==1 and 'chicken' in clip and t2=='Copy' and svg2==0,f'{t1!r} check={svg} then {t2!r}')

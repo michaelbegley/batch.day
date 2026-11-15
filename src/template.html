@@ -441,7 +441,7 @@ details.edit[open] summary{margin-bottom:8px}
 @media (hover:hover){.aff:hover{background:var(--bg2)}}
 
 /* rows answer a touch: grey fill straight away, fading over 150ms on release */
-.checks label:active,.stp:active,.ptog:active,.saved .open:active,.mrow:active,.chip:active,.seg button:active,.rm:active{box-shadow:inset 0 0 0 999px var(--press);transition-duration:0s}
+.checks label:active,.stp:active,.ptog:active,.saved .open:active,.mrow:active,.chip:active,.rm:active{box-shadow:inset 0 0 0 999px var(--press);transition-duration:0s}
 
 /* motion */
 .rise{opacity:0;transform:translateY(12px)}
@@ -995,6 +995,7 @@ function drawHead(){
   if(extra&&shots.length)al.push(['Only the first 6 screenshots were read.']);
   if(cutOff())al.push(['Steps look cut off. Add the next screenshot.']);
   if(recipe.baking&&!recipe.savoryBake)al.push(['Baking: set to Just scale.']);
+  if(recipe.fridgeBake)al.push(['Keep it in the fridge: it has cream, cheese or custard. Eat within 4 days.']);
   const odd=recipe.ingredients.filter(isOdd);
   if(odd.length)al.push([`Some amounts look off (${odd.slice(0,3).map((i)=>i.name||i.raw).join(', ')}). Check them.`,'edit']);
   if(!recipe.ingredients.length)al.push(['No ingredients found.','edit']);

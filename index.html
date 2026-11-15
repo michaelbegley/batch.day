@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-fUd94LlaZpBiHQ6fiP2a5mbfnAegN3IiuFkj0qbeG/s=' 'sha256-OES8gBnv7NH17ImQPPCckyxSTllY9mqNcOWbHvO6JSA=' 'sha256-6bpd29vqQt7VtgenZUyRM8alcqgxZMGrYWsEQ+mxdF4=' 'sha256-1hu5hIsaRg5X+E9HekR1gkY1nHcDH7dCSOxvXHJVf44=' https://cdn.jsdelivr.net https://cloud.umami.is 'wasm-unsafe-eval' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; worker-src blob: https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net https://gateway.umami.is https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com https://michbegl-batch-day-reader.hf.space; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; fenced-frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-fUd94LlaZpBiHQ6fiP2a5mbfnAegN3IiuFkj0qbeG/s=' 'sha256-OES8gBnv7NH17ImQPPCckyxSTllY9mqNcOWbHvO6JSA=' 'sha256-N00PyfzOHJPhoGFZby2x5TUL4SM1GEV54WtMPtkogJM=' 'sha256-HVtLzlneJZOvo8Jme0lj+tGVSxXBQ84aA2diukWQG8A=' https://cdn.jsdelivr.net https://cloud.umami.is 'wasm-unsafe-eval' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; worker-src blob: https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net https://gateway.umami.is https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com https://michbegl-batch-day-reader.hf.space; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; fenced-frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin"><meta name="impact-site-verification" value="44a0832b-93ba-4379-b2a0-530627c39acf">
 <meta name="google-adsense-account" content="ca-pub-2427174040615956">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2427174040615956" crossorigin="anonymous"></script>
@@ -443,7 +443,7 @@ details.edit[open] summary{margin-bottom:8px}
 @media (hover:hover){.aff:hover{background:var(--bg2)}}
 
 /* rows answer a touch: grey fill straight away, fading over 150ms on release */
-.checks label:active,.stp:active,.ptog:active,.saved .open:active,.mrow:active,.chip:active,.seg button:active,.rm:active{box-shadow:inset 0 0 0 999px var(--press);transition-duration:0s}
+.checks label:active,.stp:active,.ptog:active,.saved .open:active,.mrow:active,.chip:active,.rm:active{box-shadow:inset 0 0 0 999px var(--press);transition-duration:0s}
 
 /* motion */
 .rise{opacity:0;transform:translateY(12px)}
@@ -966,7 +966,12 @@ details.edit[open] summary{margin-bottom:8px}
     // a bake with meat, fish, beans, cheese or cream (or no sugar at all) is stored like a meal, never at room temp
     // Room temp only for a plain sweet bake where every ingredient is on a short safe list (an allow list, so an
     // ingredient we don't know, like "ground chuck" or "pumpkin", always means the fridge). Pies, custards, bars and puddings: fridge.
-    r.savoryBake = r.baking && !shelfStable(r.ingredients, r.title || '');
+    // Two kinds of bake that never sit out: a savory bake (meat, fish, beans, tofu, or no sweetener at all) is a meal and
+    // gets Batch day; a sweet bake with cream cheese, cream, custard and the like (fridgeBake) stays a bake but is kept in the fridge.
+    { const n = r.ingredients.map((i) => i.name).join(' ').toLowerCase();
+      r.savoryBake = r.baking && (r.ingredients.some((i) => isMeat(i.name)) || /\b(beans?|lentils?|tofu|tempeh|chickpeas?|refried)\b/.test(n) ||
+        !r.ingredients.some((i) => /\b(sugar|honey|maple|molasses|syrup|chocolate)\b/i.test(i.name)));
+      r.fridgeBake = r.baking && !r.savoryBake && !shelfStable(r.ingredients, r.title || ''); }
     if (!r.yield) {
       const prot = r.ingredients.filter((i) => i.cls === 'protein' && i.qty && (i.unit === 'lb' || i.unit === 'oz' || i.unit === 'g' || i.unit === 'kg'));
       if (prot.length) {
@@ -974,7 +979,7 @@ details.edit[open] summary{margin-bottom:8px}
         r.yield = Math.max(1, Math.round(oz / 6));
         r.yieldGuessed = true;
         r.flags.push({ type: 'yield', line: '', msg: `No servings listed. Guessing ${r.yield} from the protein; change it if you know.` });
-      } else { r.yield = 4; r.yieldGuessed = true; r.flags.push({ type: 'yield', line: '', msg: 'No servings listed. Guessing 4; change it if you know.' }); }
+      } else { const g = r.baking ? 12 : 4; r.yield = g; r.yieldGuessed = true; r.flags.push({ type: 'yield', line: '', msg: `No servings listed. Guessing ${g}; change it if you know.` }); }
     }
     return r;
   }
@@ -1343,7 +1348,10 @@ details.edit[open] summary{margin-bottom:8px}
       }
       fin.concat(veg.filter((v) => /bok choy|spinach|kale|greens/i.test(v.name))).forEach((i) => plan.split.fresh.push(i.name));
     } else {
-      if (!savoryBake) {
+      if (recipe.fridgeBake) {
+        plan.split.fridge.push('Keep it in the fridge (it has cream, cheese, custard or fruit filling). Into the fridge within 2 hours of cooling, eat within 4 days.');
+        plan.split.freezer.push('Most bakes freeze well wrapped tight (frost after thawing)');
+      } else if (!savoryBake) {
         plan.split.fridge.push('Keep covered at room temp up to 2 days. Anything with cream, cream cheese or custard goes in the fridge.');
         plan.split.freezer.push('Most bakes freeze well wrapped tight (frost after thawing)');
       } else {
@@ -1933,6 +1941,7 @@ function drawHead(){
   if(extra&&shots.length)al.push(['Only the first 6 screenshots were read.']);
   if(cutOff())al.push(['Steps look cut off. Add the next screenshot.']);
   if(recipe.baking&&!recipe.savoryBake)al.push(['Baking: set to Just scale.']);
+  if(recipe.fridgeBake)al.push(['Keep it in the fridge: it has cream, cheese or custard. Eat within 4 days.']);
   const odd=recipe.ingredients.filter(isOdd);
   if(odd.length)al.push([`Some amounts look off (${odd.slice(0,3).map((i)=>i.name||i.raw).join(', ')}). Check them.`,'edit']);
   if(!recipe.ingredients.length)al.push(['No ingredients found.','edit']);

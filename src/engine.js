@@ -300,7 +300,12 @@
     // a bake with meat, fish, beans, cheese or cream (or no sugar at all) is stored like a meal, never at room temp
     // Room temp only for a plain sweet bake where every ingredient is on a short safe list (an allow list, so an
     // ingredient we don't know, like "ground chuck" or "pumpkin", always means the fridge). Pies, custards, bars and puddings: fridge.
-    r.savoryBake = r.baking && !shelfStable(r.ingredients, r.title || '');
+    // Two kinds of bake that never sit out: a savory bake (meat, fish, beans, tofu, or no sweetener at all) is a meal and
+    // gets Batch day; a sweet bake with cream cheese, cream, custard and the like (fridgeBake) stays a bake but is kept in the fridge.
+    { const n = r.ingredients.map((i) => i.name).join(' ').toLowerCase();
+      r.savoryBake = r.baking && (r.ingredients.some((i) => isMeat(i.name)) || /\b(beans?|lentils?|tofu|tempeh|chickpeas?|refried)\b/.test(n) ||
+        !r.ingredients.some((i) => /\b(sugar|honey|maple|molasses|syrup|chocolate)\b/i.test(i.name)));
+      r.fridgeBake = r.baking && !r.savoryBake && !shelfStable(r.ingredients, r.title || ''); }
     if (!r.yield) {
       const prot = r.ingredients.filter((i) => i.cls === 'protein' && i.qty && (i.unit === 'lb' || i.unit === 'oz' || i.unit === 'g' || i.unit === 'kg'));
       if (prot.length) {
@@ -308,7 +313,7 @@
         r.yield = Math.max(1, Math.round(oz / 6));
         r.yieldGuessed = true;
         r.flags.push({ type: 'yield', line: '', msg: `No servings listed. Guessing ${r.yield} from the protein; change it if you know.` });
-      } else { r.yield = 4; r.yieldGuessed = true; r.flags.push({ type: 'yield', line: '', msg: 'No servings listed. Guessing 4; change it if you know.' }); }
+      } else { const g = r.baking ? 12 : 4; r.yield = g; r.yieldGuessed = true; r.flags.push({ type: 'yield', line: '', msg: `No servings listed. Guessing ${g}; change it if you know.` }); }
     }
     return r;
   }
@@ -677,7 +682,10 @@
       }
       fin.concat(veg.filter((v) => /bok choy|spinach|kale|greens/i.test(v.name))).forEach((i) => plan.split.fresh.push(i.name));
     } else {
-      if (!savoryBake) {
+      if (recipe.fridgeBake) {
+        plan.split.fridge.push('Keep it in the fridge (it has cream, cheese, custard or fruit filling). Into the fridge within 2 hours of cooling, eat within 4 days.');
+        plan.split.freezer.push('Most bakes freeze well wrapped tight (frost after thawing)');
+      } else if (!savoryBake) {
         plan.split.fridge.push('Keep covered at room temp up to 2 days. Anything with cream, cream cheese or custard goes in the fridge.');
         plan.split.freezer.push('Most bakes freeze well wrapped tight (frost after thawing)');
       } else {

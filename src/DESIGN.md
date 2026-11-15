@@ -312,3 +312,9 @@ From report A (recipe accuracy). Tests: test_sweep.js (227 checks), plus updated
 - **Dishes (F2-07, F2-09).** No-cook recipes get one "Mix and portion" step and no pots. Pasta that isn't cooked in the soup gets a "Boil the pasta" step. Sheet pans and baking dishes say how many oven rounds (2 pans or 4 dishes at a time), and the time follows.
 - **Every ingredient shows in a step (F2-06).** Anything not placed goes with the last cooking step, or a "Cook as the recipe says" step.
 - **Rounding, later the same night.** A teaspoon amount under 4 tbsp stays in teaspoons when tablespoons would be more than 6% off (4 tsp stays 4 tsp, not 1½ tbsp).
+
+## 15 Nov, morning (Michael's iPhone test)
+- **Tabs and Batch day / Just scale:** no press fill on the segment buttons any more. The fill appeared under the finger and then the pill slid in from the old spot, which looked like two things moving. Now the sliding pill is the only feedback.
+- **Sweet bakes with cream cheese, cream or custard** (Chocolate Crunch Cake) stay a bake (Just scale) instead of becoming "meals", with a fridge line ("Keep it in the fridge... eat within 4 days"). `recipe.fridgeBake`. Savory bakes (meat, fish, beans, tofu, or no sweetener) are still meals in Batch day.
+- **No servings on a bake:** the guess is 12, not 4.
+- **AI reader:** the Space variable `MODELS` now puts Qwen/Qwen3-VL-30B-A3B-Instruct first, then Qwen3-VL-235B, then Qwen2.5-VL-32B. Three live test reads: 2.9 s, 2.0 s and 0.9 s, all transcribed correctly (junk lines dropped, two screenshots merged). Before: about 30 to 40 s on the 235B model. To go back, delete the variable (the code default is 235B first).

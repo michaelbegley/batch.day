@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-xkwHgYzJHLwqE5XKr0Fpu+wF05HstVBlbmGfvd61zvQ=' https://cloud.umami.is; connect-src 'self' https://gateway.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-UNCnqUTql/xbIEo04G6jHvaHzA5atPKKaWP+yoDURoY=' 'sha256-Lvu6DnnW8cQv/De0u4Mb5QRW/X1Jcj0U955ObWrJLgA=' https://cloud.umami.is; connect-src 'self' https://gateway.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>How much rice do I need for meal prep? · batch.recipes</title>
@@ -15,12 +15,26 @@
 <meta property="og:image" content="https://batch.recipes/og.png">
 <meta property="og:url" content="https://batch.recipes/how-much-rice-for-meal-prep">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<script>(function(){var d=document,s='',t;
+/* the theme chosen on the home page, before the first paint */
+try{t=localStorage.getItem('bd-theme');if(t==='dark'||t==='light')d.documentElement.dataset.theme=t}catch(e){}
+/* where this visit came from, worked out the same way as on the home page and kept for the session (bd-src), so a visit that lands here keeps its source */
+try{s=sessionStorage.getItem('bd-src')||''}catch(e){}
+if(!s){try{var u=new URLSearchParams(location.search).get('utm_source'),h=d.referrer?new URL(d.referrer).hostname.replace(/^www\./,''):'';s=(u||(h&&!/(^|\.)batch\.recipes$/.test(h)?h:'')||'direct').toLowerCase().replace(/[^a-z0-9.-]/g,'').slice(0,40)||'direct'}catch(e){s='direct'}try{sessionStorage.setItem('bd-src',s)}catch(e){}}
+/* Vercel Web Analytics, loaded the way the home page loads it */
+window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};
+if(/(^|\.)batch\.recipes$|\.vercel\.app$/.test(location.hostname)){var v=d.createElement('script');v.defer=true;v.src='/_vercel/insights/script.js';d.head.appendChild(v)}
+/* "Plan your own recipe": Umami counts it from the link's own attributes; this sends the same event to Vercel and gives both the source */
+d.addEventListener('click',function(e){var a=e.target&&e.target.closest&&e.target.closest('[data-umami-event="Guide plan"]');if(!a)return;try{a.setAttribute('data-umami-event-src',s);window.va('event',{name:'Guide plan',data:{guide:a.getAttribute('data-umami-event-guide')||'',src:s}})}catch(x){}},true)})()</script>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="6ad3a50b-f9cd-46e8-911a-edda631db62a" data-domains="batch.recipes" data-exclude-hash="true"></script>
 <link rel="icon" href="favicon.svg?v=3" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
 <style>
 :root{--bg:#fff;--bg2:#f5f5f7;--raise:#fff;--ink:#1d1d1f;--ink2:#6e6e73;--line:rgba(0,0,0,.08);--accent:#c2410c;--accent-ink:#fff;--shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);--ease:cubic-bezier(.32,.72,0,1);--fade:cubic-bezier(.25,.1,.25,1);--font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Inter,system-ui,sans-serif}
-@media (prefers-color-scheme:dark){:root{--bg:#000;--bg2:#2c2c2e;--raise:#1c1c1e;--ink:#f5f5f7;--ink2:#a1a1a6;--line:rgba(255,255,255,.12);--accent:#ff7a3d;--accent-ink:#1d1d1f;--shadow:none}}
+[data-theme=dark]{--bg:#000;--bg2:#2c2c2e;--raise:#1c1c1e;--ink:#f5f5f7;--ink2:#a1a1a6;--line:rgba(255,255,255,.12);--accent:#ff7a3d;--accent-ink:#1d1d1f;--shadow:none}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#000;--bg2:#2c2c2e;--raise:#1c1c1e;--ink:#f5f5f7;--ink2:#a1a1a6;--line:rgba(255,255,255,.12);--accent:#ff7a3d;--accent-ink:#1d1d1f;--shadow:none}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.55 var(--font);-webkit-font-smoothing:antialiased}
 .bar{display:flex;align-items:center;height:52px;padding:0 16px;border-bottom:1px solid var(--line)}
@@ -81,7 +95,7 @@ footer a{color:var(--ink2);min-height:44px;min-width:44px;display:inline-flex;al
 .btn:active{transform:scale(.97)}
 @media (hover:hover){.btn:hover{filter:brightness(1.06)}}
 ul.gl{list-style:none;margin:0;padding:0}
-ul.gl.idx{margin-top:12px}
+ul.gl.idx{margin-top:4px}
 .gl li{margin:0;border-top:1px solid var(--line)}
 .gl li:first-child{border-top:0}
 .gl a{display:flex;flex-direction:column;justify-content:center;min-height:48px;padding:12px 0;text-decoration:none;font-weight:600}
@@ -90,6 +104,7 @@ ul.gl.idx{margin-top:12px}
 @keyframes amt{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @media (min-width:480px){.g h1{font-size:40px}}
+@media (min-width:721px){.card{padding:32px}} /* the same card padding as the app on desktop */
 @media (prefers-reduced-motion:reduce){.chg{animation:fadeIn .2s linear both}.step .nr,.step .nl{animation:none}.step button:active,.btn:active{transform:none}}
 </style>
 </head>
@@ -98,35 +113,35 @@ ul.gl.idx{margin-top:12px}
 <main>
 <article class="g">
 <h1>How much rice do I need for meal prep?</h1>
-<p class="lead">For 14 meals, cook 4½ cups of dry rice in a 4 qt pot. batch.recipes plans about ⅓ cup of dry rice a meal, which cooks up to about 1 cup.</p>
+<p class="lead">For 14 meals, cook 4½ cups of dry rice in a 6 qt pot. batch.recipes plans about ⅓ cup of dry rice a meal, which cooks up to about 1 cup.</p>
 <section class="card calc" aria-label="Calculator">
 <div class="set"><label for="meals">Meals</label><div class="step"><button type="button" data-d="-1" aria-label="Fewer meals">−</button><input id="meals" class="num" inputmode="numeric" autocomplete="off" value="14"><button type="button" data-d="1" aria-label="More meals">+</button></div></div>
-<div class="res" aria-live="polite"><p class="big num" data-o="big">4½ cups</p><p class="sub" data-o="sub">Dry rice for 14 meals. Cook it in a 4 qt pot.</p></div>
+<div class="res" aria-live="polite"><p class="big num" data-o="big">4½ cups</p><p class="sub" data-o="sub">Dry rice for 14 meals. Cook it in a 6 qt pot.</p></div>
 
 </section>
 
 <h2>How it works</h2>
-<ul><li>About ⅓ cup of dry rice a meal. It's an estimate, used when a recipe only says &quot;rice&quot;.</li><li>The total is rounded to the nearest half cup.</li><li>Dry rice about triples as it cooks, so ⅓ cup dry is about 1 cup cooked.</li><li>The pot is sized so the dry rice fills no more than a third of it.</li><li>If your recipe gives a rice amount, batch.recipes scales that amount.</li></ul>
+<ul><li>About ⅓ cup of dry rice a meal. It's an estimate, used when a recipe only says &quot;rice&quot;.</li><li>The total is rounded to the nearest half cup.</li><li>Dry rice about triples as it cooks, so ⅓ cup dry is about 1 cup cooked.</li><li>The pot is sized so the dry rice fills no more than a quarter of it. Cooked, it fills about three-quarters.</li><li>If your recipe gives a rice amount, batch.recipes scales that amount.</li></ul>
 <h2>Questions</h2>
 <h3>How much rice for 5, 7, 10 or 21 meals?</h3>
 <p>5 meals: 1½ cups. 7 meals: 2½ cups. 10 meals: 3½ cups. 21 meals: 7 cups. All dry.</p>
 <h3>Is that dry or cooked rice?</h3>
 <p>Dry. It cooks up to about three times as much.</p>
 <h3>What size pot do I need?</h3>
-<p>A 4 qt pot for 14 meals. See <a href="how-much-rice-fits-in-a-pot">How much dry rice can I cook in one pot?</a></p>
+<p>A 6 qt pot for 14 meals. See <a href="how-much-rice-fits-in-a-pot">How much dry rice can I cook in one pot?</a></p>
 <p class="cta"><a class="btn" href="./" data-umami-event="Guide plan" data-umami-event-guide="how-much-rice-for-meal-prep">Plan your own recipe</a></p>
 <h2>More guides</h2>
 <ul class="gl"><li><a href="how-much-rice-fits-in-a-pot">How much dry rice can I cook in one pot?</a></li><li><a href="how-much-chicken-for-meal-prep">How much chicken do I need for meal prep?</a></li><li><a href="how-to-scale-a-recipe-for-meal-prep">How do I scale a recipe for meal prep?</a></li><li><a href="guides">All guides</a></li></ul>
 </article>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://batch.recipes/how-much-rice-for-meal-prep","url":"https://batch.recipes/how-much-rice-for-meal-prep","name":"How much rice do I need for meal prep?","description":"For 14 meals, cook 4½ cups of dry rice. Set your meals to get the cups and the pot size.","inLanguage":"en-US","dateModified":"2026-11-14","isPartOf":{"@type":"WebSite","name":"batch.recipes","url":"https://batch.recipes/"}},{"@type":"FAQPage","@id":"https://batch.recipes/how-much-rice-for-meal-prep#faq","mainEntity":[{"@type":"Question","name":"How much rice do I need for meal prep?","acceptedAnswer":{"@type":"Answer","text":"For 14 meals, cook 4½ cups of dry rice in a 4 qt pot. batch.recipes plans about ⅓ cup of dry rice a meal, which cooks up to about 1 cup."}},{"@type":"Question","name":"How much rice for 5, 7, 10 or 21 meals?","acceptedAnswer":{"@type":"Answer","text":"5 meals: 1½ cups. 7 meals: 2½ cups. 10 meals: 3½ cups. 21 meals: 7 cups. All dry."}},{"@type":"Question","name":"Is that dry or cooked rice?","acceptedAnswer":{"@type":"Answer","text":"Dry. It cooks up to about three times as much."}},{"@type":"Question","name":"What size pot do I need?","acceptedAnswer":{"@type":"Answer","text":"A 4 qt pot for 14 meals. See How much dry rice can I cook in one pot?"}}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://batch.recipes/how-much-rice-for-meal-prep","url":"https://batch.recipes/how-much-rice-for-meal-prep","name":"How much rice do I need for meal prep?","description":"For 14 meals, cook 4½ cups of dry rice. Set your meals to get the cups and the pot size.","inLanguage":"en-US","dateModified":"2026-11-14","isPartOf":{"@type":"WebSite","name":"batch.recipes","url":"https://batch.recipes/"}},{"@type":"FAQPage","@id":"https://batch.recipes/how-much-rice-for-meal-prep#faq","mainEntity":[{"@type":"Question","name":"How much rice do I need for meal prep?","acceptedAnswer":{"@type":"Answer","text":"For 14 meals, cook 4½ cups of dry rice in a 6 qt pot. batch.recipes plans about ⅓ cup of dry rice a meal, which cooks up to about 1 cup."}},{"@type":"Question","name":"How much rice for 5, 7, 10 or 21 meals?","acceptedAnswer":{"@type":"Answer","text":"5 meals: 1½ cups. 7 meals: 2½ cups. 10 meals: 3½ cups. 21 meals: 7 cups. All dry."}},{"@type":"Question","name":"Is that dry or cooked rice?","acceptedAnswer":{"@type":"Answer","text":"Dry. It cooks up to about three times as much."}},{"@type":"Question","name":"What size pot do I need?","acceptedAnswer":{"@type":"Answer","text":"A 6 qt pot for 14 meals. See How much dry rice can I cook in one pot?"}}]}]}</script>
 <script src="engine.js"></script>
 <script>(function(){var E=window.BatchEngine;if(!E)return;var C=[{"id":"meals","val":14,"min":1,"max":999,"h":0}];
 var P=E.parseRecipe,X=function(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})},FX=function(f){return (Math.round(f*10)/10).toString().replace(/\.0$/,'')},N=function(n,w){return n+' '+w+(n==1?'':'s')};
 var EX=[['1 lb','chicken thighs'],['2 cups','chicken broth'],['1 cup','rice'],['2 cloves','garlic'],['1 tsp','salt'],['2 tsp','chili powder'],['2 tbsp','olive oil']];
 function TB(y,want,head){var s=E.scaleAll(P('Example\nServes '+y+'\n'+EX.map(function(r){return r[0]+' '+r[1]}).join('\n')),want);
 return '<table class="tbl"><tr><th>Ingredient</th><th>Recipe</th><th>'+head+'</th></tr>'+s.items.map(function(i,k){return '<tr><td>'+X(i.name)+(i.adjusted?' <small>eased back</small>':'')+'</td><td class="num">'+EX[k][0]+'</td><td class="num"><b>'+X(i.scaled)+'</b></td></tr>'}).join('')+'</table>'}
-function calc(v){var p=E.batchDay(P('Bowl\nServes 1\n- white rice, for serving'),v.meals),n=p.items[0].scaled.split(' cups')[0],m=/(\d+) qt/.exec(p.pots[0]||''),c=n+(n==='1'||n==='½'?' cup':' cups');
-return{big:c,cups:c,pot:m?m[1]+' qt pot':'',sub:'Dry rice for '+N(v.meals,'meal')+'. '+(m?'Cook it in a '+m[1]+' qt pot.':'Cook it in two pots or batches.')}}
+function calc(v){var p=E.batchDay(P('Bowl\nServes 1\n- white rice, for serving'),v.meals),n=p.items[0].scaled.split(' cups')[0],m=/Rice pot: (\d+) qt/.exec(p.pots.join(' ')),c=n+(n==='1'||n==='½'?' cup':' cups');
+return{big:c,cups:c,pot:m?m[1]+' qt pot':'',sub:'Dry rice for '+N(v.meals,'meal')+'. '+(m?'Cook it in a '+m[1]+' qt pot.':'Cook it in '+((/in (\d+) pots/.exec(p.pots.join(' '))||[])[1]||'2')+' pots or rounds.')}}
 var v={},last={};
 function el(i){return document.getElementById(i)}
 function show(c){var e=el(c.id),b=e.parentNode.querySelectorAll('button');if(c.h)e.textContent=E.fmtNum(v[c.id]);else e.value=v[c.id];b[0].classList.toggle('end',v[c.id]<=c.min);b[1].classList.toggle('end',v[c.id]>=c.max)}

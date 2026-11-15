@@ -11,14 +11,14 @@ const P = E.parseRecipe;
 const agree = [];
 const same = (what, rule, engine) => { if (!String(engine).includes(String(rule))) agree.push(`${what}: rule says ${rule}, engine says ${engine}`); };
 
-// rice with no amount: a third of a cup dry per meal, to the nearest half cup, pot a third full at most
+// rice with no amount: a third of a cup dry per meal, to the nearest half cup, pot a quarter full at most (cooked, it triples to three-quarters)
 function rice(m) {
-  const dry = m / 3, n = E.fmtNum(Math.max(.5, Math.round(dry * 2) / 2)), pot = POTS.find((p) => p >= dry / 4 / (1 / 3)); // written the way the engine divides, so 80 meals (26⅔ cups, a hair over a third of 20 qt in floating point) lands where the engine puts it
+  const dry = m / 3, n = E.fmtNum(Math.max(.5, Math.round(dry * 2) / 2)), pot = POTS.find((p) => p >= dry / 4 / (1 / 4)), k = Math.ceil(dry / 20); // written the way the engine divides, so 80 meals (26⅔ cups, a hair over a third of 20 qt in floating point) lands where the engine puts it
   const e = E.batchDay(P('Dinner\nServes 1\n- jasmine rice, to serve'), m);
-  same('rice ' + m, n + ' cups dry (about ⅓ cup per meal', e.items[0].scaled); same('rice pot ' + m, pot ? pot + ' qt' : 'two pots', e.pots[0]);
-  return { set: { meals: m }, big: n + (n === '1' || n === '½' ? ' cup' : ' cups'), sub: [N(m, 'meal'), pot ? `${pot} qt pot` : 'two pots or batches'] };
+  same('rice ' + m, n + ' cups dry (about ⅓ cup per meal', e.items[0].scaled); same('rice pot ' + m, pot ? 'Rice pot: ' + pot + ' qt' : `Cook it in ${k} pots or rounds`, e.pots.join(' '));
+  return { set: { meals: m }, big: n + (n === '1' || n === '½' ? ' cup' : ' cups'), sub: [N(m, 'meal'), pot ? `${pot} qt pot` : `${k} pots or rounds`] };
 }
-function wt(oz) { return oz >= 16 ? E.fmtNum(Math.round(oz / 16 * 4) / 4) + ' lb' : E.fmtNum(Math.round(oz * 2) / 2) + ' oz'; }
+function wt(oz) { return oz >= 16 ? E.fmtNum(Math.round(oz / 16 * 4) / 4) + ' lb' : E.fmtNum(Math.max(.5, Math.round(oz * 2) / 2)) + ' oz'; } // never "0 oz"
 function chicken(m, s, lb) {
   const big = wt(lb * 16 * m / s), each = wt(lb * 16 / s), b = Math.max(1, Math.ceil(lb * m / s / 1.5));
   same(`chicken ${m}/${s}/${lb}`, big, E.scaleAll(P('A\nServes ' + s + '\n' + lb + ' lb chicken breast'), m).items[0].scaled);
@@ -30,20 +30,20 @@ const EX = [['1 lb', 'chicken thighs', 1], ['2 cups', 'chicken broth', 1], ['1 c
 function rows(serves, want) {
   const f = want / serves;
   return EX.map(([amt, name, ease]) => {
-    const i = E.scaleAll(P('A\nServes ' + serves + '\n' + amt + ' ' + name), want).items[0], k = f > 2 ? ease : 1;
+    const i = E.scaleAll(P('A\nServes ' + serves + '\n' + amt + ' ' + name), want).items[0], k = f > 2 ? (2 + ease * (f - 2)) / f : 1;
     if (Math.abs(i.qtyScaled - parseFloat(amt) * f * k) > 1e-9) agree.push(`${name} at ${f}x: engine ${i.qtyScaled}, rule ${parseFloat(amt) * f * k}`);
     return [name + (f > 2 && ease < 1 ? ' eased back' : ''), amt, i.scaled];
   });
 }
 function pot(qt, x) {
-  const cups = qt * 4 * x, p = POTS.find((q) => q >= cups / 4 / .75);
-  same(`pot ${qt}x${x}`, p ? `Main pot: ${p} qt` : 'Split it across two big pots', E.batchDay(P('Chili\nServes 2\n' + qt * 4 + ' cups beef broth'), 2 * x).pots[0]);
-  return { set: { qt, x }, big: p ? `${p} qt pot` : 'Two pots', sub: [`About ${cups} cups`, p ? 'under ¾ full' : 'two big pots'] };
+  const cups = qt * 4 * x, p = POTS.find((q) => q >= cups / 4 / .75), k = Math.ceil(cups / 60);
+  same(`pot ${qt}x${x}`, p ? `Main pot: ${p} qt` : `Use ${k} big pots`, E.batchDay(P('Chili\nServes 2\n' + qt * 4 + ' cups beef broth'), 2 * x).pots[0]);
+  return { set: { qt, x }, big: p ? `${p} qt pot` : `${k} big pots`, sub: [`About ${cups} cups`, p ? 'under ¾ full' : `${k} big pots`] };
 }
 function ricepot(c) {
-  const p = POTS.find((q) => q >= c * 3 / 4);
-  same('rice pot for ' + c, p ? `Rice pot: ${p} qt` : 'two pots or batches', E.batchDay(P('R\nServes 2\n1 cup basmati rice'), 2 * c).pots[0]);
-  return { set: { cups: c }, big: p ? `${p} qt pot` : 'Two pots', sub: [N(c, 'cup') + ' of dry rice', 'about ' + N(c * 3, 'meal')].concat(p ? [] : ['two pots or batches']) };
+  const p = POTS.find((q) => q >= c), k = Math.ceil(c / 20);
+  same('rice pot for ' + c, p ? `Rice pot: ${p} qt` : `Cook it in ${k} pots or rounds`, E.batchDay(P('R\nServes 2\n1 cup basmati rice'), 2 * c).pots.join(' '));
+  return { set: { cups: c }, big: p ? `${p} qt pot` : `${k} pots`, sub: [N(c, 'cup') + ' of dry rice', 'about ' + N(c * 3, 'meal')].concat(p ? [] : [`${k} pots or rounds`]) };
 }
 function bake(makes, want) {
   const f = want / makes, n = Math.ceil(f / 2), each = E.fmtNum(f / n);
@@ -81,13 +81,13 @@ const page = (s) => fs.readFileSync('site/' + s + '.html', 'utf8');
 const txt = (h) => h.replace(/<[^>]+>/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
 const lead = (s) => txt(/<p class="lead">([\s\S]*?)<\/p>/.exec(page(s))[1]);
 const has = (s, list) => { const l = lead(s), miss = list.filter((w) => !l.includes(w)); log(`${s}: the answer paragraph has ${list.join(', ')}`, !miss.length, miss.length ? `missing ${miss.join(', ')} in: ${l}` : ''); };
-const mult = (name, ease) => String(Math.round(3 * ease * 100) / 100) + '×';
+const mult = (name, ease) => String(Math.round((2 + ease) * 100) / 100) + '×';
 has('how-much-rice-for-meal-prep', ['For 14 meals', rice(14).big, rice(14).sub[1], '⅓ cup']);
 has('how-much-chicken-for-meal-prep', ['1½ lb', '4 servings', chicken(14, 4, 1.5).big + ' for 14 meals', wt(1.5 * 16 / 4) + ' a meal']);
-has('how-to-scale-a-recipe-for-meal-prep', ['salt at 70%', 'spices at 75%', 'oil at 60%', "that's 3.5×", 'becomes ' + rows(4, 14)[0][2], 'becomes ' + rows(4, 14)[4][2]]);
+has('how-to-scale-a-recipe-for-meal-prep', ['70% for salt', '75% for spices', '60% for oil', "that's 3.5×", 'becomes ' + rows(4, 14)[0][2], 'becomes ' + rows(4, 14)[4][2]]);
 has('what-size-pot-for-a-double-batch', ['three-quarters', '2 quarts', `a ${pot(2, 2).big} doubled`, `an ${pot(2, 3).big} tripled`]);
-const fit = (q) => Math.floor(q * 4 / 3 + 1e-9);
-has('how-much-rice-fits-in-a-pot', ['a third', `${fit(3)} cups of dry rice in a 3 qt pot`, `${fit(4)} cups in a 4 qt pot`, `${fit(6)} cups in a 6 qt pot`]);
+const fit = (q) => Math.floor(q * 4 / 4 + 1e-9);
+has('how-much-rice-fits-in-a-pot', ['a quarter', `${fit(3)} cups of dry rice in a 3 qt pot`, `${fit(4)} cups in a 4 qt pot`, `${fit(6)} cups in a 6 qt pot`]);
 has('how-to-double-a-recipe', ['by 2', 'three-quarters']);
 has('how-to-triple-a-recipe', ['by 3', 'salt at ' + mult('salt', .7), 'spices at ' + mult('spice', .75), 'oil at ' + mult('oil', .6), `${bake(1, 3).big} of ${bake(1, 3).sub[0].split(' ')[0]} each`]);
 has('can-you-double-a-baking-recipe', [`${bake(1, 3).big} of ${bake(1, 3).sub[0].split(' ')[0]} each`]);

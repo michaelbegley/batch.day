@@ -214,3 +214,101 @@ Report: `breakit-batch.recipes-20261115.md` (2 breaks it, 5 looks wrong, 8 minor
 - **Spacing:** full note 8 under the date row and 8 above the button, link 44 high; labels question 8 under the hint, pad 16, buttons 44; 404 page h1 to line 16, line to button 32, button to link 8.
 - **Tests changed** (they tapped faster than the new guards allow, or checked behaviour that changed on purpose): breakit3 (one pause before Update), breakit4 (wait for the held row), breakit6 (staple taps paced 0.9 s), breakit7 (emptied date is today), breakit8 (Next paced 0.65 s; 12 presses at once is one step), breakit9 (pauses before Add again, Cancel and a second Remove; printing doesn't save the sample; the hidden row copy is skipped).
 - **Not tested here:** real iPhone and Android taps, rotation and share sheets; the date picker on phones; the live 404. See the builder's report.
+
+## Full sweep fixes (15 Nov)
+Fixes for the full sweep reports B (data and money), C (speed, access, devices), D (people and look) and E (live and project). Checks in `breakit12.py` (new). Numbers and pictures from `sweepfix_shots.py`, in `sweep-fix-shots/`. engine.js and guides.js were not touched here (the lead changed them the same night). Not committed or deployed by the builder.
+
+### Saved state and events
+- **Your own share link keeps your ticks (E B-1).** A `#r=` link whose recipe text is already saved in this browser opens that saved batch: same id, same ticks, same origin. The link only sets meals, servings and mode. Staples and My freezer were never touched. Before, the link opened with no ticks and the save that followed wrote the empty list over the batch.
+- **Every saved batch remembers where it came from:** `f` = `paste`, `screenshots`, `sample`, `tour` or `link`. It rides in backups. A batch saved before 15 Nov has no `f`. Pasting or reading a recipe that was only saved from a link makes it `paste` or `screenshots`.
+- **Returning visit means a batch the cook made (B 2, B 8):** it is sent only when at least one saved batch is `paste` or `screenshots` (or has no `f` and is not id `sample`). The sample (looked at, cooked, shared, or with the meals changed), the tour, and a recipe only opened from someone's link do not count. Still once per browser session and never in the session that made the first batch.
+- **Cook mode and Cooked carry `from` (B 3):** `paste`, `screenshots`, `sample`, `tour`, `shared` (a share link) or `reopened` (a saved batch of the cook's own). A saved sample or tour batch opened again is still `sample` or `tour`, and a link batch opened again is still `shared`, so all three can be filtered out. Plan's `from` is unchanged. Filter `from` in (`sample`, `tour`) out of Plan, Cook mode and Cooked for the go/no-go. The dashboard and go/no-go queries still need that change (B 1); it is not in the site.
+- **Guides keep the visit's source (B 5).** The shell works out `bd-src` the same way home does (utm_source, else the referring site, else direct; cleaned; kept for the session), so Google to a guide to home sends `src: google.com`.
+- **Vercel Web Analytics on every page (B 6):** guides, Guides, About, Privacy and 404 load `/_vercel/insights/script.js` the way home does (only on batch.recipes and *.vercel.app). The guide button sends `Guide plan {guide, src}` to Vercel as well as Umami, and Umami gets the source too (`data-umami-event-src`).
+- **Every page has a CSP now** (About, Privacy and 404 had none). The shell has one inline script (theme, source, Vercel loader, the Guide plan event), allowed by its hash. `'self'` covers the Vercel script and its calls.
+
+### People and look
+- **Fridge meals past 4 days are flagged (D).** On home, a fridge row cooked more than 4 days ago shows "Past 4 days. Toss it." in the warning text colour and its button is Remove (with Undo), not Ate one. The 4 comes from the Store tab's own line ("eat within 4 days"). Day 4 itself is not flagged. Freezer rows are never flagged. This is the one storage time the home card shows.
+- **Cook mode's last screen (D).** "I cooked this" is the big orange button where Next was; Close is a small grey button in the middle (the X stays). One tap logs the cook: the screen says "In My freezer", the big button becomes Close, and the toast offers Undo. A second tap of a double tap is dropped for 0.45 s after the button changes. The right arrow and a swipe never log a cook. Asking "Already added for Nov 15." shows Add again in grey, so there is one orange button. Just scale: "Done." and one Close, no label line.
+- **The chosen theme follows to every page (D).** Guides, Guides, About, Privacy and 404 read `bd-theme` in the head before the styles, so there is no flash. No choice means the OS setting, as before. Anything but `dark` or `light` is ignored.
+- **og.png says what the tool does (D):** the pot, "Cook once. Eat all week.", "Recipe screenshot to grocery list, cook order and freezer plan", the word mark. 1200 x 630, content centred (140 / 141 left and right, 126 / 126 top and bottom). Source `og.html`. About and Privacy have Open Graph tags (E L-5).
+- **Share picture:** "Batch plan from a recipe screenshot" in grey under the word mark.
+- **One filled orange button on the first screen:** the tour's Show me is grey. The offer reads "Quick tour" and is centred on phones (480 px and under).
+- **Spacing:** the controls card has the card padding on all four sides (20, 32 on desktop); hero top padding 64 on desktop (was 72); Advertisement label 8 under (was 6) and in the secondary colour (the variable name was misspelled); the X in My batches is as far from the right edge as the title is from the left (its 44 px box reaches 15 px into the padding); guide calculator card 32 on desktop.
+- **My batches shows "Cooked Nov 8"** when the batch has been logged in My freezer (the last cooked date), else the saved date.
+- **Store tab:** no "Fresh at serving" box when there is nothing fresh; the boxes share the row on desktop.
+- **Title fallback** is "Recipe", not "Your recipe".
+- **Names:** the page shows the engine's `label` (plural aware, "2 onions") in the grocery list, the Recipe tab, Copy, Send and Add to list. `name` is still the key for ticks, staples and store sections. "to taste" reads after the name, like "for serving". Plan notes show above the tabs and ride in Send.
+- **Not merged:** the two Cooked date boxes on the Store tab (labels and My freezer). They are linked, and breakit9 and breakit11 test both, so they stay.
+
+### Speed, access and devices (report C)
+- **Keyboard focus is never behind the dock (L-01).** While the keyboard is in use on the recipe page the root has scroll padding (124 top for the bar and tabs, dock + 16 bottom). It is switched on by Tab and off by a tap, so a tap never moves the page under the finger.
+- **"Try a sample" tap (L-02).** The label preview (QR code, date, fitted title) is drawn when the Store tab shows or 120 ms after the page, not inside the tap; the first recipe is parsed once, not twice; the date formatter is warmed while the page is idle. Lab, 390 wide, 4x CPU, five runs: 128 to 168 ms, median 160. The old build in the same harness, same engine: 240 to 312 ms, median 272.
+- **Tap targets 44:** theme switch (the button is 52 x 44, the track inside is still 32), Batch day / Just scale, the four tabs, Story / Pinterest, the tour offer's Skip.
+- **Headings:** the dish is level 1 on the recipe page, card titles level 2, their sections level 3 (`aria-level`; the tags and the look are unchanged). The grocery heading is named "Grocery list" alone.
+- **New recipe** puts focus on Choose screenshots (or the paste box when it is showing).
+- **A toast belongs to its screen:** it goes when the view changes, so "Added to My freezer" no longer covers home rows.
+- **Tour step 3 on a very short window (400% zoom):** the Shop tab goes to the top, clear of the dock, and the bubble sits under it.
+- **Tour:** a second tap where Show me was, just after the tour opens, can no longer land on the bubble's Skip tour (the centred offer put them in the same place).
+- **Share links on Safari before 16.4:** a compressed link can't be opened there. The page says "This link needs a newer browser. Update your phone, or ask for the recipe text." Those browsers already make plain links.
+- **Share picture preview** has its alt text ("Dish, 14 meals") before the file is ready.
+- **AdSense loader left in the head** with no ad slot set: the site is in AdSense review and the snippet is how Google checks the site. Take it out only once that is known to be safe.
+
+### Food safety
+- **A savory bake is a meal.** When the engine marks a recipe `savoryBake` (baking with meat, fish, beans, tofu, cheese or cream, or no sugar), the page no longer forces Just scale: Batch day shows, with the fridge and freezer lines, labels and I cooked this. Sweet baking is still set to Just scale with its note.
+
+### Words
+- Home: "Recipe screenshot to grocery list, cook order and freezer plan."; "Sent to an AI reader, not kept." (still says sent); "Stays on this device."; How it scales lost "Taste at the end and add more.", got "Meat is seared in batches." as its own line, and says dry rice a quarter (the engine's rule since 15 Nov; it said a third).
+- Tips: "Safari can clear these after a week away. Tap Share, then Add to Home Screen."; "Back up your batches."; "Use it like an app." with the button or the Share steps.
+- Reading: one status line ("The AI is reading your 2 screenshots") with "Usually under a minute" (kept "Usually": it is not a promise); "Reading on this device."; "Couldn't read those" with no second line (the buttons say what to try).
+- Notes: "Read on this device. Check the amounts."; "Steps look cut off. Add the next screenshot."; "Baking: set to Just scale."; "Baking past 2×: make 2 batches."; "Couldn't save. Share a link to keep it."
+- Tour: "Add screenshots. Here's a sample."; "Your grocery list. Tick as you shop."; "One step at a time. Screen stays on."; toast "Tour is in the footer." ("Tour is in the home page footer." on the plan).
+- Cook end: "Done." once. Labels: "Avery 5160. Print at 100%." Asked twice: "Already added for Nov 15." with Add again and Cancel.
+- Kept on purpose: "No recipe found / Try screenshots that show the ingredients." (says why); "My batches is full. Remove a few to save this one." (says what to do); "Amounts, original on the right" (the app table has no header row); the Amazon sentence; the AdSense cookie wording.
+- About: who it is for in one line; the scaling paragraph without the reasons; "Yes. No account. Store links and ads keep it free."; "read on your device" (the same words as Privacy).
+- Privacy (dated 15 November 2026): the reader keeps the IP address and the times of recent reads in memory until it restarts (it said up to a day); the model runs on a third-party provider through Hugging Face Inference Providers, and our reader saves nothing; Back up lists My freezer; Amazon sets its own cookies after a click; Vercel Web Analytics also counts the site a visit came from; consent and "do not sell or share" come through Google's messages where the law requires them (the page no longer promises a button the site doesn't have). The AdSense vendor wording is word for word as before.
+- Guides index lost its line under the heading. 404: "That address isn't on batch.recipes."
+- Not done here: plain-copy items 44 and 46 to 48 (guide text) and 49 to 52 (cook order lines) live in guides.js and engine.js.
+
+### Build
+- **Sitemap `lastmod` is each page's own last change (E L-3).** `lastmod.json`, beside build.py, holds a hash and a date for every built page. A page whose built file is the same keeps its date; a changed or new one gets today's (`BD_TODAY=YYYY-MM-DD` overrides). Keep `lastmod.json` in the repo with the source, or every page is dated the day of the build.
+- build.py: CSP on every shell page, Open Graph on About and Privacy.
+
+### Tests changed (each checked behaviour that changed on purpose)
+- breakit2: the hint says "Sent to an AI reader".
+- breakit3: untitled recipe is "Recipe"; Returning visit is checked with a pasted recipe (the sample no longer counts).
+- breakit6: backup nudge text.
+- breakit8: tour offer text, the three tour lines, the two toasts.
+- breakit9: the last cook screen (big button is #cNext, small Close is #cDone, 0.6 s pauses for the double-tap hold, "Already added for"); Cooked events carry `from: sample`; old fridge rows show Remove and the flag (the card's "no storage time" check allows the flag); the keyboard check uses a freezer row.
+- breakit10: guide pages have two inline scripts (calculator and shell); calculator card padding is 32 on desktop.
+- breakit11: B-02c taps the big button on this build and the pill on the old one.
+- Counts in this file that were behind (E M-8): breakit2 is 27, breakit8 is 183.
+
+## Engine: full sweep fixes (15 Nov 2026)
+
+From report A (recipe accuracy). Tests: test_sweep.js (227 checks), plus updated test_guides.js, test_aisle.js and breakit6.py.
+
+- **Food safety (B-03).** Baking is decided from the title and the ingredients only, never the steps ("cookie sheet" is not a cookie). Any recipe with meat or fish is never baking, so it never gets room-temp storage. Savory plans always say fridge within 2 hours, eat within 4 days, 165°F for chicken (USDA FSIS "Leftovers and Food Safety").
+- **Baking detection (B-04).** Bake words in the title (shortbread, pie crust, biscuits, scones, bread...) with flour count as baking; so do flour + leavening, and flour + sugar + egg or butter.
+- **Lines kept (B-02).** A lowercase line with no number is its own ingredient when it reads like food ("kosher salt", "fresh parsley, chopped"). It joins the line above only when it reads like a wrapped note (the line above ends in a comma or open bracket, or it starts with "chopped", "or", "divided" and the like). New units: jar, box, bag, bottle, handful, head, sprig.
+- **Package sizes (B-07).** "1 (15 oz) can", "2 (14.5-ounce) cans", "1 jar (15 oz) pesto", "1 box (200 g)", "1 28-ounce can" keep the item name and the size. Cans, jars, boxes, bags, bottles and packages round up to whole ones and show the size ("4 cans (15 oz)").
+- **Pots (B-01, B-05).** The main pot counts everything that goes in it: cans (by size, else about 2 cups), whole vegetables (onion about 1 cup, carrot ½ ...), pasta and grains cooked (about double). Tender greens added at reheat are left out. Past one 20 qt pot it says how many pots or rounds.
+- **Rice (B-06).** Dry rice fills a pot at most a quarter, so cooked rice (it triples) stays under three-quarters. Past 20 cups dry, it says how many pots. Cooked rice in the ingredients gets no rice pot; congee-style rice cooks in the soup; casserole rice bakes in the dish. Rice "for serving" is still planned. The rice guides now say a quarter.
+- **Easing (L-01, L-07).** Past 2x, only the part above 2x is eased (salt 70%, spices 75%, oil 60%), so more meals never means less salt. Butter or ghee used as an ingredient (roux, mash, sauce) is not eased; frying fat is. The scaling guides explain it that way.
+- **Rounding (L-02, L-12, M-02, M-06).** Between ¼ and ½ cup, a cup measure only when within 7%, otherwise tablespoons. Cups round to the nearest quarter or third. Whole produce rounds up to the half. Grams and ml round to 5, and show as kg and l past 1000.
+- **Titles (L-03, D-1).** The first line before any ingredient is the title, not a section. "Chicken Curry (serves 4)" keeps "Chicken Curry".
+- **Dishes (L-06).** Sheet-pan recipes get sheet pans (about 6 cups a pan), no big pot. Casseroles get 9x13 dishes (about 12 cups each) and an oven step. Searing past 6 batches suggests two pans or browning in the oven.
+- **Time (L-05).** The recipe's own longest time (slow cook 4 hours, braise 2 hours) is added when the plan doesn't already cover it. A bigger pot gets a longer simmer.
+- **Freezer line (L-04).** Depends on the dish: broth with meat, containers otherwise, rice in its own bag only when there's rice, a warning that pasta and noodles go soft.
+- **Grocery (L-10, M-01).** The same item in two sections is one line (the sample's ginger paste). To-taste items are on the list. Counted items get plural labels (`label` field: "2 onions"); `name` stays for keys and aisles.
+- **Classes (L-08).** Garam masala, mustard powder, chipotles, bay leaves and similar are spices. "For serving" items are finishers, except rice, noodles, pasta, tortillas and bread. Broth and "cream of chicken soup" are not meat.
+- **Big cooks (L-13).** A note suggests splitting into two sessions when it needs more than one big pot, 10+ sear batches or 5+ hours; 40+ freezer meals adds "check you have the freezer room".
+- **Copy (D 49 to 52).** Cook-order lines trimmed.
+
+### After the accuracy re-test (F2 findings, same night)
+- **Food safety, second pass (F2-01, F2-02).** `recipe.savoryBake`: a bake with meat, fish, beans, tofu, cheese or cream, or no sugar at all, is stored like a meal (fridge within 2 hours, eat within 4 days, freezer portions, a cool step). Only sweet bakes with nothing perishable get room temp. More meat than flour by weight (chili with a cornbread top, sausage biscuits) is a meal, not a bake. The meat list now covers pepperoni, salami, prosciutto, brisket, hot dogs, clams, anchovies and more.
+- **Capitalised lines (F2-03).** A short capitalised line that is a known grocery item ("Parmesan rind", "Pine nuts", "Hot honey") is an ingredient, not a section header.
+- **Ground spices (F2-05)** are spices, not protein. **Whole chicken** counts about 6 cups in the pot (F2-08). **Ginger by the inch** (F2-10). **Singular for one or less** ("1 egg", "½ banana") (F2-11). **"Pinch of" and "a handful of"** mean one (F2-15). **Congee** counts only the dry rice on top of the water (F2-16).
+- **Dishes (F2-07, F2-09).** No-cook recipes get one "Mix and portion" step and no pots. Pasta that isn't cooked in the soup gets a "Boil the pasta" step. Sheet pans and baking dishes say how many oven rounds (2 pans or 4 dishes at a time), and the time follows.
+- **Every ingredient shows in a step (F2-06).** Anything not placed goes with the last cooking step, or a "Cook as the recipe says" step.
+- **Rounding, later the same night.** A teaspoon amount under 4 tbsp stays in teaspoons when tablespoons would be more than 6% off (4 tsp stays 4 tsp, not 1½ tbsp).

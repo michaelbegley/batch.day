@@ -27,7 +27,7 @@ log('sample: order inside a section is the recipe order',g[0].items.map((i)=>i.n
 log('aisles leaves the list it was given alone',p.grocery[0].name==='boneless chicken thighs'&&E.aisles([]).length===0&&E.aisles(null).length===0);
 log('stapleKey: case, spaces, punctuation and plurals fold together',E.stapleKey(' Olive  Oil ')==='olive oil'&&E.stapleKey('Eggs')===E.stapleKey('egg')&&E.stapleKey('Tomatoes')===E.stapleKey('tomato')&&E.stapleKey('Salt & black pepper')==='salt black pepper'&&E.stapleKey('berries')===E.stapleKey('berry')&&E.stapleKey('swiss')==='swiss'&&E.stapleKey(null)==='',[E.stapleKey('Eggs'),E.stapleKey('Tomatoes'),E.stapleKey('Salt & black pepper')].join('|'));
 const sl=E.shopList(p.grocery,[E.stapleKey('soy sauce'),E.stapleKey('neutral oil'),E.stapleKey('Ginger Paste')]);
-log('shopList: staples leave the sections and go to the pantry',sl.pantry.map((i)=>i.name).join('|')==='ginger paste|ginger paste|soy sauce|Neutral oil'&&sl.buy.length===p.grocery.length-4&&!sl.buy.some((i)=>/soy|neutral oil|ginger paste/i.test(i.name)),sl.pantry.map((i)=>i.name).join('|'));
+log('shopList: staples leave the sections and go to the pantry',sl.pantry.map((i)=>i.name).join('|')==='ginger paste|soy sauce|Neutral oil'&&sl.buy.length===p.grocery.length-3&&!sl.buy.some((i)=>/soy|neutral oil|ginger paste/i.test(i.name)),sl.pantry.map((i)=>i.name).join('|'));
 log('shopList: buy is the sections laid end to end',sl.groups.reduce((o,x)=>o.concat(x.items),[]).map((i)=>i.name).join('|')===sl.buy.map((i)=>i.name).join('|'));
 log('shopList: no staples means nothing in the pantry',E.shopList(p.grocery).pantry.length===0&&E.shopList(p.grocery,new Set()).buy.length===p.grocery.length);
 console.log(JSON.stringify(R));process.exit(bad?1:0);

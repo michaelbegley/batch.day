@@ -1,6 +1,6 @@
 <h1>About batch.recipes</h1>
 <p><strong>batch.recipes is a free website that turns any recipe into a batch-cooking plan.</strong> Add a screenshot or the text of a recipe, pick how many meals you want, and it gives you a grocery list, a cook order and a fridge and freezer plan.</p>
-<p>It's for people who cook once and eat all week: meal preppers, budget cooks and anyone who finds recipes on TikTok, Instagram Reels or food blogs.</p>
+<p>For meal preppers, budget cooks and anyone who saves recipes from TikTok, Instagram Reels or food blogs.</p>
 
 <h2>What you get</h2>
 <ul>
@@ -12,13 +12,13 @@
 </ul>
 
 <h2>How the scaling works</h2>
-<p>It follows batch-cooking rules, not plain multiplication. Meat, vegetables, grains and broth scale straight up. Salt, spices and oil are eased back past double, so a big batch isn't over-seasoned. Fresh finishers like lime and herbs are kept for serving. Pots are sized so stews fill no more than three-quarters and dry rice no more than a third. Baking isn't eased back and gets a warning past double, because it doesn't scale well.</p>
+<p>Meat, vegetables, grains and broth scale straight up. Salt, spices and oil are eased back past double. Fresh finishers like lime and herbs are kept for serving. Pots are sized so stews fill no more than three-quarters and dry rice no more than a quarter. Baking isn't eased back and gets a warning past double.</p>
 
 <h2>Questions</h2>
 <h3>Is it free?</h3>
-<p>Yes. There's no account and no sign-up. Store links and ads keep it free.</p>
+<p>Yes. No account. Store links and ads keep it free.</p>
 <h3>Does it work with TikTok and Instagram recipes?</h3>
-<p>Yes. Screenshot the recipe and add the screenshots. An AI model reads the ingredients and steps. If it can't, your phone reads them instead.</p>
+<p>Yes. Screenshot the recipe and add the screenshots. An AI model reads the ingredients and steps. If it can't, they are read on your device instead.</p>
 <h3>Where are my recipes saved?</h3>
 <p>On your phone or computer, not on a server. You can back them up to a file and restore them on a new phone. Screenshots are read and not kept. More in <a href="privacy">Privacy</a>.</p>
 <h3>Does it work on iPhone and Android?</h3>

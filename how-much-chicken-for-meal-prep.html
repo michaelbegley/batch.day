@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-Rc/QuzsoGpNV9vP06mtdNTHSKxi6B8716Y+y1lzUalQ=' https://cloud.umami.is; connect-src 'self' https://gateway.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-UNCnqUTql/xbIEo04G6jHvaHzA5atPKKaWP+yoDURoY=' 'sha256-Rc/QuzsoGpNV9vP06mtdNTHSKxi6B8716Y+y1lzUalQ=' https://cloud.umami.is; connect-src 'self' https://gateway.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>How much chicken do I need for meal prep? · batch.recipes</title>
@@ -15,12 +15,26 @@
 <meta property="og:image" content="https://batch.recipes/og.png">
 <meta property="og:url" content="https://batch.recipes/how-much-chicken-for-meal-prep">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<script>(function(){var d=document,s='',t;
+/* the theme chosen on the home page, before the first paint */
+try{t=localStorage.getItem('bd-theme');if(t==='dark'||t==='light')d.documentElement.dataset.theme=t}catch(e){}
+/* where this visit came from, worked out the same way as on the home page and kept for the session (bd-src), so a visit that lands here keeps its source */
+try{s=sessionStorage.getItem('bd-src')||''}catch(e){}
+if(!s){try{var u=new URLSearchParams(location.search).get('utm_source'),h=d.referrer?new URL(d.referrer).hostname.replace(/^www\./,''):'';s=(u||(h&&!/(^|\.)batch\.recipes$/.test(h)?h:'')||'direct').toLowerCase().replace(/[^a-z0-9.-]/g,'').slice(0,40)||'direct'}catch(e){s='direct'}try{sessionStorage.setItem('bd-src',s)}catch(e){}}
+/* Vercel Web Analytics, loaded the way the home page loads it */
+window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};
+if(/(^|\.)batch\.recipes$|\.vercel\.app$/.test(location.hostname)){var v=d.createElement('script');v.defer=true;v.src='/_vercel/insights/script.js';d.head.appendChild(v)}
+/* "Plan your own recipe": Umami counts it from the link's own attributes; this sends the same event to Vercel and gives both the source */
+d.addEventListener('click',function(e){var a=e.target&&e.target.closest&&e.target.closest('[data-umami-event="Guide plan"]');if(!a)return;try{a.setAttribute('data-umami-event-src',s);window.va('event',{name:'Guide plan',data:{guide:a.getAttribute('data-umami-event-guide')||'',src:s}})}catch(x){}},true)})()</script>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="6ad3a50b-f9cd-46e8-911a-edda631db62a" data-domains="batch.recipes" data-exclude-hash="true"></script>
 <link rel="icon" href="favicon.svg?v=3" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
 <style>
 :root{--bg:#fff;--bg2:#f5f5f7;--raise:#fff;--ink:#1d1d1f;--ink2:#6e6e73;--line:rgba(0,0,0,.08);--accent:#c2410c;--accent-ink:#fff;--shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);--ease:cubic-bezier(.32,.72,0,1);--fade:cubic-bezier(.25,.1,.25,1);--font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Inter,system-ui,sans-serif}
-@media (prefers-color-scheme:dark){:root{--bg:#000;--bg2:#2c2c2e;--raise:#1c1c1e;--ink:#f5f5f7;--ink2:#a1a1a6;--line:rgba(255,255,255,.12);--accent:#ff7a3d;--accent-ink:#1d1d1f;--shadow:none}}
+[data-theme=dark]{--bg:#000;--bg2:#2c2c2e;--raise:#1c1c1e;--ink:#f5f5f7;--ink2:#a1a1a6;--line:rgba(255,255,255,.12);--accent:#ff7a3d;--accent-ink:#1d1d1f;--shadow:none}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#000;--bg2:#2c2c2e;--raise:#1c1c1e;--ink:#f5f5f7;--ink2:#a1a1a6;--line:rgba(255,255,255,.12);--accent:#ff7a3d;--accent-ink:#1d1d1f;--shadow:none}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.55 var(--font);-webkit-font-smoothing:antialiased}
 .bar{display:flex;align-items:center;height:52px;padding:0 16px;border-bottom:1px solid var(--line)}
@@ -81,7 +95,7 @@ footer a{color:var(--ink2);min-height:44px;min-width:44px;display:inline-flex;al
 .btn:active{transform:scale(.97)}
 @media (hover:hover){.btn:hover{filter:brightness(1.06)}}
 ul.gl{list-style:none;margin:0;padding:0}
-ul.gl.idx{margin-top:12px}
+ul.gl.idx{margin-top:4px}
 .gl li{margin:0;border-top:1px solid var(--line)}
 .gl li:first-child{border-top:0}
 .gl a{display:flex;flex-direction:column;justify-content:center;min-height:48px;padding:12px 0;text-decoration:none;font-weight:600}
@@ -90,6 +104,7 @@ ul.gl.idx{margin-top:12px}
 @keyframes amt{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @media (min-width:480px){.g h1{font-size:40px}}
+@media (min-width:721px){.card{padding:32px}} /* the same card padding as the app on desktop */
 @media (prefers-reduced-motion:reduce){.chg{animation:fadeIn .2s linear both}.step .nr,.step .nl{animation:none}.step button:active,.btn:active{transform:none}}
 </style>
 </head>

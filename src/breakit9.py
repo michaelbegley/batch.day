@@ -13,6 +13,7 @@ try:
     from qrcode.constants import ERROR_CORRECT_M, ERROR_CORRECT_Q, ERROR_CORRECT_H
 except Exception: qrcode=None
 U='http://localhost:8765/'
+OLD10=(datetime.date.today()-datetime.date(2026,11,10)).days>4  # the seeded fridge row cooked Nov 10 is past its 4 days
 AND='Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Mobile Safari/537.36'
 R=[]
 def log(n,ok,note=''):
@@ -120,7 +121,7 @@ console.log(JSON.stringify({o,long:Q.make('y'.repeat(200)),empty:Q.make(''),url:
             log(f'tap ({nm}): type 33, tap Print labels: 33 labels',r=={'printed':1,'n':33,'last':'33 of 33'},r)
             await typed(pg,'#want',12,mob); await hit(pg,'#didGo'); await pg.wait_for_timeout(200)
             fz=await pg.evaluate(LSJ,'bd-freezer')
-            log(f'tap ({nm}): type 12, tap I cooked this: 12 portions recorded',len(fz)==1 and fz[0]['fz']+fz[0]['fr']==12 and await pg.evaluate(EV,'Cooked')==[{'src':'direct','portions':12}],fz)
+            log(f'tap ({nm}): type 12, tap I cooked this: 12 portions recorded',len(fz)==1 and fz[0]['fz']+fz[0]['fr']==12 and await pg.evaluate(EV,'Cooked')==[{'src':'direct','portions':12,'from':'sample'}],fz)
             await typed(pg,'#want',6,mob); await hit(pg,'#mode [data-m=scale]'); await pg.wait_for_timeout(250)
             log(f'tap ({nm}): type, tap Just scale: the mode changes',await pg.get_attribute('#mode [data-m=scale]','aria-pressed')=='true')
             await hit(pg,'#mode [data-m=batch]'); await pg.wait_for_timeout(250)
@@ -150,12 +151,12 @@ console.log(JSON.stringify({o,long:Q.make('y'.repeat(200)),empty:Q.make(''),url:
         fz=await pg.evaluate(LSJ,'bd-freezer'); bt=await pg.evaluate(LSJ,'bd-batches'); e=fz[0] if fz else {}
         log('cooked: one entry {id, bid, title, date, fz, fr, fz0, fr0, at}',len(fz)==1 and sorted(e)==['at','bid','date','fr','fr0','fz','fz0','id','title'] and e['title']=='Brothy chicken and rice' and e['date']==TODAY and (e['fz'],e['fr'],e['fz0'],e['fr0'])==(10,4,10,4),e)
         log('cooked: the sample is now a saved batch and the entry points at it',len(bt)==1 and e.get('bid')==bt[0]['id'],(e.get('bid'),bt and bt[0]['id']))
-        log('cooked: event Cooked {portions: 14}',await pg.evaluate(EV,'Cooked')==[{'src':'direct','portions':14}],await pg.evaluate(EV,'Cooked'))
+        log('cooked: event Cooked {portions: 14, from: sample}',await pg.evaluate(EV,'Cooked')==[{'src':'direct','portions':14,'from':'sample'}],await pg.evaluate(EV,'Cooked'))
         t=await pg.evaluate("({t:document.querySelector('#toast span').textContent,undo:!!document.querySelector('#toast button'),on:document.getElementById('toast').classList.contains('on'),see:!!document.getElementById('didSee'),foc:document.activeElement.id})")
         log('cooked: toast "Added to My freezer" with Undo, See My freezer link shows, focus stays on the button',t=={'t':'Added to My freezer','undo':True,'on':True,'see':True,'foc':'didGo'},t)
         await pg.tap('#didGo'); await pg.wait_for_timeout(200)
         ask=await pg.evaluate("({txt:(document.querySelector('#didBox .tip')||{}).innerText||'',n:JSON.parse(localStorage.getItem('bd-freezer')).length,foc:document.activeElement.id,go:!!document.getElementById('didGo')})")
-        log('cooked: the same batch on the same day asks first, adds nothing yet',ask['n']==1 and 'Already added for' in ask['txt'] and 'Add it again?' in ask['txt'] and ask['foc']=='didAgain' and not ask['go'] and not errs,ask)
+        log('cooked: the same batch on the same day asks first, adds nothing yet',ask['n']==1 and 'Already added for' in ask['txt'] and 'Add again' in ask['txt'] and ask['foc']=='didAgain' and not ask['go'] and not errs,ask)
         await pg.screenshot(path='breakit/9-ask.png')
         await pg.tap('#didNo'); await pg.wait_for_timeout(600)
         log('cooked: Cancel adds nothing and brings the button back',len(await pg.evaluate(LSJ,'bd-freezer'))==1 and await pg.evaluate("document.activeElement.id")=='didGo')
@@ -188,32 +189,32 @@ console.log(JSON.stringify({o,long:Q.make('y'.repeat(200)),empty:Q.make(''),url:
         # ---------- 3. I cooked this, at the end of cook mode ----------
         ctx,pg,errs=await fresh(b); await sample(pg); await pg.tap('#dCook'); await pg.wait_for_timeout(400)
         for _ in range(40):
-            if await pg.inner_text('#cNext')=='Close': break
+            if await pg.inner_text('#cNext') not in ('Next','Finish'): break
             await pg.tap('#cNext'); await pg.wait_for_timeout(60)
-        await pg.wait_for_timeout(400)
-        r=await pg.evaluate("({btn:(document.getElementById('cDid')||{}).textContent,h:document.getElementById('cDid').getBoundingClientRect().height,p:document.querySelector('#cBody p').textContent})")
-        log('cook mode: the last screen has a quiet I cooked this',r['btn']=='I cooked this' and r['h']>=44 and 'Label the bags' in r['p'],r)
+        await pg.wait_for_timeout(600)
+        r=await pg.evaluate("({btn:document.getElementById('cNext').textContent,h:document.getElementById('cNext').getBoundingClientRect().height,p:document.querySelector('#cBody p').textContent,close:(document.getElementById('cDone')||{}).textContent})")
+        log('cook mode: on the last screen the big button is I cooked this, with a small Close',r['btn']=='I cooked this' and r['h']>=44 and 'Label the bags' in r['p'] and r['close']=='Close',r)
         await pg.screenshot(path='breakit/9-cook-done.png')
-        await pg.tap('#cDid'); await pg.wait_for_timeout(250)
+        await pg.tap('#cNext'); await pg.wait_for_timeout(250)
         fz=await pg.evaluate(LSJ,'bd-freezer')
-        r=await pg.evaluate("({t:document.getElementById('cDidBox').innerText.trim(),btn:!!document.getElementById('cDid'),foc:document.activeElement.id,status:document.querySelector('#cDidBox [role=status]')!==null})")
+        r=await pg.evaluate("({t:document.getElementById('cDidBox').innerText.trim(),btn:document.getElementById('cNext').textContent!=='Close',foc:document.activeElement.id,status:document.querySelector('#cDidBox [role=status]')!==null})")
         log('cook mode: tap records it and says In My freezer',len(fz)==1 and (fz[0]['fz'],fz[0]['fr'])==(10,4) and r=={'t':'In My freezer','btn':False,'foc':'cNext','status':True} and len(await pg.evaluate(EV,'Cooked'))==1,r)
-        await pg.tap('#cBack'); await pg.wait_for_timeout(200); await pg.tap('#cNext'); await pg.wait_for_timeout(300); await pg.tap('#cDid'); await pg.wait_for_timeout(200)
+        await pg.tap('#cBack'); await pg.wait_for_timeout(200); await pg.tap('#cNext'); await pg.wait_for_timeout(600); await pg.tap('#cNext'); await pg.wait_for_timeout(200)
         r=await pg.evaluate("({t:document.getElementById('cDidBox').innerText,n:JSON.parse(localStorage.getItem('bd-freezer')).length,foc:document.activeElement.id})")
-        log('cook mode: a second time the same day asks first',r['n']==1 and 'Already added today. Add it again?' in r['t'] and r['foc']=='cDidAgain',r)
+        log('cook mode: a second time the same day asks first',r['n']==1 and 'Already added for' in r['t'] and 'Add again' in r['t'] and r['foc']=='cDidAgain',r)
         await pg.keyboard.press('Tab'); f1=await pg.evaluate("document.activeElement.id"); await pg.keyboard.press('Tab'); await pg.keyboard.press('Tab'); await pg.keyboard.press('Tab'); await pg.keyboard.press('Tab'); f2=await pg.evaluate("!!document.activeElement.closest('#cook')")
         log('cook mode: Tab reaches Cancel and stays inside cook mode',f1=='cDidNo' and f2,(f1,f2))
-        await pg.tap('#cDidNo'); await pg.wait_for_timeout(150)
-        log('cook mode: Cancel adds nothing',len(await pg.evaluate(LSJ,'bd-freezer'))==1 and await pg.locator('#cDid').count()==1)
-        await pg.tap('#cDid'); await pg.wait_for_timeout(600); await pg.tap('#cDidAgain'); await pg.wait_for_timeout(200)
+        await pg.tap('#cDidNo'); await pg.wait_for_timeout(600)
+        log('cook mode: Cancel adds nothing',len(await pg.evaluate(LSJ,'bd-freezer'))==1 and await pg.inner_text('#cNext')=='I cooked this')
+        await pg.tap('#cNext'); await pg.wait_for_timeout(600); await pg.tap('#cDidAgain'); await pg.wait_for_timeout(200)
         log('cook mode: Add again adds',len(await pg.evaluate(LSJ,'bd-freezer'))==2)
-        await pg.tap('#cNext'); await pg.wait_for_timeout(450); await tab(pg,'store')
+        await pg.wait_for_timeout(500); await pg.tap('#cNext'); await pg.wait_for_timeout(450); await tab(pg,'store')
         log('cook mode: back on the page the Store card knows',await pg.locator('#didSee').count()==1)
         await pg.click('#mode [data-m=scale]'); await pg.wait_for_timeout(300); await pg.tap('#dCook'); await pg.wait_for_timeout(300)
         for _ in range(40):
-            if await pg.inner_text('#cNext')=='Close': break
+            if await pg.inner_text('#cNext') not in ('Next','Finish'): break
             await pg.tap('#cNext'); await pg.wait_for_timeout(60)
-        log('cook mode: not offered in Just scale',await pg.locator('#cDid').count()==0 and await pg.locator('#cDidBox').count()==0)
+        log('cook mode: not offered in Just scale',await pg.inner_text('#cNext')=='Close' and await pg.locator('#cDone').count()==0 and await pg.locator('#cDidBox').count()==0)
         log('cook mode: no errors',not errs,errs); await ctx.close()
         # ---------- 4. the home card ----------
         ctx,pg,errs=await fresh(b)
@@ -227,10 +228,10 @@ console.log(JSON.stringify({o,long:Q.make('y'.repeat(200)),empty:Q.make(''),url:
         log('home: card shows with a total line',not s['hidden'] and s['sum']=='20 meals in the freezer',s['sum'])
         log('home: fridge group first, then the freezer, each oldest first',s['labels']==['In the fridge','In the freezer'] and [(x['grp'],x['t']) for x in s['rows']]==[('In the fridge','Chili <b>big</b>'),('In the fridge','Soup 0'),('In the fridge','Soup 1'),('In the freezer','Chili <b>big</b>'),('In the freezer','Soup 0'),('In the freezer','Soup 1')],[(x['grp'],x['t']) for x in s['rows']])
         log('home: rows say what is left and when it was cooked (year only when it is not this year)',[x['s'] for x in s['rows']]==['2 left · Cooked Dec 30, 2025','None left · Cooked Nov 2','4 left · Cooked Nov 10','1 left · Cooked Dec 30, 2025','9 left · Cooked Nov 2','10 left · Cooked Nov 10'],[x['s'] for x in s['rows']])
-        log('home: Ate one on rows with some left, Remove at 0, each named for a screen reader',[x['btn'] for x in s['rows']]==['Ate one','Remove','Ate one','Ate one','Ate one','Ate one'] and s['rows'][0]['name']=='Ate one, Chili <b>big</b>' and s['rows'][1]['name']=='Remove, Soup 0',[x['name'] for x in s['rows']][:2])
+        log('home: Ate one on rows with some left, Remove at 0, each named for a screen reader',[x['btn'] for x in s['rows']]==['Remove','Remove','Remove' if OLD10 else 'Ate one','Ate one','Ate one','Ate one'] and s['rows'][0]['name']=='Remove, Chili <b>big</b>' and s['rows'][1]['name']=='Remove, Soup 0',[x['name'] for x in s['rows']][:2])
         log('home: a title is text, never markup',await pg.evaluate("document.querySelectorAll('#fzList b *').length")==0)
         txt=await pg.inner_text('#fz')
-        log('home: no storage or use-by time anywhere in the card',not re.search(r'use by|month|week|days|within|best|keeps|good for|expire',txt,re.I),txt[:200])
+        log('home: no storage or use-by time in the card, apart from the fridge flag (Past 4 days. Toss it.)',not re.search(r'use by|month|week|days|within|best|keeps|good for|expire',txt.replace('Past 4 days. Toss it.',''),re.I) and txt.count('Past 4 days. Toss it.')==(2 if OLD10 else 1),txt[:200])
         pos=await pg.evaluate("(()=>{const f=document.getElementById('fz'),p=f.previousElementSibling,n=f.nextElementSibling,q=(e)=>e.getBoundingClientRect();return {prev:p.className,next:n.className,above:Math.round(q(f).top-q(p).bottom),below:Math.round(q(n).top-q(f).bottom),inView:q(f).top<innerHeight,ow:document.documentElement.scrollWidth<=innerWidth,small:[...f.querySelectorAll('button')].filter(b=>q(b).height<44||q(b).width<44).length}})()")
         log('home: card sits between the paste links and the three icons, 24 above and below, peeking on the first screen',pos['prev']=='links' and pos['next']=='flow' and pos['above']==24 and pos['below']==24 and pos['inView'],pos)
         log('home: every button 44 or more, no sideways scroll',pos['small']==0 and pos['ow'],pos)
@@ -282,9 +283,9 @@ console.log(JSON.stringify({o,long:Q.make('y'.repeat(200)),empty:Q.make(''),url:
         log('home: no errors (2)',not errs,errs); await ctx.close()
         # keyboard, small phones, 200% zoom, dark, reduced motion
         ctx,pg,errs=await fresh(b,w=1280,h=900,mob=False,pre=seed(BATCH(2),F))
-        await pg.focus('#fzList [data-fo="e3"]'); await pg.keyboard.press('Tab'); a=await pg.evaluate("[document.activeElement.dataset.ate,getComputedStyle(document.activeElement).outlineStyle]"); await pg.keyboard.press('Enter'); await pg.wait_for_timeout(200)
+        await pg.locator('#fzList [data-fo="e3"]').last.focus(); await pg.keyboard.press('Tab'); a=await pg.evaluate("[document.activeElement.dataset.ate,getComputedStyle(document.activeElement).outlineStyle]"); await pg.keyboard.press('Enter'); await pg.wait_for_timeout(200)  # its freezer row: the fridge row (cooked in 2025) is past 4 days and offers Remove
         s=await pg.evaluate(FZROWS)
-        log('keyboard: Tab from a row to its Ate one with a focus ring, Enter eats one',a==['e3','solid'] and s['rows'][0]['s'].startswith('1 left'),(a,s['rows'][0]['s']))
+        log('keyboard: Tab from a row to its Ate one with a focus ring, Enter eats one',a==['e3','solid'] and s['rows'][3]['s'].startswith('None left'),(a,s['rows'][3]['s']))
         await pg.click('#fzList [data-fo="e3"]'); await pg.wait_for_timeout(200); tt=await pg.evaluate("document.querySelector('#toast span').textContent")
         log('desktop: the missing-batch line says device, not phone',tt=="This batch isn't saved on this device",tt)
         await ctx.close()

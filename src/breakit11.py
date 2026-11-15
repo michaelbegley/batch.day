@@ -188,9 +188,9 @@ async def _(b,U):
 async def _(b,U):
     ctx,pg=await seeded(b,U,CAP,'android'); await paste(pg,CHILI); await pg.click('#dCook'); await pg.wait_for_timeout(300)
     for _ in range(12):
-        if await pg.locator('#cDid').count(): break
+        if await pg.locator('#cDid,#cDone').count(): break
         await pg.click('#cNext'); await pg.wait_for_timeout(120)
-    await pg.click('#cDid'); await pg.wait_for_timeout(300); f=await pg.evaluate(LS,'bd-freezer') or []; txt=(await pg.inner_text('#cDidBox')).replace('\n',' ')
+    await pg.wait_for_timeout(600); await pg.click('#cDid' if await pg.locator('#cDid').count() else '#cNext'); await pg.wait_for_timeout(300); f=await pg.evaluate(LS,'bd-freezer') or []; txt=(await pg.inner_text('#cDidBox')).replace('\n',' ')  # since 15 Nov "I cooked this" is the big button (#cNext); the old build has the pill (#cDid)
     ok=len(f)==0 and 'My batches is full. Remove a few to save this one.' in txt and await pg.locator('#cDidMine').count()==1
     st=''
     await pg.wait_for_timeout(500)

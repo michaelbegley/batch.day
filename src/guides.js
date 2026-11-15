@@ -50,11 +50,11 @@ const pages = [
     sum: (c) => `${c({ meals: 14 }).cups} of dry rice for 14 meals.`,
     h1: 'How much rice do I need for meal prep?',
     controls: [MEALS],
-    calc: `function calc(v){var p=E.batchDay(P('Bowl\\nServes 1\\n- white rice, for serving'),v.meals),n=p.items[0].scaled.split(' cups')[0],m=/(\\d+) qt/.exec(p.pots[0]||''),c=n+(n==='1'||n==='½'?' cup':' cups');
-return{big:c,cups:c,pot:m?m[1]+' qt pot':'',sub:'Dry rice for '+N(v.meals,'meal')+'. '+(m?'Cook it in a '+m[1]+' qt pot.':'Cook it in two pots or batches.')}}`,
+    calc: `function calc(v){var p=E.batchDay(P('Bowl\\nServes 1\\n- white rice, for serving'),v.meals),n=p.items[0].scaled.split(' cups')[0],m=/Rice pot: (\\d+) qt/.exec(p.pots.join(' ')),c=n+(n==='1'||n==='½'?' cup':' cups');
+return{big:c,cups:c,pot:m?m[1]+' qt pot':'',sub:'Dry rice for '+N(v.meals,'meal')+'. '+(m?'Cook it in a '+m[1]+' qt pot.':'Cook it in '+((/in (\\d+) pots/.exec(p.pots.join(' '))||[])[1]||'2')+' pots or rounds.')}}`,
     answer: (c) => { const a = c({ meals: 14 }); return `For 14 meals, cook ${a.cups} of dry rice in ${A(a.pot)}. batch.recipes plans about ⅓ cup of dry rice a meal, which cooks up to about 1 cup.`; },
     desc: (c) => `For 14 meals, cook ${c({ meals: 14 }).cups} of dry rice. Set your meals to get the cups and the pot size.`,
-    how: () => ['About ⅓ cup of dry rice a meal. It\'s an estimate, used when a recipe only says "rice".', 'The total is rounded to the nearest half cup.', 'Dry rice about triples as it cooks, so ⅓ cup dry is about 1 cup cooked.', 'The pot is sized so the dry rice fills no more than a third of it.', 'If your recipe gives a rice amount, batch.recipes scales that amount.'],
+    how: () => ['About ⅓ cup of dry rice a meal. It\'s an estimate, used when a recipe only says "rice".', 'The total is rounded to the nearest half cup.', 'Dry rice about triples as it cooks, so ⅓ cup dry is about 1 cup cooked.', 'The pot is sized so the dry rice fills no more than a quarter of it. Cooked, it fills about three-quarters.', 'If your recipe gives a rice amount, batch.recipes scales that amount.'],
     faq: (c) => [
       ['How much rice for 5, 7, 10 or 21 meals?', [5, 7, 10, 21].map((m) => `${m} meals: ${c({ meals: m }).cups}.`).join(' ') + ' All dry.'],
       ['Is that dry or cooked rice?', 'Dry. It cooks up to about three times as much.'],
@@ -81,13 +81,13 @@ return{big:p.items[0].scaled,each:one,batches:b,sub:(/^0 /.test(one)?'':one+' a 
   },
   {
     slug: 'how-to-scale-a-recipe-for-meal-prep',
-    sum: (c, x) => `Meals over servings. Past double, salt at ${x.pct.salt}%, spices at ${x.pct.spice}%, oil at ${x.pct.oil}%.`,
+    sum: (c, x) => `Meals over servings. Past double, go easier on salt, spices and oil.`,
     h1: 'How do I scale a recipe for meal prep?',
     controls: [MEALS, SERVES],
     calc: `function calc(v){var f=v.meals/v.serves;return{big:FX(f)+'×',sub:'the recipe, for '+N(v.meals,'meal')+'.',tbl:TB(v.serves,v.meals,'Batch')}}`,
-    answer: (c, x) => `Divide the meals you want by the servings the recipe makes, and multiply each ingredient by that. Past double, start the salt at ${x.pct.salt}%, the spices at ${x.pct.spice}% and the oil at ${x.pct.oil}% of the full amount, then taste at the end. For 14 meals from a recipe that serves 4, that's ${c({ meals: 14, serves: 4 }).big}: 1 lb of chicken becomes ${x.at(3.5, 'chicken thighs')} and 1 tsp of salt becomes ${x.at(3.5, 'salt')}.`,
-    desc: (c, x) => `Multiply by meals over servings. Past double, salt starts at ${x.pct.salt}%, spices at ${x.pct.spice}% and oil at ${x.pct.oil}%. Try it with your numbers.`,
-    how: (c, x) => ['Meat, vegetables, grains, broth and garlic scale straight up.', 'Up to double, so do salt, spices and oil.', `Past double, salt starts at ${x.pct.salt}%, spices at ${x.pct.spice}% and oil at ${x.pct.oil}%. Taste at the end and add more.`, 'Lime, herbs and other fresh finishers are kept for serving.', 'Amounts are rounded to spoons and cups you can measure.'],
+    answer: (c, x) => `Divide the meals you want by the servings the recipe makes, and multiply each ingredient by that. Past double, add the salt, spices and oil more slowly: the amount above double goes in at ${x.pct.salt}% for salt, ${x.pct.spice}% for spices and ${x.pct.oil}% for oil. Taste at the end. For 14 meals from a recipe that serves 4, that's ${c({ meals: 14, serves: 4 }).big}: 1 lb of chicken becomes ${x.at(3.5, 'chicken thighs')} and 1 tsp of salt becomes ${x.at(3.5, 'salt')}.`,
+    desc: (c, x) => `Multiply by meals over servings. Past double, the extra salt goes in at ${x.pct.salt}%, spices at ${x.pct.spice}% and oil at ${x.pct.oil}%. Try it with your numbers.`,
+    how: (c, x) => ['Meat, vegetables, grains, broth and garlic scale straight up.', 'Up to double, so do salt, spices and oil.', `Past double, the amount above double goes in at ${x.pct.salt}% for salt, ${x.pct.spice}% for spices and ${x.pct.oil}% for oil. Taste at the end and add more.`, 'Lime, herbs and other fresh finishers are kept for serving.', 'Amounts are rounded to spoons and cups you can measure.'],
     faq: () => [
       ['Why don\'t salt and spices scale all the way?', 'So a big batch isn\'t over-seasoned. Taste at the end and add more if it needs it.'],
       ['What about lime juice and fresh herbs?', 'Keep them out of the pot. Add them to each bowl when you eat.'],
@@ -100,15 +100,15 @@ return{big:p.items[0].scaled,each:one,batches:b,sub:(/^0 /.test(one)?'':one+' a 
     sum: (c) => `${Cap(A(c({ qt: 2, x: 2 }).big))} for a doubled 2 quart soup.`,
     h1: 'What size pot do I need to double a soup or chili recipe?',
     controls: [{ id: 'qt', label: 'One batch makes (quarts)', val: 2, min: 1, max: 20, dn: 'Fewer quarts', up: 'More quarts' }, { id: 'x', label: 'Times the recipe', val: 2, min: 1, max: 10, dn: 'Fewer times', up: 'More times' }],
-    calc: `function calc(v){var p=E.batchDay(P('Soup\\nServes 1\\n'+v.qt*4+' cups broth'),v.x).pots[0]||'',m=/(\\d+) qt/.exec(p),c=(/about (\\d+) cups/.exec(p)||[])[1];
-return{big:m?m[1]+' qt pot':'Two pots',pot:m?m[1]+' qt':'',sub:m?'About '+c+' cups, kept under ¾ full.':'About '+c+' cups. Split it across two big pots.'}}`,
+    calc: `function calc(v){var p=E.batchDay(P('Soup\\nServes 1\\n'+v.qt*4+' cups broth'),v.x).pots[0]||'',m=/(\\d+) qt or bigger/.exec(p),c=(/about (\\d+) cups/.exec(p)||[])[1];
+var k=(/Use (\\d+) big pots/.exec(p)||[])[1]||'2';return{big:m?m[1]+' qt pot':k+' big pots',pot:m?m[1]+' qt':'',sub:m?'About '+c+' cups, kept under ¾ full.':'About '+c+' cups. Split it across '+k+' big pots.'}}`,
     answer: (c) => `Use a pot the full batch fills no more than three-quarters. A soup or chili that makes 2 quarts needs ${A(c({ qt: 2, x: 2 }).big)} doubled and ${A(c({ qt: 2, x: 3 }).big)} tripled.`,
     desc: (c) => `A soup that makes 2 quarts needs ${A(c({ qt: 2, x: 2 }).big)} doubled and ${A(c({ qt: 2, x: 3 }).big)} tripled. Set your own batch.`,
     table: (c) => ({ cap: 'Pot sizes', head: ['One batch makes', 'Doubled', 'Tripled'], rows: [1, 2, 3, 4, 6].map((q) => [N(q, 'quart'), c({ qt: q, x: 2 }).big, c({ qt: q, x: 3 }).big]) }),
-    how: (c, x) => ['The pot has to hold the whole batch at three-quarters full or less.', '4 cups is 1 quart.', `It picks the next size up from ${x.pots.slice(0, -1).join(', ')} and ${x.pots.slice(-1)[0]} quarts.`, `Past a ${x.pots.slice(-1)[0]} qt pot, split the batch across two pots.`],
+    how: (c, x) => ['The pot has to hold the whole batch at three-quarters full or less.', '4 cups is 1 quart.', `It picks the next size up from ${x.pots.slice(0, -1).join(', ')} and ${x.pots.slice(-1)[0]} quarts.`, `Past a ${x.pots.slice(-1)[0]} qt pot, split the batch across more pots, or cook it in rounds.`],
     faq: (c) => [
       ['What size pot for a triple batch of chili?', `If one batch makes 2 quarts, ${A(c({ qt: 2, x: 3 }).big)}. If it makes 3 quarts, ${A(c({ qt: 3, x: 3 }).big)}.`],
-      ['How do I know how much my recipe makes?', 'Add up the broth, tomatoes, meat and vegetables. batch.recipes does it from the ingredient list and counts 8 oz of meat or vegetables as about 1 cup.'],
+      ['How do I know how much my recipe makes?', 'Add up everything that goes in the pot: broth, cans, meat, vegetables and pasta. batch.recipes does it from the ingredient list. It counts 8 oz of meat or vegetables as about 1 cup, a 15 oz can as about 2 cups and a whole onion as about 1 cup.'],
       ['Does the cooking time change?', 'A bigger pot takes longer to come to a simmer. Go by doneness, not the clock.'],
     ],
     more: ['how-to-double-a-recipe', 'how-to-triple-a-recipe', 'how-much-rice-fits-in-a-pot'],
@@ -118,15 +118,15 @@ return{big:m?m[1]+' qt pot':'Two pots',pot:m?m[1]+' qt':'',sub:m?'About '+c+' cu
     sum: (c, x) => `Up to ${N(x.fit[3], 'cup')} in a 3 qt pot.`,
     h1: 'How much dry rice can I cook in one pot?',
     controls: [{ id: 'cups', label: 'Dry rice (cups)', val: 4, min: 1, max: 99, dn: 'Fewer cups', up: 'More cups' }],
-    calc: `function calc(v){var p=E.batchDay(P('Rice\\nServes 1\\n1 cup white rice'),v.cups).pots[0]||'',m=/(\\d+) qt/.exec(p),s=N(v.cups,'cup')+' of dry rice is about '+N(v.cups*3,'meal')+'.';
-return{big:m?m[1]+' qt pot':'Two pots',qt:m?+m[1]:0,sub:m?s:s+' Cook it in two pots or batches.'}}`,
-    answer: (c, x) => `Fill the pot no more than a third with dry rice, because it about triples as it cooks. That's up to ${N(x.fit[3], 'cup')} of dry rice in a 3 qt pot, ${N(x.fit[4], 'cup')} in a 4 qt pot and ${N(x.fit[6], 'cup')} in a 6 qt pot.`,
-    desc: (c, x) => `Up to ${N(x.fit[3], 'cup')} of dry rice in a 3 qt pot, ${x.fit[4]} in a 4 qt and ${x.fit[6]} in a 6 qt. Dry rice should fill no more than a third of the pot.`,
+    calc: `function calc(v){var p=E.batchDay(P('Rice\\nServes 1\\n1 cup white rice'),v.cups).pots.join(' '),m=/Rice pot: (\\d+) qt/.exec(p),s=N(v.cups,'cup')+' of dry rice is about '+N(v.cups*3,'meal')+'.';
+var k=(/in (\\d+) pots/.exec(p)||[])[1]||'2';return{big:m?m[1]+' qt pot':k+' pots',qt:m?+m[1]:0,sub:m?s:s+' Cook it in '+k+' pots or rounds.'}}`,
+    answer: (c, x) => `Fill the pot no more than a quarter with dry rice. It about triples as it cooks, so cooked rice fills about three-quarters. That's up to ${N(x.fit[3], 'cup')} of dry rice in a 3 qt pot, ${N(x.fit[4], 'cup')} in a 4 qt pot and ${N(x.fit[6], 'cup')} in a 6 qt pot.`,
+    desc: (c, x) => `Up to ${N(x.fit[3], 'cup')} of dry rice in a 3 qt pot, ${x.fit[4]} in a 4 qt and ${x.fit[6]} in a 6 qt. Dry rice should fill no more than a quarter of the pot.`,
     table: (c, x) => ({ cap: 'Dry rice by pot size', head: ['Pot', 'Dry rice, at most', 'Meals'], rows: x.pots.map((q) => [q + ' qt', N(x.fit[q], 'cup'), 'About ' + x.fit[q] * 3]) }),
-    how: (c, x) => [`A quart is 4 cups, so a 3 qt pot holds 12 cups. A third of that is ${N(x.fit[3], 'cup')} of dry rice.`, 'Amounts are whole cups, rounded down.', 'Meals are counted at about ⅓ cup of dry rice each.', `Past ${N(x.fit[x.pots.slice(-1)[0]], 'cup')} of dry rice, cook it in two pots or batches.`],
+    how: (c, x) => [`A quart is 4 cups, so a 3 qt pot holds 12 cups. A quarter of that is ${N(x.fit[3], 'cup')} of dry rice.`, 'Amounts are whole cups, rounded down.', 'Meals are counted at about ⅓ cup of dry rice each.', `Past ${N(x.fit[x.pots.slice(-1)[0]], 'cup')} of dry rice, cook it in more pots or in rounds.`],
     faq: (c, x) => [
       ['How much rice can I cook in a 6 quart pot?', `Up to ${N(x.fit[6], 'cup')} of dry rice. That's about ${x.fit[6] * 3} meals.`],
-      ['Why only a third full?', 'Rice about triples as it cooks.'],
+      ['Why only a quarter full?', 'Rice about triples as it cooks, so a quarter dry is three-quarters cooked. That leaves room to boil without spilling over.'],
       ['How much rice do I need?', `About ⅓ cup of dry rice a meal. See ${L('how-much-rice-for-meal-prep', 'How much rice do I need for meal prep?')}`],
     ],
     more: ['how-much-rice-for-meal-prep', 'what-size-pot-for-a-double-batch', 'how-to-scale-a-recipe-for-meal-prep'],
@@ -158,7 +158,7 @@ return{big:m?m[1]+' qt pot':'Two pots',qt:m?+m[1]:0,sub:m?s:s+' Cook it in two p
     answer: (c, x) => `Multiply the meat, vegetables, grains and broth by 3. Start the salt at ${x.mult(3, 'salt')}×, the spices at ${x.mult(3, 'chili powder')}× and the oil at ${x.mult(3, 'olive oil')}×, then taste at the end and add more. Baking is different: make ${x.bake(3)}.`,
     desc: (c, x) => `Triple the meat, vegetables, grains and broth. Start the salt at ${x.mult(3, 'salt')}×, the spices at ${x.mult(3, 'chili powder')}× and the oil at ${x.mult(3, 'olive oil')}×, then taste.`,
     table: (c, x) => ({ cap: 'Common amounts, tripled', note: 'For ingredients that scale straight up.', head: ['Recipe', 'Tripled'], rows: x.common(3) }),
-    how: (c, x) => [`Past double, salt starts at ${x.pct.salt}% of the full amount, spices at ${x.pct.spice}% and oil at ${x.pct.oil}%.`, 'Everything else scales straight up.', 'Lime, herbs and other fresh finishers are kept for serving.', 'Sear meat in batches of about 1½ lb in a 12-inch pan.'],
+    how: (c, x) => [`Past double, the amount above double goes in at ${x.pct.salt}% for salt, ${x.pct.spice}% for spices and ${x.pct.oil}% for oil.`, 'Everything else scales straight up.', 'Lime, herbs and other fresh finishers are kept for serving.', 'Sear meat in batches of about 1½ lb in a 12-inch pan.'],
     faq: (c, x) => [
       ['Do I triple the salt?', `No. Start at ${x.mult(3, 'salt')}× and add more at the end. 1 tsp becomes ${x.at(3, 'salt')}.`],
       ['What is ½ cup tripled?', `${x.water('½ cup', 3)}.`],
@@ -226,8 +226,8 @@ const calcOf = (p) => new Function('E', PRE + (p.consts || '') + p.calc + ';retu
 const EXR = (f) => E.scaleAll(E.parseRecipe('Example\nServes 1\n1 lb chicken thighs\n2 cups chicken broth\n1 cup rice\n2 cloves garlic\n1 tsp salt\n2 tsp chili powder\n2 tbsp olive oil'), f).items;
 const ratio = (f, name) => { const i = EXR(f).find((k) => k.name === name); return i.qtyScaled / i.qty; };
 const x = {
-  // how far each class is eased back past double, as a share of the straight amount (measured at 3x)
-  pct: { salt: Math.round(ratio(3, 'salt') / 3 * 100), spice: Math.round(ratio(3, 'chili powder') / 3 * 100), oil: Math.round(ratio(3, 'olive oil') / 3 * 100) },
+  // past double, the share of each extra batch's salt, spice and oil that goes in (measured from 3x to 4x)
+  pct: { salt: Math.round((ratio(4, 'salt') - ratio(3, 'salt')) * 100), spice: Math.round((ratio(4, 'chili powder') - ratio(3, 'chili powder')) * 100), oil: Math.round((ratio(4, 'olive oil') - ratio(3, 'olive oil')) * 100) },
   mult: (f, name) => String(Math.round(ratio(f, name) * 100) / 100),
   at: (f, name) => EXR(f).find((k) => k.name === name).scaled,
   water: (amt, f) => E.scaleAll(E.parseRecipe('W\nServes 1\n' + amt + ' water'), f).items[0].scaled,

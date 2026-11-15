@@ -121,7 +121,7 @@ async def main():
         ctx,pg,errs,_=await fresh(b); out=[]
         for t in ['宫保鸡丁','دجاج بالأرز','Crème brûlée #fyp #food','🍗 Chicken 🔥 bowl','#fyp #viral']:
             await pg.goto(U); await paste(pg,t+'\nServes 4\n2 lbs chicken\n1 cup rice\n1. Cook it all.'); out.append(await pg.inner_text('#sTitle'))
-        log('L4 titles keep other scripts, drop hashtags',out[0]=='宫保鸡丁' and out[1]=='دجاج بالأرز' and out[2]=='Crème brûlée' and out[4]=='Your recipe',out)
+        log('L4 titles keep other scripts, drop hashtags',out[0]=='宫保鸡丁' and out[1]=='دجاج بالأرز' and out[2]=='Crème brûlée' and out[4]=='Recipe',out)
         saved=await pg.evaluate("JSON.parse(localStorage.getItem('bd-batches')).map(x=>x.title)"); log('L4 saved under the real title','宫保鸡丁' in saved,saved)
         # M3 cut off
         al=[]
@@ -143,7 +143,7 @@ async def main():
         await pg.click('[data-m=scale]'); s1=await pg.input_value('#want'); await pg.click('[data-t=want][data-d="1"]'); await pg.click('[data-m=batch]'); s2=await pg.input_value('#want'); await pg.click('[data-m=scale]'); s3=await pg.input_value('#want')
         log('M14 Just scale starts at the recipe servings; each mode keeps its own number',[s1,s2,s3]==['4','17','5'],[s1,s2,s3]); await ctx.close()
         # M1 returning visit
-        ctx,pg,errs,_=await fresh(b); await pg.click('#sample'); await pg.click('[data-t=want][data-d="1"]'); await pg.reload(); await pg.wait_for_timeout(300); a=await pg.evaluate(EV)
+        ctx,pg,errs,_=await fresh(b); await paste(pg,'Rice bowl\nServes 4\n2 cups rice\n1 lb chicken\n1. Cook it.'); await pg.click('[data-t=want][data-d="1"]'); await pg.reload(); await pg.wait_for_timeout(300); a=await pg.evaluate(EV)
         pg2=await ctx.new_page(); await pg2.goto(U); await pg2.wait_for_timeout(300); c=await pg2.evaluate(EV); await pg2.reload(); await pg2.wait_for_timeout(300); d=await pg2.evaluate(EV)
         log('M1 Returning visit: not in the first session, once in a new tab, not on reload','Returning visit' not in a and c.count('Returning visit')==1 and 'Returning visit' not in d,f'{a} | {c} | {d}'); await ctx.close()
         # M2 outcomes

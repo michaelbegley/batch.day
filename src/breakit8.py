@@ -48,7 +48,7 @@ async def main():
     ctx,pg,errs=await fresh(b)
     log('first visit: offer card shows',await pg.evaluate(VIS,'#tourOffer'))
     r=await pg.evaluate("(()=>{const q=(s)=>document.querySelector(s).getBoundingClientRect(),o=q('#tourOffer'),c=q('#choose'),l=q('.links');return {under:o.top>c.bottom,inCard:!!document.querySelector('#dropcard #tourOffer'),beforeLinks:o.bottom<l.top,text:document.querySelector('#tourOffer p').textContent,btns:[...document.querySelectorAll('#tourOffer button')].map(b=>b.textContent),pos:getComputedStyle(document.querySelector('#tourOffer')).position}})()")
-    log('offer is inline, under Choose screenshots, with Show me and Skip',r['under'] and r['inCard'] and r['beforeLinks'] and r['text']=='New here? Quick tour' and r['btns']==['Show me','Skip'] and r['pos']=='static',r)
+    log('offer is inline, under Choose screenshots, with Show me and Skip',r['under'] and r['inCard'] and r['beforeLinks'] and r['text']=='Quick tour' and r['btns']==['Show me','Skip'] and r['pos']=='static',r)
     await pg.wait_for_timeout(1500)
     log('never starts by itself: no bubble, nothing dimmed',not await pg.evaluate(VIS,'#tour') and not await pg.evaluate(VIS,'#tBub'))
     log('nothing stored or tracked until a tap',await pg.evaluate(LS,'bd-tour') is None and await pg.evaluate(EV,'Tour')==[])
@@ -58,7 +58,7 @@ async def main():
     # skip
     await pg.tap('#tourNo'); await pg.wait_for_timeout(300)
     t=await pg.inner_text('#toast')
-    log('Skip: card goes, one toast',not await pg.evaluate(VIS,'#tourOffer') and t=="Tour's at the bottom of the page anytime." and 'on' in (await pg.get_attribute('#toast','class')),t)
+    log('Skip: card goes, one toast',not await pg.evaluate(VIS,'#tourOffer') and t=="Tour is in the footer." and 'on' in (await pg.get_attribute('#toast','class')),t)
     log('Skip: stored bd-tour=skip, event step 0 choice skip',await pg.evaluate(LS,'bd-tour')=='skip' and [(e.get('step'),e.get('choice')) for e in await pg.evaluate(EV,'Tour')]==[(0,'skip')],await pg.evaluate(EV,'Tour'))
     log('Skip: focus on Choose screenshots',await pg.evaluate(FOC)=='choose',await pg.evaluate(FOC))
     await pg.wait_for_timeout(3200); on35='on' in (await pg.get_attribute('#toast','class'))
@@ -93,7 +93,7 @@ async def main():
     log('Show me: event step 0 choice show; card gone; nothing stored yet',[(e.get('step'),e.get('choice')) for e in await pg.evaluate(EV,'Tour')]==[(0,'show')] and not await pg.evaluate(VIS,'#tourOffer') and await pg.evaluate(LS,'bd-tour') is None)
     a=await pg.evaluate("(()=>{const b=document.querySelector('#tBub'),t=document.querySelector('#tText'),d=document.querySelector('#tDots');return {role:b.getAttribute('role'),label:b.getAttribute('aria-label'),desc:b.getAttribute('aria-describedby'),live:t.getAttribute('aria-live'),dots:d.getAttribute('role')+'|'+d.getAttribute('aria-label')+'|'+d.children.length+'|'+d.querySelectorAll('.on').length,tags:[...b.querySelectorAll('#tNext,#tSkip')].map(e=>e.tagName+':'+e.textContent),focus:document.activeElement.id,view:document.querySelector('#v-add').classList.contains('hidden')?'sheet':'add'}})()")
     log('step 1: a labelled dialog, live text, real buttons, focus on the bubble, still on home',a=={'role':'dialog','label':'Tour','desc':'tText','live':'polite','dots':'img|1 of 5|5|1','tags':['BUTTON:Skip tour','BUTTON:Next'],'focus':'tBub','view':'add'},a)
-    log('step 1 copy',await pg.inner_text('#tText')=="Add screenshots of any recipe. Here's a sample.",await pg.inner_text('#tText'))
+    log('step 1 copy',await pg.inner_text('#tText')=="Add screenshots. Here's a sample.",await pg.inner_text('#tText'))
     dim=await pg.evaluate("(()=>{const s=getComputedStyle(document.querySelector('#tRing')).boxShadow,m=s.match(/rgba\\(0, 0, 0, ([\\d.]+)\\)/);return m?+m[1]:-1})()")
     log('light dim only (under 20%), page still visible',0<dim<=.2,dim)
     await pg.tap('#tNext'); await pg.wait_for_timeout(700)
@@ -104,9 +104,9 @@ async def main():
     texts=[await pg.inner_text('#tText')]
     for n in (3,4,5):
         await pg.tap('#tNext'); await pg.wait_for_timeout(650); texts.append(await pg.inner_text('#tText'))
-    want=['Set how many meals.','Your grocery list. Tick as you shop, or send it to your list app.','Cook one step at a time. The screen stays on.','Save it or share it.']
+    want=['Set how many meals.','Your grocery list. Tick as you shop.','One step at a time. Screen stays on.','Save it or share it.']
     log('steps 2 to 5 copy',texts==want,texts)
-    log('no em or en dash, no exclamation mark in any tour words',not any(c in ''.join(texts+["New here? Quick tour","Tour's at the bottom of the page anytime."]) for c in '—–!'))
+    log('no em or en dash, no exclamation mark in any tour words',not any(c in ''.join(texts+["Quick tour","Tour is in the footer."]) for c in '—–!'))
     log('last step says Done; dots say 5 of 5',await pg.inner_text('#tNext')=='Done' and await pg.get_attribute('#tDots','aria-label')=='5 of 5')
     log('cook mode and the share sheet did not open under the tour',not await pg.evaluate(VIS,'#cook') and not await pg.evaluate(VIS,'#menu'))
     await pg.tap('#tNext'); await pg.wait_for_timeout(650)
@@ -127,7 +127,7 @@ async def main():
     await pg.tap('#tourYes'); await pg.wait_for_timeout(650); await pg.tap('#tNext'); await pg.wait_for_timeout(650); await pg.tap('#tNext'); await pg.wait_for_timeout(650)
     await pg.keyboard.press('Escape'); await pg.wait_for_timeout(300); ev=await pg.evaluate(EV,'Tour')
     log('Escape on step 3: ends, event step 3 end outside, stored skip',not await pg.evaluate(VIS,'#tour') and (ev[-1].get('step'),ev[-1].get('end'))==(3,'outside') and await pg.evaluate(LS,'bd-tour')=='skip',ev[-1])
-    log('ended early on the plan: toast names the home page; focus on the title',await pg.inner_text('#toast')=="Tour's at the bottom of the home page anytime." and await pg.evaluate(FOC)=='sTitle',await pg.inner_text('#toast'))
+    log('ended early on the plan: toast names the home page; focus on the title',await pg.inner_text('#toast')=="Tour is in the home page footer." and await pg.evaluate(FOC)=='sTitle',await pg.inner_text('#toast'))
     log('ended early: sample not saved; Back goes home',await pg.evaluate(SAVED)==0)
     await pg.go_back(); await pg.wait_for_timeout(400); log('Back after the tour lands on home',await pg.evaluate(VIS,'#choose')); await ctx.close()
     ctx,pg,errs=await fresh(b)

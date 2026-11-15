@@ -113,7 +113,7 @@ async def main():
         ev=await pg.evaluate(EV); log('repeat','second pick while the first is reading',ok and str(ev).count('Plan')==1 and not errs,f'calls={calls} events={ev}'); await ctx.close()
         # privacy copy
         ctx,pg,errs,calls=await fresh(b); body=await pg.inner_text('body'); pv=await (await ctx.new_page()).goto(U+'privacy.html'); t=await pv.text()
-        log('copy','no "never leave your phone"; says screenshots are sent','never leave' not in body and 'sent to an AI reader' in body and 'Hugging Face Inference Providers' in t and '—' not in body,''); await ctx.close()
+        log('copy','no "never leave your phone"; says screenshots are sent','never leave' not in body and 'Sent to an AI reader' in body and 'Hugging Face Inference Providers' in t and '—' not in body,''); await ctx.close()
         await b.close()
         bad=[r for r in R if r[2]=='FAIL']; print(len(R),'checks,',len(bad),'failed')
 asyncio.run(main())

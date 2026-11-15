@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-fUd94LlaZpBiHQ6fiP2a5mbfnAegN3IiuFkj0qbeG/s=' 'sha256-OES8gBnv7NH17ImQPPCckyxSTllY9mqNcOWbHvO6JSA=' 'sha256-BmYyjUixfb1X2DQfmmKQ6WwtbdSN90+z+SIZGLAIDoY=' 'sha256-/YKfFDx0vj6lvkvTGENYHnosX9PnF/4TX+rqeyHkL28=' https://cdn.jsdelivr.net https://cloud.umami.is 'wasm-unsafe-eval' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; worker-src blob: https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net https://gateway.umami.is https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com https://michbegl-batch-day-reader.hf.space; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; fenced-frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-fUd94LlaZpBiHQ6fiP2a5mbfnAegN3IiuFkj0qbeG/s=' 'sha256-OES8gBnv7NH17ImQPPCckyxSTllY9mqNcOWbHvO6JSA=' 'sha256-0VzcdlCHCWIxVSakvzFkGzXJXGRQyH0Q6et8L/YuCsk=' 'sha256-ALUIaFarFog1dF4uOvnSfbFfxCnPk2fYrEJfbLgYp18=' https://cdn.jsdelivr.net https://cloud.umami.is 'wasm-unsafe-eval' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; worker-src blob: https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net https://gateway.umami.is https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com https://michbegl-batch-day-reader.hf.space; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; fenced-frame-src https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin"><meta name="impact-site-verification" value="44a0832b-93ba-4379-b2a0-530627c39acf">
 <meta name="google-adsense-account" content="ca-pub-2427174040615956">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2427174040615956" crossorigin="anonymous"></script>
@@ -66,9 +66,10 @@ h2:focus,h3:focus{outline:none}
 .bar.t .btitle{opacity:1;pointer-events:auto}
 .bar.t .mark:not(:focus-visible){opacity:0;pointer-events:none}
 .bar.t:has(.mark:focus-visible) .btitle{opacity:0;pointer-events:none}
-.switch{width:52px;height:32px;border-radius:16px;border:0;background:var(--bg2);box-shadow:inset 0 0 0 1px var(--line);position:relative;cursor:pointer;padding:0}
-.switch:before{content:"";position:absolute;inset:-8px 0}
-.switch i{position:absolute;top:4px;left:4px;width:24px;height:24px;border-radius:50%;background:var(--bg);box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .3s var(--ease);display:grid;place-items:center}
+/* the button is 52 x 44; the 32 px track is drawn inside it */
+.switch{width:52px;height:44px;border-radius:16px;border:0;background:none;position:relative;cursor:pointer;padding:0}
+.switch:before{content:"";position:absolute;left:0;right:0;top:6px;height:32px;border-radius:16px;background:var(--bg2);box-shadow:inset 0 0 0 1px var(--line)}
+.switch i{position:absolute;top:10px;left:4px;width:24px;height:24px;border-radius:50%;background:var(--bg);box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .3s var(--ease);display:grid;place-items:center}
 [data-theme=dark] .switch i{transform:translateX(20px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]) .switch i{transform:translateX(20px)}}
 .switch svg{width:13px;height:13px}
@@ -163,7 +164,7 @@ textarea:focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transpar
 .set.minor label{font-size:16px;font-weight:400}
 .set small{display:block;color:var(--ink2);font-size:13px;font-weight:400}
 .seg{display:flex;background:var(--bg2);border-radius:980px;padding:4px;position:relative;margin-bottom:8px}
-.seg button{flex:1;min-width:0;border:0;background:none;min-height:40px;border-radius:980px;cursor:pointer;font-size:15px;position:relative;z-index:1;color:var(--ink2);transition:color .2s var(--fade),box-shadow .15s var(--fade);padding:0 4px}
+.seg button{flex:1;min-width:0;border:0;background:none;min-height:44px;border-radius:980px;cursor:pointer;font-size:15px;position:relative;z-index:1;color:var(--ink2);transition:color .2s var(--fade),box-shadow .15s var(--fade);padding:0 4px}
 .seg button:before{content:"";position:absolute;inset:-4px 0}
 .seg button[aria-pressed=true]{color:var(--ink);font-weight:600}
 .seg .pill{position:absolute;top:4px;bottom:4px;left:4px;border-radius:980px;background:var(--pill);box-shadow:0 1px 3px rgba(0,0,0,.12);transition:transform .35s var(--ease),width .35s var(--ease),height .35s var(--ease)}
@@ -177,7 +178,6 @@ textarea:focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transpar
 @keyframes nudgeL{35%{transform:translateX(-4px)}to{transform:none}}
 .step input{width:44px;height:44px;text-align:center;border:0;background:none;font-weight:600;font-size:19px;outline:none;border-radius:8px;padding:0}
 .step input:focus-visible{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent)}
-#ctl{padding:16px 20px}
 
 .tabs{position:sticky;top:60px;z-index:5;margin-bottom:16px;box-shadow:0 0 0 8px var(--bg)}
 .tbl{width:100%;border-collapse:collapse;font-size:16px}
@@ -244,9 +244,12 @@ ul.plain li:last-child{margin-bottom:0}
 .split h4{margin:0 0 4px;font-size:16px;font-weight:600;display:flex;gap:8px;align-items:center}
 .split h4 svg{width:20px;height:20px;color:var(--accent)}
 .split p{margin:0;font-size:15px;color:var(--ink2)}
-.ad{margin:24px 0 8px;text-align:center}.adlab{display:block;font-size:12px;color:var(--ink-2);margin-bottom:6px;letter-spacing:.02em}
+.ad{margin:24px 0 8px;text-align:center}.adlab{display:block;font-size:12px;color:var(--ink2);margin-bottom:8px;letter-spacing:.02em}
 /* phones: quick taps never zoom the page (pinch zoom still works); no text selection or callout on controls; overlays don't scroll the page behind */
 html{touch-action:manipulation}
+/* on the recipe page a control that gets keyboard focus scrolls clear of the dock below and the bar and tabs above.
+   Only while the keyboard is in use (html.kb): a tap must never make the page move under the finger */
+html.docked.kb{scroll-padding:124px 0 calc(var(--dock) + env(safe-area-inset-bottom) + 16px)}
 button,.seg,.step,.tabs,.btn,.link,label,summary{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .cook,.menu{overscroll-behavior:contain}
 .note{background:var(--warn-bg);border-radius:16px;padding:16px;font-size:15px;margin-bottom:16px}
@@ -272,20 +275,24 @@ details.edit[open] summary{margin-bottom:8px}
 .saved li.gone:first-child+li{border-top-color:transparent}
 .saved .open b,.saved .gopen b{font-weight:600;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .saved .open span,.saved .gopen span{font-size:13px;color:var(--ink2)}
+.saved .open .old{color:var(--warn);font-weight:600}
 .rm,.grm{width:44px;height:44px;flex:none;border:0;background:none;color:var(--ink2);cursor:pointer;border-radius:50%;display:grid;place-items:center;transition:background .2s var(--fade),box-shadow .15s var(--fade)}
 @media (hover:hover){.rm:hover{background:var(--bg2)}}
 .rm svg,.grm svg{width:14px;height:14px}
-.tip{background:var(--bg2);border-radius:16px;padding:16px;font-size:14px;color:var(--ink2);margin-top:16px}
+.saved .rm,.saved .grm{margin-right:-15px}
+.tip{background:var(--bg2);border-radius:16px;padding:16px;font-size:14px;line-height:20px;color:var(--ink2);margin-top:16px}
 .tip b{color:var(--ink);font-weight:600}
 .tip .link{min-height:44px;padding:0;display:block;margin-bottom:-12px}
 .tip.inst{text-align:left;margin:16px 0 0}
 .tip .ic{width:16px;height:16px;vertical-align:-3px;color:var(--accent)}
 .instrow{display:flex;align-items:center;gap:16px;margin-top:12px}
 .instrow .link{margin:0;display:inline}
+.offer .link{min-width:44px}
 .pillb{min-height:44px;padding:0 16px;border-radius:980px;border:0;background:var(--accent);color:var(--accent-ink);font-size:15px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:transform .15s var(--ease)}
 .pillb:active{transform:scale(.96)}
 /* tour: offered once on a first visit, never started for you. The bubble sits beside the real control; the page stays visible under a light dim */
 .offer{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 16px;text-align:left}
+@media (max-width:480px){.offer{justify-content:center;text-align:center}} /* phones: centred, like the button and the line above it */
 .offer p{margin:0}
 .offer .instrow{margin:0}
 .tour{position:fixed;inset:0;z-index:70}
@@ -379,7 +386,7 @@ details.edit[open] summary{margin-bottom:8px}
 .pbox .link{align-self:center;margin:-8px 0;padding:0 12px;color:var(--ink2);font-weight:400;flex:none}
 
 /* freezer labels: the label on screen is the label that prints (2.625 x 1 in) */
-.lprev{display:flex;justify-content:center;background:var(--bg2);border-radius:16px;padding:16px;margin-bottom:8px}
+.lprev{display:flex;justify-content:center;background:var(--bg2);border-radius:16px;padding:16px;margin-bottom:8px;min-height:calc(1in + 32px)}
 .lprev .lbl{width:min(2.625in,100%);border-radius:8px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06)}
 .lbl{width:2.625in;height:1in;padding:.08in .14in;display:flex;flex-direction:column;justify-content:space-between;background:#fff;color:#000;font:400 8.5pt/1.25 var(--font);overflow:hidden;text-align:left}
 .lbl>div{display:flex;align-items:baseline;gap:.08in;min-width:0}
@@ -462,8 +469,8 @@ details.edit[open] summary{margin-bottom:8px}
 }
 @media (max-width:340px){.dock .btn{font-size:15px;padding:0 12px}.dock .btn.soft{padding:0 16px}.seg button{font-size:14px}.tbl .o{display:none}}
 @media (min-width:721px){
-  .hero{padding:72px 0 40px}.sub{font-size:21px}.card{padding:32px}#editCard{padding:20px 32px}#ctl{padding:24px 32px}
-  .split{grid-template-columns:repeat(3,1fr)}
+  .hero{padding:64px 0 40px}.sub{font-size:21px}.card{padding:32px}#editCard{padding:20px 32px}
+  .split{grid-auto-flow:column;grid-auto-columns:minmax(0,1fr)}
   .dock{padding-left:24px;padding-right:24px}
   
   .menu{align-items:center}
@@ -502,7 +509,7 @@ details.edit[open] summary{margin-bottom:8px}
           <path d="M10 24h36"/><path d="M13 24v16a6 6 0 0 0 6 6h18a6 6 0 0 0 6-6V24"/><path d="M6 28h7M43 28h7"/>
         </svg>
         <h1>Cook once.<br>Eat all week.</h1>
-        <p class="sub">Turn a recipe screenshot into a grocery list, a cook order and a freezer plan.</p>
+        <p class="sub">Recipe screenshot to grocery list, cook order and freezer plan.</p>
       </div>
 
       <div class="alert hidden" id="noB" role="status"><div id="noBText"></div></div>
@@ -510,13 +517,13 @@ details.edit[open] summary{margin-bottom:8px}
         <div id="pick">
           <input type="file" id="file" accept="image/*" multiple hidden>
           <button class="btn" id="choose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="15.5" cy="8.5" r="1.5"/></svg>Choose screenshots</button>
-          <p class="hint">Screenshots are sent to an AI reader and not kept.</p>
-          <div class="tip offer hidden" id="tourOffer"><p><b>New here?</b> Quick tour</p><span class="instrow"><button class="pillb" id="tourYes">Show me</button><button class="link" id="tourNo">Skip</button></span></div>
+          <p class="hint">Sent to an AI reader, not kept.</p>
+          <div class="tip offer hidden" id="tourOffer"><p><b>Quick tour</b></p><span class="instrow"><button class="pillb soft" id="tourYes">Show me</button><button class="link" id="tourNo">Skip</button></span></div>
         </div>
         <div class="hidden" id="pastebox">
           <textarea id="paste" placeholder="Ingredients, steps, servings" aria-label="Recipe text"></textarea>
           <button class="btn" id="usePaste" disabled>Use this recipe</button>
-          <p class="hint">Pasted text stays on this device.</p>
+          <p class="hint">Stays on this device.</p>
         </div>
       </div>
       <div class="links">
@@ -525,7 +532,7 @@ details.edit[open] summary{margin-bottom:8px}
       </div>
 
       <div class="card fz hidden" id="fz">
-        <h3 id="fzH" tabindex="-1"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M10 2v16M3 6l14 8M17 6L3 14"/></svg>My freezer</h3>
+        <h3 id="fzH" tabindex="-1" aria-level="2"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M10 2v16M3 6l14 8M17 6L3 14"/></svg>My freezer</h3>
         <p class="fzsum num" id="fzSum"></p>
         <div id="fzList"></div>
       </div>
@@ -537,19 +544,20 @@ details.edit[open] summary{margin-bottom:8px}
       </ol>
 
       <div class="card mine hidden" id="mine">
-        <h3 id="mineH" tabindex="-1">My batches</h3>
+        <h3 id="mineH" tabindex="-1" aria-level="2">My batches</h3>
         <ul class="saved" id="savedList"></ul>
-        <div class="tip hidden" id="tip"><b>Keep these for good.</b> Safari can clear them after a week away. Tap Share, then Add to Home Screen.<button class="link" id="tipX">Got it</button></div>
-        <div class="tip hidden" id="bkNudge"><b>Back up your batches.</b> They're only on this device.<span class="instrow"><button class="pillb" id="bkYes">Back up</button><button class="link" id="bkNo">Not now</button></span></div>
+        <div class="tip hidden" id="tip"><b>Safari can clear these after a week away.</b> Tap Share, then Add to Home Screen.<button class="link" id="tipX">Got it</button></div>
+        <div class="tip hidden" id="bkNudge"><b>Back up your batches.</b><span class="instrow"><button class="pillb" id="bkYes">Back up</button><button class="link" id="bkNo">Not now</button></span></div>
         <div class="links" id="bkRow"><button class="link" id="bkUp">Back up</button><button class="link" id="bkIn">Restore</button></div>
       </div>
       <section class="how" aria-labelledby="howH">
         <h2 id="howH">How it scales</h2>
         <ul class="rules">
           <li>Meat, vegetables, grains and broth scale straight up.</li>
-          <li>Salt, spices and oil are eased back past double. Taste at the end and add more.</li>
+          <li>Salt, spices and oil are eased back past double.</li>
           <li>Lime, herbs and other fresh finishers are kept for serving.</li>
-          <li>Stews fill a pot three-quarters at most, dry rice a third. Meat is seared in batches.</li>
+          <li>Stews fill a pot three-quarters at most, dry rice a quarter.</li>
+          <li>Meat is seared in batches.</li>
           <li>Baking isn't eased back, and gets a warning past double.</li>
         </ul>
       </section>
@@ -579,7 +587,7 @@ details.edit[open] summary{margin-bottom:8px}
   <!-- 2. the recipe -->
   <div class="view hidden" id="v-sheet">
     <button class="link back noprint" id="newRec"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>New recipe</button>
-    <div class="head"><h2 id="sTitle" tabindex="-1" dir="auto"></h2><p class="noprint num" id="sMeta"></p></div>
+    <div class="head"><h2 id="sTitle" tabindex="-1" dir="auto" aria-level="1"></h2><p class="noprint num" id="sMeta"></p></div>
     <p class="printonly" id="pSum"></p>
     <div class="noprint" id="alerts"></div>
     <div class="alert noprint hidden" id="fullNote"><div>My batches is full. Remove a few to save this one.<button class="link" id="fullGo">My batches</button></div></div>
@@ -716,7 +724,26 @@ details.edit[open] summary{margin-bottom:8px}
     ['stalk', /^(stalks?)\b/],
     ['slice', /^(slices?)\b/],
     ['package', /^(packages?|pkgs?|packs?)\b/],
+    ['jar', /^(jars?)\b/],
+    ['box', /^(box(es)?)\b/],
+    ['bag', /^(bags?)\b/],
+    ['bottle', /^(bottles?)\b/],
+    ['handful', /^(handfuls?)\b/],
+    ['inch', /^(inch(es)?|in\.)(\s*(piece|knob|chunk)s?)?(\s+of)?(?=\s)/],
+    ['head', /^(heads?)\b/],
+    ['sprig', /^(sprigs?)\b/],
   ];
+  // things you buy whole: round up to what the store sells
+  const PACK = ['can', 'jar', 'box', 'bag', 'bottle', 'package'];
+  // "(15 oz)", "(14.5-ounce)", "(200 g)" right before or after a package word
+  const SIZE_RE = /^\(\s*(\d+(?:\.\d+)?)\s*-?\s*(oz|ounces?|ounce|g|grams?|ml|lbs?|pounds?|fl\.?\s*oz)\.?\s*\)\s*/i;
+  function sizeOf(n, u) {
+    u = u.toLowerCase();
+    if (/^g/.test(u)) return { n, u: 'g', oz: n * 0.035274 };
+    if (/^ml/.test(u)) return { n, u: 'ml', oz: n / 29.57 };
+    if (/^(lb|pound)/.test(u)) return { n, u: 'lb', oz: n * 16 };
+    return { n, u: 'oz', oz: n };
+  }
   // volume in tsp, weight in oz
   const VOL_TSP = { tsp: 1, tbsp: 3, cup: 48, 'fl oz': 6, ml: 0.2029, l: 202.9 };
   const WT_OZ = { oz: 1, lb: 16, g: 0.035274, kg: 35.274 };
@@ -739,24 +766,37 @@ details.edit[open] summary{margin-bottom:8px}
       qtyHi = m[2] ? numVal(m[2]) : null;
       rest = rest.slice(m[0].length).trim();
     }
+    // package sizes: "1 (15 oz) can beans", "2 (14.5-ounce) cans", "1 jar (15 oz) pesto", "1 28-ounce can tomatoes"
+    let size = null, sm;
+    if (qty != null && (sm = rest.match(SIZE_RE))) { size = sizeOf(+sm[1], sm[2]); rest = rest.slice(sm[0].length).trim(); }
+    else if (qty != null && (sm = rest.match(/^(\d+(?:\.\d+)?)\s*-?\s*(ounces?|ounce|oz|g|grams?)\.?\s+(?=(cans?|jars?|box(es)?|bags?|bottles?|packages?|pkgs?)\b)/i))) { size = sizeOf(+sm[1], sm[2]); rest = rest.slice(sm[0].length).trim(); }
+    else if (qty != null && (sm = rest.match(/^-?\s*(ounces?|ounce|oz)\.?\s+(?=(cans?|jars?|box(es)?|bags?|bottles?|packages?|pkgs?)\b)/i))) { size = sizeOf(qty, 'oz'); qty = 1; qtyHi = null; rest = rest.slice(sm[0].length).trim(); }
+    if (qty == null) rest = rest.replace(/^(a|an)\s+(?=(pinch|handful|bunch|head|sprig)\b)/i, '');
     for (const [u, re] of UNITS) {
       const ci = new RegExp(re.source.replace('|T)', ')').replace('|t)', ')'), 'i');
       const um = rest.match(ci) || rest.match(re);
       if (um) { unit = u; rest = rest.slice(um[0].length).trim(); break; }
     }
-    // "(8 oz) package" style: ignore; keep name
+    if (!size && unit && PACK.includes(unit) && (sm = rest.match(SIZE_RE))) { size = sizeOf(+sm[1], sm[2]); rest = rest.slice(sm[0].length).trim(); }
+    // "pinch of thyme", "a handful of spinach": one
+    if (qty == null && unit && ['pinch', 'handful', 'bunch', 'head', 'sprig'].includes(unit)) qty = 1;
+    // a size with no package word: "1 (15 oz) tomato sauce" is a can
+    if (size && !unit) unit = 'can';
     let name = rest.replace(/^of\s+/i, '').trim();
     let note = '';
     const cm = name.match(/^(.*?)(,\s*|\s+\()(.*)$/);
     if (cm && cm[1].length > 2) { note = (cm[3] || '').replace(/\)$/, ''); name = cm[1]; }
     const toTaste = /to taste/i.test(line);
+    name = name.replace(/,?\s*\bto taste\b/i, '').trim() || name;
     const optional = /optional/i.test(line);
     if (qty === 0 && !qtyHi) qty = null;
     let odd = sci || neg;
     if (qty != null && unit && WT_OZ[unit] && qty * WT_OZ[unit] > 50 * 16) odd = true;
     if (qty != null && !unit && qty > 500) odd = true;
     if (qty != null && unit && VOL_TSP[unit] && qty * VOL_TSP[unit] > 48 * 40) odd = true;
-    return { raw: line, qty, qtyHi, unit, name: name.trim(), note: note.trim(), toTaste, optional, flag, odd };
+    const out = { raw: line, qty, qtyHi, unit, name: name.trim(), note: note.trim(), toTaste, optional, flag, odd };
+    if (size) out.size = size;
+    return out;
   }
 
   // ---------- classify ----------
@@ -777,6 +817,9 @@ details.edit[open] summary{margin-bottom:8px}
     const s = (ing.name + ' ' + ing.note).toLowerCase();
     const sec = (section || '').toLowerCase();
     if (/finish|garnish|topping|to serve|serving/.test(sec) && !/cream cheese topping/.test(sec)) return 'finisher';
+    if (/\b(for (serving|garnish|topping)|to serve|to garnish)\b/.test(s + ' ' + (ing.raw || '').toLowerCase()) && !/\b(rice|quinoa|couscous|noodles?|pasta|tortillas?|bread|naan)\b/.test(s)) return 'finisher';
+    if (/\bground (cumin|cinnamon|black pepper|white pepper|pepper|turmeric|ginger|nutmeg|paprika|cayenne|mustard|coriander|cloves|allspice|cardamom|fennel|chil(i|e)s?)\b/.test(s)) return 'spice';
+    if (/\b(garam masala|mustard powder|dry mustard|chipotles?|adobo|bay lea(f|ves)|coriander|cardamom|allspice|five[- ]spice|za.?atar|sumac|cloves, ground|ground cloves|smoked paprika|italian seasoning|herbes)\b/.test(s)) return 'spice';
     if (/\b(broth|stock|coconut milk)\b/.test(s)) return 'liquid';
     if (/\b(cheese|sour cream|yogurt|eggs?)\b/.test(s)) return 'dairy';
     if (/garlic powder|onion powder/.test(s)) return 'spice';
@@ -787,9 +830,30 @@ details.edit[open] summary{margin-bottom:8px}
     return 'other';
   }
 
-  function isBaking(ings, text) {
-    const s = ings.map((i) => i.name).join(' ').toLowerCase() + ' ' + (text || '').toLowerCase();
-    return /baking (powder|soda)|yeast/.test(s) || (/flour/.test(s) && /sugar/.test(s) && /egg/.test(s)) || /preheat oven.*(cake|muffin|cookie|bread)|\b(cake|muffins?|cookies?|brownies?|cupcakes?)\b/.test(s);
+  // Baking is decided from the title and the ingredients only, never from the steps ("a cookie sheet" is not a cookie).
+  // Food safety: a recipe with meat or fish is never baking, so it never gets room-temp storage.
+  const BAKE_TITLE = /\b(cakes?|muffins?|cookies?|brownies?|blondies?|cupcakes?|shortbread|pie crusts?|pastry|pastries|scones?|biscuits?|cornbread|banana bread|quick bread|loaf cake|bread|rolls|buns|pancakes?|waffles?|crumble|cobbler|bars|tart|galette)\b/;
+  const MEAT = /\b(chicken|beef|steak|pork|turkey|sausages?|bacon|ham|lamb|veal|duck|goose|venison|bison|shrimp|prawns?|salmon|fish|cod|tilapia|halibut|trout|tuna|crab|lobster|clams?|mussels|scallops|oysters|squid|calamari|anchov(y|ies)|sardines|kielbasa|chorizo|pepperoni|salami|prosciutto|pancetta|brisket|hot ?dogs?|franks|frankfurters|bratwurst|meatballs?|jerky|ground (meat|beef|pork|turkey|chicken|lamb))\b/;
+  // savory proteins that make a bake a meal: never room temp
+  const PERISH = /\b(beans?|lentils?|tofu|tempeh|chickpeas?|refried|cheese|cheddar|mozzarella|parmesan|ricotta|feta|cream cheese|cottage|custard|whipped cream|heavy cream|sour cream|pumpkin puree|cream filling)\b/;
+  const isMeat = (n) => MEAT.test(String(n).toLowerCase()) && !/\b(broth|stock|bouillon|soup|base|seasoning|flavou?r|powder|gravy)\b/i.test(n);
+  function isBaking(ings, title) {
+    const names = ings.map((i) => i.name).join(' ').toLowerCase();
+    const t = (title || '').toLowerCase();
+    const meat = ings.some((i) => isMeat(i.name)) || isMeat(t);
+    // more meat than flour by weight (chili with a cornbread top, sausage and biscuits): a meal, not a bake
+    const oz = (i) => (i.qty == null ? 0 : i.unit && WT_OZ[i.unit] ? mid(i) * WT_OZ[i.unit] : i.unit && VOL_TSP[i.unit] ? mid(i) * VOL_TSP[i.unit] / 48 * 4.5 : 0);
+    const meatOz = ings.filter((i) => isMeat(i.name)).reduce((a, i) => a + oz(i), 0), flourOz = ings.filter((i) => /\b(flour|cornmeal)\b/i.test(i.name)).reduce((a, i) => a + oz(i), 0);
+    if (meatOz >= 12 && meatOz > flourOz) return false;
+    const flour = /\b(flour|cornmeal)\b/.test(names.replace(/flour tortillas?/g, ''));
+    const leaven = /baking (powder|soda)|\byeast\b/.test(names);
+    const sweet = /\bsugar\b|\bhoney\b|\bmaple syrup\b|\bchocolate\b/.test(names);
+    const rich = /\b(eggs?|butter)\b/.test(names);
+    if (BAKE_TITLE.test(t) && (flour || /\b(oats|sugar)\b/.test(names))) return true; // muffins, scones, cornbread: a bake, even with ham in it (stored as a meal, see batchDay)
+    if (meat) return false; // breaded or fried meat (flour, baking powder) is a meal, not a bake
+    if (flour && leaven) return true;
+    if (flour && sweet && rich) return true;
+    return false;
   }
 
   // ---------- parse a whole recipe ----------
@@ -803,7 +867,15 @@ details.edit[open] summary{margin-bottom:8px}
       if (!line) continue;
       if (/^(less|more|search\b|add comment|comment recipe|#)/i.test(line)) continue;
       const ym = line.match(/\b(serves|servings?|makes|yield[s]?)\s*:?\s*(\d+)(?:\s*(?:-|to)\s*(\d+))?/i);
-      if (ym) { r.yield = ym[3] ? (+ym[2] + +ym[3]) / 2 : +ym[2]; r.yieldText = line; continue; }
+      if (ym) {
+        r.yield = ym[3] ? (+ym[2] + +ym[3]) / 2 : +ym[2]; r.yieldText = line;
+        // "Chicken curry (serves 4)": keep the part before the yield as the title
+        if (!r.title && !r.ingredients.length) {
+          const before = line.slice(0, ym.index).replace(/[(\[|,:·•\-–—\s]+$/u, '').replace(/[^\p{L}\p{M}\p{N}\s'&-]/gu, '').trim();
+          if (before.length > 2 && !QTY_RE.test(before)) r.title = before.replace(/\s*recipe.*$/i, '').trim() || before;
+        }
+        continue;
+      }
       if (/^(instructions|directions|method|steps|preparation)\s*:?$/i.test(line)) { mode = 'step'; pushStep(); continue; }
       if (/^(ingredients)\s*:?$/i.test(line)) { mode = 'ing'; continue; }
       const sn = stepNumber(raw.trim());
@@ -813,25 +885,39 @@ details.edit[open] summary{margin-bottom:8px}
         if (/[.!]$/.test(line) && !/^\d/.test(line)) { /* keep merging until next number */ }
         continue;
       }
+      // the first line before any ingredient or section, with no amount, is the title ("Chicken tortilla soup", "Minestrone")
+      if (!r.title && !r.ingredients.length && !r.sections.length && !QTY_RE.test(line) && !/:$/.test(line) && line.length < 80 && line.split(' ').length <= 10 &&
+        !/^(ingredients|instructions|directions|method)\b/i.test(line) && !/^(for the|to serve|for serving|garnish)/i.test(line)) {
+        r.title = line.replace(/\s+recipe\b.*$/i, '').replace(/^[^\p{L}\p{N}<"'(]+/u, '').trim() || line; continue;
+      }
       // header? ends with a colon, or a known section word, or a short unbulleted line that isn't a food
       const bulleted = /^\s*(?:\[[^\]]{0,3}\]|\|[ _|\]]*\|?|[☐☑✓✔•●◦▪\-–*·°©®¢«»]|[eE]\s)/u.test(raw);
       const VOCAB = /^(chicken|beef|pork|meat|protein|aromatics|broth|soup|sauce|marinade|dressing|rice|noodles|grains?|veggies|vegetables|toppings?|garnish(es)?|to serve|for serving|optional.*|cake|frosting|icing|filling|crust|dough|batter|glaze|base|seasoning|spice mix|salad|cream cheese topping|chocolate cornflakes|for the .*)$/i;
       const isHeader = !QTY_RE.test(line) && !/\d/.test(line) && line.length < 40 && (
         (/:$/.test(line)) || VOCAB.test(line.replace(/:$/, '')) ||
-        (!bulleted && line.split(' ').length <= 3 && /^[A-Z]/.test(line) && classify({ name: line, note: '' }, '') === 'other'));
+        (!bulleted && line.split(' ').length <= 3 && /^[A-Z]/.test(line) && classify({ name: line, note: '' }, '') === 'other' && aisleOf(line) === 8 &&
+          !/\b(nuts|seeds|honey|chips|rind|crackers|croutons|bread|buns|syrup|jam|salsa|pesto|olives|pickles|capers|mayo|ketchup|mustard|sriracha|tahini|cheese|parmesan|cream|butter|milk|yogurt|herbs?)\b/i.test(line)));
       if (isHeader) {
         if (!r.title && /recipe/i.test(line)) { r.title = line.replace(/\s*recipe.*$/i, '').trim(); continue; }
+        // the first short line before anything else is the title, not a section ("Minestrone", "Baked ziti")
+        if (!r.title && !r.ingredients.length && !r.sections.length && !/:$/.test(line) && !VOCAB.test(line)) { r.title = line; continue; }
         section = line.replace(/:$/, '');
         if (!r.sections.includes(section)) r.sections.push(section);
         continue;
       }
       if (/recipe/i.test(line) && !QTY_RE.test(line) && !r.title) { r.title = line.replace(/\s*recipe.*$/i, '').replace(/[^\p{L}\p{M}\p{N}\s'&-]/gu, '').trim(); continue; }
       const prev = r.ingredients[r.ingredients.length - 1];
-      if (prev && !QTY_RE.test(line) && (/^[a-z(]/.test(line) || /^[A-Za-z ]{1,20}\)$/.test(line))) { prev.note = (prev.note + ' ' + line).trim(); continue; }
+      // a lowercase line with no number is a wrapped note only when it reads like one; "kosher salt" or "fresh parsley, chopped" is its own ingredient
+      if (prev && !QTY_RE.test(line) && (/^[a-z(]/.test(line) || /^[A-Za-z ]{1,20}\)$/.test(line))) {
+        const cont = /^\(|^[A-Za-z ]{1,20}\)$/.test(line) || /[,(]$/.test(prev.raw) || (prev.raw.split('(').length > prev.raw.split(')').length) ||
+          /^(or|and|plus|such as|divided|about|roughly|cut|chopped|minced|diced|sliced|peeled|seeded|trimmed|finely|thinly|coarsely|roughly|room temp|softened|melted|at room|if |for the|drained|rinsed|packed|heaping|optional|see note)\b/.test(line);
+        const foodish = classify({ name: line, note: '' }, '') !== 'other' || /\b(salt|pepper|parsley|cheese|parmesan|flakes|thyme|spinach|herbs?|sauce|oil|sugar|seeds|nuts|onions?|scallions?|cilantro|basil|lemon|lime)\b/i.test(line);
+        if (cont || !foodish) { prev.note = (prev.note + ' ' + line).trim(); continue; }
+      }
       const ing = parseIngredient(line);
       // drop lines that are clearly not ingredients
       if (!ing.qty && !ing.toTaste && !/^(salt|pepper|neutral|green onion|baby|fresh|optional|red chili|parish|cilantro|chili|black pepper)/i.test(ing.name) && line.split(' ').length > 7) { r.notes.push(line); continue; }
-      if (!section && !r.ingredients.length && ing.qty == null && !ing.toTaste) { r.notes.push(line); continue; }
+      if (!section && !r.ingredients.length && ing.qty == null && !ing.toTaste && !(r.title && classify(ing, '') !== 'other')) { r.notes.push(line); continue; }
       ing.section = section;
       ing.cls = classify(ing, section);
       if (ing.cls === 'liquid' && ing.unit === 'oz') ing.unit = 'fl oz';
@@ -850,7 +936,10 @@ details.edit[open] summary{margin-bottom:8px}
     r.steps = Object.values(best).sort((a, b) => a.n - b.n);
     const lastStep = r.steps[r.steps.length - 1];
     if (lastStep && !/[.!)]$/.test(lastStep.text.trim())) r.flags.push({ type: 'cutoff', line: lastStep.text.slice(-40), msg: 'Steps look cut off' });
-    r.baking = isBaking(r.ingredients, text);
+    r.baking = isBaking(r.ingredients, r.title || (lines.find((l) => l.trim()) || ''));
+    // a bake with meat, fish, beans, cheese or cream (or no sugar at all) is stored like a meal, never at room temp
+    { const n = r.ingredients.map((i) => i.name + ' ' + (i.note || '')).join(' ').toLowerCase();
+      r.savoryBake = r.baking && (r.ingredients.some((i) => isMeat(i.name)) || PERISH.test(n) || !/\b(sugar|honey|maple|chocolate|molasses|syrup)\b/.test(n)); }
     if (!r.yield) {
       const prot = r.ingredients.filter((i) => i.cls === 'protein' && i.qty && (i.unit === 'lb' || i.unit === 'oz' || i.unit === 'g' || i.unit === 'kg'));
       if (prot.length) {
@@ -919,12 +1008,17 @@ details.edit[open] summary{margin-bottom:8px}
   }
 
   // ---------- scaling ----------
-  function factorFor(cls, f, baking) {
-    if (f <= 2 || baking) return f;
-    if (cls === 'salt') return f * 0.7;
-    if (cls === 'spice') return f * 0.75;
-    if (cls === 'oil') return f * 0.6;
-    return f;
+  // past 2x, ease only the part above 2x, so there's no cliff (9 meals never gets less salt than 8)
+  const EASE = { salt: 0.7, spice: 0.75, oil: 0.6 };
+  function eases(ing) {
+    if (!EASE[ing.cls]) return false;
+    // butter and ghee in a roux, mash or sauce are an ingredient, not frying fat
+    if (ing.cls === 'oil' && /butter|ghee/i.test(ing.name) && !/for (cooking|frying|the pan|greasing|searing)/i.test(ing.raw || '')) return false;
+    return true;
+  }
+  function factorFor(cls, f, baking, ing) {
+    if (f <= 2 || baking || !EASE[cls] || (ing && !eases(ing))) return f;
+    return 2 + EASE[cls] * (f - 2);
   }
 
   function niceFrac(x, step) {
@@ -941,48 +1035,110 @@ details.edit[open] summary{margin-bottom:8px}
     return (w ? w : '') + best[1];
   }
   // turn a volume (tsp) into a friendly measure
+  // cups to the nearest quarter or third, whichever is closer
+  function cupFrac(c) {
+    const q = Math.round(c * 4) / 4, t = Math.round(c * 3) / 3;
+    const r = Math.abs(t - c) < Math.abs(q - c) - 1e-9 ? t : q;
+    return r <= 0 ? .25 : r;
+  }
   function fmtVol(tsp) {
     if (tsp < 3 * 0.95) return [niceFrac(tsp, .25), 'tsp'];
-    if (tsp < 12 * 0.95) return [niceFrac(tsp / 3, .5), 'tbsp'];
-    return [niceFrac(tsp / 48, .25), 'cup'];
+    if (tsp < 12 * 0.93) { const t = niceFrac(tsp / 3, .5); return Math.abs(t * 3 - tsp) / tsp > 0.06 ? [niceFrac(tsp, .25), 'tsp'] : [t, 'tbsp']; } // 4 tsp stays 4 tsp, not 1½ tbsp
+    if (tsp < 24 * 0.95) {
+      // between ¼ and ½ cup: a cup measure only when it's close, otherwise tablespoons
+      const c = cupFrac(tsp / 48);
+      if (Math.abs(c * 48 - tsp) / tsp <= 0.07) return [c, 'cup'];
+      return [niceFrac(tsp / 3, .5), 'tbsp'];
+    }
+    return [cupFrac(tsp / 48), 'cup'];
   }
   function fmtWt(oz) {
     if (oz >= 16) return [Math.round(oz / 16 * 4) / 4, 'lb'];
-    return [Math.round(oz * 2) / 2, 'oz'];
+    return [Math.max(.5, Math.round(oz * 2) / 2), 'oz'];
   }
+  function fmtMetric(q, u) {
+    if (u === 'g' || u === 'kg') { const g = q * (u === 'kg' ? 1000 : 1); return g >= 1000 ? [Math.round(g / 100) / 10, 'kg'] : [Math.max(5, Math.round(g / 5) * 5), 'g']; }
+    const ml = q * (u === 'l' ? 1000 : 1); return ml >= 1000 ? [Math.round(ml / 100) / 10, 'l'] : [Math.max(5, Math.round(ml / 5) * 5), 'ml'];
+  }
+  const PLURAL = { cup: 'cups', clove: 'cloves', can: 'cans', slice: 'slices', stalk: 'stalks', bunch: 'bunches', package: 'packages', pinch: 'pinches', jar: 'jars', box: 'boxes', bag: 'bags', bottle: 'bottles', handful: 'handfuls', head: 'heads', sprig: 'sprigs', inch: 'inches' };
   function show(n, u) {
-    const plural = { cup: 'cups', clove: 'cloves', can: 'cans', slice: 'slices', stalk: 'stalks', bunch: 'bunches', package: 'packages', pinch: 'pinches' };
-    const label = n > 1 && plural[u] ? plural[u] : u;
-    return u ? `${fmtNum(n)} ${label}` : fmtNum(n);
+    const label = n > 1 && PLURAL[u] ? PLURAL[u] : u;
+    const num = ['g', 'kg', 'ml', 'l'].includes(u) ? String(n) : fmtNum(n);
+    return u ? `${num} ${label}` : num;
+  }
+  // "2 onion" -> "2 onions": the plural of a counted item's first word or last word
+  function plural(name, n) {
+    if (!name) return name;
+    const pl = (w) => (/(s|sh|ch|x)$/i.test(w) ? w : /[^aeiou]y$/i.test(w) ? w.slice(0, -1) + 'ies' : /(potato|tomato)$/i.test(w) ? w + 'es' : /leaf$/i.test(w) ? w.slice(0, -1) + 'ves' : w + 's');
+    const m = name.match(/^(.*?\b)(eggs?|onions?|carrots?|potato(?:es)?|tomato(?:es)?|peppers?|jalape[nñ]os?|limes?|lemons?|zucchinis?|shallots?|avocados?|bananas?|apples?|tortillas?|cucumbers?|leeks?|chiles?|chilies?|bay leaf|bay leaves|chipotles?|thighs?|breasts?|fillets?|sausages?|cloves?|parsnips?|turnips?|beets?|whole chickens?|chickens?|lemons?|oranges?|peaches|peach|pears?|zucchini|eggplants?|squash(?:es)?|heads? of garlic)(\b.*)$/i);
+    if (!m || m[3].trim()) return name;
+    const w = m[2];
+    if (!(n > 1)) { // one, or less: singular
+      const sg = /ves$/i.test(w) ? w.replace(/ves$/i, 'f') : /(potato|tomato)es$/i.test(w) ? w.slice(0, -2) : /(sh|ch)es$/i.test(w) ? w.slice(0, -2) : /[^s]s$/i.test(w) ? w.slice(0, -1) : w;
+      return m[1] + sg + m[3];
+    }
+    if (/s$|ves$|zucchini$/i.test(w)) return name;
+    return m[1] + pl(w) + m[3];
   }
 
+  const upTo = (q, step, tol) => Math.max(step, Math.ceil(q / step - tol) * step);
   function scaleIngredient(ing, f, baking) {
     const out = Object.assign({}, ing);
     if (ing.qty == null) { out.scaled = ing.toTaste ? 'to taste' : (['finisher', 'salt', 'oil'].includes(ing.cls) || Math.abs(f - 1) < .05 ? '' : `${Math.round(f * 10) / 10}× usual`); return out; }
-    const q = mid(ing) * factorFor(ing.cls, f, baking);
-    out.adjusted = f > 2 && !baking && ['salt', 'spice', 'oil'].includes(ing.cls);
+    const q = mid(ing) * factorFor(ing.cls, f, baking, ing);
+    out.adjusted = f > 2 && !baking && EASE[ing.cls] && eases(ing);
     let n = q, u = ing.unit;
     if (u && VOL_TSP[u] && !['ml', 'l'].includes(u)) [n, u] = fmtVol(q * VOL_TSP[u]);
     else if (u && WT_OZ[u] && !['g', 'kg'].includes(u)) [n, u] = fmtWt(q * WT_OZ[u]);
-    else if (!u || ['clove', 'can', 'slice', 'stalk', 'bunch', 'package'].includes(u)) n = /egg/i.test(ing.name) || u ? Math.max(1, Math.round(q)) : niceFrac(q, .5);
-    else n = Math.round(q * 10) / 10;
-    if (u === 'pinch') { n = Math.max(1, Math.round(q)); }
+    else if (['g', 'kg', 'ml', 'l'].includes(u)) [n, u] = fmtMetric(q, u);
+    else if (u && PACK.includes(u)) n = upTo(q, 1, 0.1); // cans and jars: whole ones, rounded up
+    else if (u === 'pinch') n = Math.max(1, Math.round(q));
+    else if (u) n = upTo(q, 1, 0.15); // cloves, stalks, bunches, heads, sprigs
+    else if (/\beggs?\b/i.test(ing.name)) n = Math.max(1, Math.round(q));
+    else n = upTo(q, .5, 0.1); // whole produce: round up to the half, so you're never short
     out.qtyScaled = q;
-    out.scaled = show(n, u);
+    out.scaled = show(n, u) + (ing.size && u && PACK.includes(u) ? ` (${ing.size.n} ${ing.size.u})` : '');
+    out.label = u && u !== 'inch' ? ing.name : plural(ing.name, n);
     return out;
   }
 
   // ---------- Batch Day plan ----------
-  function cupsOf(i, f) { // rough volume in cups after scaling
+  // rough cups for things counted, not measured
+  const EACH_CUPS = [[/whole chickens?/, 6], [/parsnip|turnip|beet|rutabaga/, .75], [/sweet potato|butternut|squash|eggplant|cabbage|cauliflower|broccoli/, 2], [/potato/, 1], [/onion/, 1], [/bell pepper|\bpeppers?$/, 1], [/zucchini/, 1.5], [/tomato/, .75], [/carrot/, .5], [/celery/, .5], [/apple/, 1], [/jalape|chile|chili|shallot|lime|lemon|garlic|egg|chipotle|bay/, 0]];
+  const isRiceName = (n) => /\brice\b/i.test(n) && !/cooked rice|leftover rice|day.old|rice vinegar|rice noodles?|rice wine|rice paper|rice flour|cauliflower rice/i.test(n);
+  const NOODLE = /\b(pasta|noodles?|macaroni|spaghetti|penne|orzo|ziti|rigatoni|lasagna|linguine|fettuccine|shells|elbows|egg noodles)\b/i;
+  function cupsOf(i, f) { // rough volume in the pot, in cups, after scaling
     if (i.qty == null) return 0;
     const q = mid(i) * f;
-    if (i.unit && VOL_TSP[i.unit]) return q * VOL_TSP[i.unit] / 48;
-    if (i.unit && WT_OZ[i.unit]) return q * WT_OZ[i.unit] / 8; // ~1 cup per 8 oz
+    const swell = (i.cls === 'grain' || NOODLE.test(i.name)) && !/cooked|leftover/i.test(i.name) ? 2 : 1; // dry pasta and grains about double
+    if (i.size && i.unit) return q * i.size.oz / 8 * swell;
+    if (i.unit === 'can') return q * 1.875;
+    if (i.unit && PACK.includes(i.unit)) return q * 2 * swell;
+    if (i.unit && VOL_TSP[i.unit]) return q * VOL_TSP[i.unit] / 48 * swell;
+    if (i.unit && WT_OZ[i.unit]) return q * WT_OZ[i.unit] / (swell > 1 ? 2 : 8) * (swell > 1 ? 1 : 1); // 8 oz is about a cup; 8 oz dry pasta cooks to about 4 cups
+    const n = (i.name || '').toLowerCase();
+    if (i.unit === 'stalk') return q * .5;
+    if (['bunch', 'handful'].includes(i.unit)) return q * (i.unit === 'bunch' ? 1 : .5);
+    if (!i.unit || i.unit === 'head') { const e = EACH_CUPS.find(([re]) => re.test(n)); return q * (e ? e[1] : (['veg', 'aromatic'].includes(i.cls) ? .75 : 0)); }
     return 0;
   }
 
   const POTS = [3, 4, 6, 8, 12, 16, 20]; // quarts
   function potFor(cups, fill) { const q = cups / 4 / fill; return POTS.find((p) => p >= q) || null; }
+  const BIG = POTS[POTS.length - 1];
+  const RICE_FILL = 1 / 4; // dry rice at most a quarter of the pot, so cooked rice (it triples) stays under ¾
+  const S = (n, w, pl) => `${fmtNum(n)} ${n === 1 ? w : pl || w + 's'}`;
+  // the longest time the recipe itself says (simmer 2 hours, slow cook 4 hours, roast 30 minutes)
+  function ownMinutes(text) {
+    let best = 0, m;
+    const re = /(\d+(?:\.\d+)?)\s*([½¼¾])?(?:\s*(?:-|to)\s*(\d+(?:\.\d+)?)\s*([½¼¾])?)?\s*(hours?|hrs?|minutes?|mins?)\b/gi;
+    while ((m = re.exec(text))) {
+      const v = (m[3] ? +m[3] + (FRAC[m[4]] || 0) : +m[1] + (FRAC[m[2]] || 0));
+      best = Math.max(best, /^h/i.test(m[5]) ? v * 60 : v);
+    }
+    return Math.min(best, 24 * 60);
+  }
+  function fmtDur(min) { if (min < 60) return `${Math.round(min)} minutes`; const h = Math.round(min / 30) / 2; return `${fmtNum(h)} hour${h === 1 ? '' : 's'}`; }
 
   function batchDay(recipe, meals, opts) {
     opts = opts || {};
@@ -995,94 +1151,200 @@ details.edit[open] summary{margin-bottom:8px}
       const batches = Math.ceil(f / 2);
       plan.notes.push(f > 2
         ? `Baking doesn't scale well past 2x. Make ${batches} batches of ${fmtNum(f / batches)}x instead of one giant one.`
-        : 'Baking: measure carefully. Same oven temperature; check doneness a few minutes early.');
+        : 'Baking: measure carefully. Same oven temperature; check doneness a few minutes early.' + (Math.abs(f - Math.round(f)) > 0.1 && Math.abs(f - 0.5) > 0.05 ? ' Pick a pan that keeps the batter about as deep as the recipe\'s, or the time changes.' : ''));
     }
 
+    // a bake with meat, fish, beans, cheese or cream in it is stored like a meal: fridge within 2 hours, eat within 4 days
+    const savoryBake = baking && !!recipe.savoryBake;
+    plan.savoryBake = savoryBake;
     const by = (c) => items.filter((i) => i.cls === c);
     const protein = by('protein'), liquid = by('liquid'), grain = by('grain'), veg = by('veg'), fin = by('finisher');
+    const meat = items.filter((i) => ['protein', 'other'].includes(i.cls) && isMeat(i.name));
+    const stepsTxt = recipe.steps.map((s) => s.text.toLowerCase()).join(' ');
+    const sheet = /sheet pan|baking sheet|sheet-pan|cookie sheet|roasting pan|rimmed pan/.test(stepsTxt);
+    const dish = /baking dish|casserole|9\s*[x×]\s*13|13\s*[x×]\s*9|8\s*[x×]\s*8|pie dish|gratin dish/.test(stepsTxt);
+    const liquidCups = liquid.reduce((s, i) => s + cupsOf(i, f), 0);
 
-    // rice/grain with no amount: 1/3 cup dry per meal (rough estimate)
+    // rice: its own pot, unless it cooks in the soup (congee) or in the oven (casserole)
+    let riceDry = 0;
     grain.forEach((g) => {
-      if (g.qty == null && /rice|quinoa|orzo|couscous/i.test(g.name)) {
+      if (!isRiceName(g.name) && !(g.qty == null && /quinoa|orzo|couscous/i.test(g.name))) return;
+      if (g.qty == null) {
         const dry = meals / 3;
         g.scaled = `${fmtNum(niceFrac(dry, .5))} cups dry (about ⅓ cup per meal, an estimate)`;
         g.estimated = true;
-        plan.rice = dry;
-      } else if (g.qty != null && /rice/i.test(g.name)) plan.rice = cupsOf(g, f);
+        riceDry += dry;
+      } else riceDry += cupsOf(g, f) / 2;
     });
+    const riceInPot = riceDry > 0 && ((liquidCups >= riceDry * 4 && /simmer|congee|porridge|soup|stew|jook/.test(stepsTxt + ' ' + (recipe.title || '').toLowerCase())) ||
+      (dish && /oven|bake/.test(stepsTxt) && !/cooked rice|serve (it )?over|rice cooker|cook the rice/.test(stepsTxt)));
+    if (riceDry && !riceInPot) plan.rice = riceDry;
 
-    // pots
-    const soupCups = liquid.reduce((s, i) => s + cupsOf(i, f), 0) + protein.reduce((s, i) => s + cupsOf(i, f), 0) * 0.9 + veg.reduce((s, i) => s + cupsOf(i, f), 0);
-    if (!baking && soupCups > 0) {
-      const q = potFor(soupCups, 0.75);
-      plan.pots.push(q ? `Main pot: ${q} qt or bigger (about ${Math.round(soupCups)} cups of food, kept under ¾ full)` : `Main pot: about ${Math.round(soupCups)} cups of food. Split it across two big pots`);
+    // pots: everything that goes in the pot, cans, whole vegetables and pasta included
+    const potItems = items.filter((i) => !['finisher', 'salt', 'spice', 'oil', 'baking'].includes(i.cls) && !/bok choy|spinach|kale|greens/i.test(i.name) && !(plan.rice && isRiceName(i.name)) && !(i.cls === 'grain' && /cooked/i.test(i.name) === false && sheet));
+    const potCups = potItems.reduce((s, i) => s + cupsOf(i, f) * (isMeat(i.name) && i.unit && WT_OZ[i.unit] ? 0.9 : 1), 0) + (riceInPot ? riceDry : 0); // in congee or a casserole the liquid is soaked up, so only the dry rice adds
+    let bigJob = false;
+    // no heat anywhere in the steps and no raw meat: overnight oats, salads, dressings
+    const nocook = !baking && recipe.steps.length > 0 && !meat.length && !/\b(cook|simmer|boil|bak|roast|sear|fr(y|ied)|saut|heat|oven|stove|grill|microwave|broil|toast|brown|melt|pressure|instant pot|slow)/.test(stepsTxt);
+    plan.nocook = nocook;
+    // pasta that boils on its own (not cooked in the soup)
+    const pasta = items.filter((i) => NOODLE.test(i.name) && i.qty != null && !/cooked|leftover/i.test(i.name));
+    const pastaCups = pasta.reduce((s, i) => s + cupsOf(i, f), 0);
+    const boilPasta = !nocook && pasta.length && !(liquidCups >= pastaCups * 2 && /soup|stew|simmer|broth/.test(stepsTxt + ' ' + (recipe.title || '').toLowerCase()));
+    if (nocook) { /* no pots */ }
+    else if (!baking && sheet && !liquid.length) {
+      const pans = Math.max(1, Math.ceil(potCups / 6));
+      plan.pans = pans;
+      plan.pots.push(`Sheet pans: ${pans} (one layer, about 6 cups of food each). Crowded pans steam instead of roast.`);
+      if (pans > 2) plan.pots.push(`An oven fits about 2 sheet pans at once, so that's ${Math.ceil(pans / 2)} rounds in the oven.`);
+    } else if (!baking && potCups >= 1) {
+      const q = potFor(potCups, 0.75);
+      if (q) plan.pots.push(`Main pot: ${q} qt or bigger (about ${S(Math.max(1, Math.round(potCups)), 'cup')} of food, kept under ¾ full)`);
+      else {
+        const n = Math.ceil(potCups / (BIG * 4 * 0.75));
+        bigJob = true;
+        plan.pots.push(`Main pot: about ${Math.round(potCups)} cups of food, more than one pot holds. Use ${n} big pots (${BIG} qt), or cook it in ${n} rounds.`);
+      }
+      if (dish) { const d = Math.max(1, Math.ceil(potCups / 12)); plan.dishes = d; plan.pots.push(`Baking dishes: ${d} (9×13, about 12 cups each)`); if (d > 4) plan.pots.push(`An oven fits about 4 baking dishes at once, so that's ${Math.ceil(d / 4)} rounds in the oven.`); }
     }
     if (plan.rice) {
-      const q = potFor(plan.rice, 1 / 3);
-      plan.pots.push(q ? `Rice pot: ${q} qt (dry rice under ⅓ full, it triples)` : 'Rice: cook in two pots or batches');
+      const q = potFor(plan.rice, RICE_FILL);
+      if (q) plan.pots.push(`Rice pot: ${q} qt (dry rice no more than ¼ full; it triples)`);
+      else {
+        const per = BIG * 4 * RICE_FILL, n = Math.ceil(plan.rice / per);
+        bigJob = true;
+        plan.pots.push(`Rice: about ${Math.round(plan.rice)} cups dry, more than one pot holds. Cook it in ${n} pots or rounds of up to ${per} cups.`);
+      }
     }
-    const lbs = protein.reduce((s, i) => s + (i.qty != null && i.unit && WT_OZ[i.unit] ? mid(i) * f * WT_OZ[i.unit] / 16 : 0), 0);
-    if (lbs > 0 && /sear|brown|pan-?fry|golden/i.test(recipe.steps.map((s) => s.text).join(' '))) {
-      const batches = Math.max(1, Math.ceil(lbs / 1.5));
-      plan.pots.push(`Searing: ${batches} batch${batches > 1 ? 'es' : ''} in a 12-inch pan (about 1½ lb each). Don't crowd it, or it steams.`);
+    const lbs = meat.reduce((s, i) => s + (i.qty != null && i.unit && WT_OZ[i.unit] ? mid(i) * f * WT_OZ[i.unit] / 16 : 0), 0);
+    const sears = lbs > 0 && /sear|brown|pan-?fry|golden/.test(stepsTxt);
+    const searBatches = sears ? Math.max(1, Math.ceil(lbs / 1.5)) : 0;
+    if (sears) {
+      const each = searBatches === 1 ? lbs : 1.5;
+      const eachTxt = each >= 1 ? `${fmtNum(Math.round(each * 4) / 4)} lb` : `${Math.max(1, Math.round(each * 16))} oz`;
+      plan.pots.push(`Searing: ${searBatches} batch${searBatches > 1 ? 'es' : ''} in a 12-inch pan (about ${eachTxt}${searBatches > 1 ? ' each' : ''}).`);
+      if (searBatches > 6) plan.pots.push(`That's a lot of batches for one pan. Run two pans at once, or brown it in the oven: one layer on sheet pans at 450°F until browned.`);
     }
 
     // order of operations
-    const stepsTxt = recipe.steps.map((s) => s.text.toLowerCase()).join(' ');
-    if (!baking) {
-      if (plan.rice) plan.order.push({ t: 'Start the rice first', d: 'It runs on its own while you do everything else.', min: 25 });
-      if (protein.length) plan.order.push({ t: `Season the ${protein[0].name.replace(/boneless|skinless/gi, '').trim()}`, d: 'Season all of it at once in a big bowl.', min: 5 });
-      if (/sear|brown|pan-?fry|golden/.test(stepsTxt)) plan.order.push({ t: 'Sear in batches', d: 'Set each batch aside; it finishes cooking later.', min: Math.max(1, Math.ceil(lbs / 1.5)) * 6 });
-      if (by('aromatic').length) plan.order.push({ t: 'Aromatics in the big pot', d: 'Same pot, scrape up the browned bits.', min: 4 });
-      if (/paste|bloom/.test(stepsTxt)) plan.order.push({ t: 'Bloom the paste', d: 'About a minute, until it smells great.', min: 2 });
-      if (liquid.length) plan.order.push({ t: 'Liquids in, bring to a simmer', d: 'A big pot takes a lot longer to simmer. Taste now, but hold back on salt.', min: 15 });
-      if (protein.length && liquid.length) plan.order.push({ t: 'Protein back in until cooked through', d: 'Judge by doneness, not the clock (165°F for chicken).', min: 15 });
+    const own = ownMinutes(stepsTxt);
+    if (nocook) {
+      plan.order.push({ t: 'Mix and portion', d: 'No cooking. Into the fridge right away.', min: 10 });
+    } else if (!baking) {
+      if (plan.rice) plan.order.push({ t: 'Start the rice first', d: 'It cooks while you do the rest.', min: 25 });
+      if (meat.length) plan.order.push({ t: `Season the ${meat[0].name.replace(/boneless|skinless/gi, '').replace(/\s+/g, ' ').trim()}`, d: 'All of it at once, in a big bowl.', min: 5 });
+      else if (sheet) plan.order.push({ t: 'Season everything', d: 'Toss it all in a big bowl with the oil and seasoning.', min: 5 });
+      if (boilPasta) plan.order.push({ t: 'Boil the pasta', d: 'Big pot, salted water. If it bakes after, pull it a minute early.', min: 15 });
+      if (sears) plan.order.push({ t: 'Sear in batches', d: 'Set each batch aside.', min: searBatches * 6 });
+      let covered = 0;
+      if (sheet && !liquid.length) {
+        const m = (own || 30) * Math.ceil(plan.pans / 2); covered += m;
+        plan.order.push({ t: 'Roast on sheet pans', d: `One layer${plan.pans > 1 ? `, ${plan.pans} pans` : ''}. With more than one pan, swap racks halfway and give it a little longer.`, min: m });
+      } else {
+        if (by('aromatic').length) plan.order.push({ t: 'Aromatics in the big pot', d: 'Same pot. Scrape up the browned bits.', min: 4 });
+        if (/paste|bloom/.test(stepsTxt)) plan.order.push({ t: 'Bloom the paste', d: 'About a minute, until it smells great.', min: 2 });
+        if (liquid.length) {
+          const m = potCups < 24 ? 15 : potCups < 60 ? 25 : 40; covered += m;
+          plan.order.push({ t: 'Liquids in, bring to a simmer', d: 'A big pot takes longer. Taste, but hold back on salt.', min: m });
+        }
+        if (meat.length && liquid.length) { covered += 15; plan.order.push({ t: 'Protein back in until cooked through', d: 'Judge by doneness, not the clock (165°F for chicken).', min: 15 }); }
+        if (dish) { const m = (own || 30) * Math.ceil((plan.dishes || 1) / 4); covered = Math.max(covered, m); plan.order.push({ t: 'Into the oven', d: `${plan.dishes > 1 ? `${plan.dishes} baking dishes, swap racks halfway. ` : ''}Bake as the recipe says; check the middle is hot.`, min: m }); }
+      }
+      if (own - covered >= 10) plan.order.push({ t: 'Let it cook', d: `The recipe's own time is about ${fmtDur(own)}. Mostly hands off.`, min: own - covered });
       if (veg.some((v) => /bok choy|spinach|kale|greens/i.test(v.name))) plan.order.push({ t: 'Skip the tender greens for now', d: 'Add them when you reheat each portion so they stay bright.', min: 0 });
       plan.order.push({ t: 'Taste and adjust', d: 'Now add the rest of the salt and spice if it needs it.', min: 3 });
       plan.order.push({ t: 'Cool, then portion', d: 'Shallow containers, into the fridge within 2 hours.', min: 20 });
     } else {
       plan.order.push({ t: 'Mix and bake in batches', d: 'Follow the recipe steps for each batch.', min: 0 });
+      if (savoryBake) plan.order.push({ t: 'Cool, then portion', d: 'Into the fridge within 2 hours.', min: 20 });
     }
     plan.totalMin = plan.order.reduce((s, o) => s + o.min, 0);
+    if (!baking && (bigJob || searBatches > 10 || plan.totalMin > 300)) plan.notes.push('This is a very big cook for one day. Think about splitting it into two sessions.');
 
     // what goes in at each step, with batch amounts
-    if (!baking) {
+    if (!baking && !nocook) {
       const used = new Set();
       const sc = plan.items;
-      const take = (fn) => sc.filter((i) => !used.has(i) && fn(i)).map((i) => { used.add(i); return { amt: i.scaled || '', name: i.name }; });
-      const pSec = protein.length ? protein[0].section : null;
+      const take = (fn) => sc.filter((i) => !used.has(i) && fn(i)).map((i) => { used.add(i); return { amt: i.scaled || '', name: i.label || i.name }; });
+      const pSec = meat.length ? meat[0].section : null;
       const isTender = (i) => /bok choy|spinach|kale|greens/i.test(i.name);
       const hasSec = (re) => sc.some((i) => re.test(i.section || ''));
+      // the title's section is no section at all
+      const realSec = (x) => x && norm(x) !== norm(recipe.title || '');
       plan.order.forEach((o) => {
         let u = [];
-        if (/^Start the rice/.test(o.t)) u = take((i) => i.cls === 'grain');
-        else if (/^Season the/.test(o.t)) u = take((i) => i.cls !== 'oil' && i.cls !== 'finisher' && (pSec ? i.section === pSec : (i.cls === 'protein' || i.cls === 'salt')));
+        if (/^Start the rice/.test(o.t)) u = take((i) => i.cls === 'grain' && isRiceName(i.name));
+        else if (/^Season the/.test(o.t)) u = take((i) => i.cls !== 'oil' && i.cls !== 'finisher' && (realSec(pSec) ? i.section === pSec && !['liquid', 'grain', 'veg'].includes(i.cls) : (isMeat(i.name) || i.cls === 'salt')));
+        else if (/^Season everything/.test(o.t)) u = take((i) => i.cls !== 'finisher');
         else if (/^Sear/.test(o.t)) u = take((i) => i.cls === 'oil');
         else if (/^Aromatics/.test(o.t)) u = take((i) => i.cls !== 'finisher' && (hasSec(/aromatic/i) ? /aromatic/i.test(i.section || '') : i.cls === 'aromatic' || i.cls === 'spice'));
         else if (/^Bloom/.test(o.t)) u = take((i) => /paste/i.test(i.name));
-        else if (/^Liquids/.test(o.t)) { const ls = liquid.length ? liquid[0].section : null; u = take((i) => i.cls === 'liquid' || (ls && i.section === ls && i.cls !== 'finisher' && !isTender(i))); }
+        else if (/^Liquids/.test(o.t)) { const ls = liquid.length ? liquid[0].section : null; u = take((i) => i.cls === 'liquid' || (realSec(ls) && i.section === ls && i.cls !== 'finisher' && !isTender(i)) || (!realSec(ls) && ['protein', 'veg', 'grain', 'other'].includes(i.cls) && !isMeat(i.name) && !isTender(i) && !(plan.rice && isRiceName(i.name)))); }
+        else if (/^Boil the pasta/.test(o.t)) u = take((i) => NOODLE.test(i.name) && !/cooked|leftover/i.test(i.name));
+        else if (/^Protein back/.test(o.t)) u = take((i) => isMeat(i.name));
         if (u.length) o.use = u;
       });
+      // anything not placed yet goes in with the last cooking step, so every ingredient shows up somewhere
+      const rest = take((i) => i.cls !== 'finisher' && !isTender(i));
+      if (rest.length) {
+        const k = plan.order.map((o) => /^(Skip the tender|Taste and adjust|Cool, then portion|Start the rice)/.test(o.t)).lastIndexOf(false);
+        if (k >= 0) plan.order[k].use = (plan.order[k].use || []).concat(rest);
+        else {
+          const at = plan.order.findIndex((o) => /^(Skip the tender|Taste and adjust)/.test(o.t));
+          plan.order.splice(at < 0 ? plan.order.length : at, 0, { t: 'Cook as the recipe says', d: 'In batches if the pan is crowded.', min: Math.max(15, own), use: rest });
+          plan.totalMin = plan.order.reduce((s, o) => s + o.min, 0);
+        }
+      }
     }
 
     // split
     const fridgeMeals = Math.min(meals, opts.fridgeMeals || 4);
     if (!baking) {
-      plan.split.fridge.push(`${fridgeMeals} meals for this week (eat within 4 days)`);
-      if (meals > fridgeMeals) plan.split.freezer.push(`${meals - fridgeMeals} meals: protein and broth together, rice in its own bag`);
+      const fz = meals - fridgeMeals;
+      const noodles = items.some((i) => NOODLE.test(i.name));
+      plan.split.fridge.push(`${S(fridgeMeals, 'meal')} for this week (eat within 4 days)`);
+      if (fz > 0) {
+        let line = `${S(fz, 'meal')}: ` + (liquid.length ? (meat.length ? 'protein and broth together' : 'in freezer containers, leave a little room at the top') : 'in freezer containers');
+        if (plan.rice) line += ', rice in its own bag';
+        line += '.';
+        if (noodles && liquid.length) line += ' Pasta and noodles go soft in the freezer: if you can, cook them fresh when you reheat.';
+        if (fz > 40) line += ' Check you have the freezer room first.';
+        plan.split.freezer.push(line);
+      }
       fin.concat(veg.filter((v) => /bok choy|spinach|kale|greens/i.test(v.name))).forEach((i) => plan.split.fresh.push(i.name));
     } else {
-      plan.split.fridge.push('Keep covered at room temp 2 days or fridge 5 days');
-      plan.split.freezer.push('Most bakes freeze well wrapped tight (frost after thawing)');
+      if (!savoryBake) {
+        plan.split.fridge.push('Keep covered at room temp up to 2 days. Anything with cream, cream cheese or custard goes in the fridge.');
+        plan.split.freezer.push('Most bakes freeze well wrapped tight (frost after thawing)');
+      } else {
+        plan.split.fridge.push(`${S(fridgeMeals, 'meal')} for this week: into the fridge within 2 hours, eat within 4 days`);
+        if (meals > fridgeMeals) plan.split.freezer.push(`${S(meals - fridgeMeals, 'meal')}: wrap tight and freeze.`);
+      }
     }
     // the same split as numbers, for My freezer
-    plan.portions = baking ? null : { fridge: fridgeMeals, freezer: meals - fridgeMeals };
+    plan.portions = baking && !savoryBake ? null : { fridge: fridgeMeals, freezer: meals - fridgeMeals };
 
-    // grocery: everything with an amount, finishers per bowl
+    // grocery: everything with an amount, finishers per bowl; the same item twice (ginger paste in the marinade and the sauce) becomes one line
+    const kindOf = (i) => (i.qty == null ? null : i.unit && VOL_TSP[i.unit] && !['ml', 'l'].includes(i.unit) ? 'vol' : i.unit && WT_OZ[i.unit] && !['g', 'kg'].includes(i.unit) ? 'wt' : ['g', 'kg'].includes(i.unit) ? 'g' : ['ml', 'l'].includes(i.unit) ? 'ml' : 'u:' + (i.unit || '') + (i.size ? i.size.n + i.size.u : ''));
+    const base = (i) => { const q = i.qtyScaled; const k = kindOf(i); return k === 'vol' ? q * VOL_TSP[i.unit] : k === 'wt' ? q * WT_OZ[i.unit] : i.unit === 'kg' || i.unit === 'l' ? q * 1000 : q; };
+    const baseUnit = { vol: 'tsp', wt: 'oz', g: 'g', ml: 'ml' };
+    const groups = new Map();
     items.forEach((i) => {
+      const k = norm(i.name) + '|' + kindOf(i);
+      if (i.qty != null && groups.has(k)) groups.get(k).push(i); else if (i.qty != null) groups.set(k, [i]); else groups.set(k + '|' + groups.size, [i]);
+    });
+    groups.forEach((g) => {
+      const i = g[0];
+      let amt = i.scaled, label = i.label || i.name;
+      if (g.length > 1) {
+        const k = kindOf(i), sum = g.reduce((s, x) => s + base(x), 0);
+        const syn = Object.assign({}, i, { qty: sum, qtyHi: null, unit: baseUnit[k] || i.unit });
+        const sc = scaleIngredient(syn, 1, true);
+        amt = sc.scaled; label = sc.label || i.name;
+      }
       if (i.cls === 'finisher' && i.qty == null) plan.grocery.push({ name: i.name, amt: 'for serving' });
-      else if (i.qty != null || i.estimated) plan.grocery.push({ name: i.name, amt: i.scaled });
-      else if (!i.toTaste) plan.grocery.push({ name: i.name, amt: '' });
+      else if (i.qty != null || i.estimated) plan.grocery.push({ name: i.name, label, amt });
+      else plan.grocery.push({ name: i.name, amt: i.toTaste ? 'to taste' : '' });
     });
     return plan;
   }
@@ -1315,7 +1577,7 @@ details.edit[open] summary{margin-bottom:8px}
 'use strict';
 const $=(s)=>document.querySelector(s), $$=(s)=>[...document.querySelectorAll(s)], E=window.BatchEngine;
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-let recipe=null, mode='batch', userMode='batch', view='add', plan=null, tab='shop', shots=[], extra=0, from='paste';
+let recipe=null, mode='batch', userMode='batch', view='add', plan=null, tab='shop', shots=[], extra=0, from='paste', origin='paste'; // from: how this recipe was opened now. origin: how it was first made (paste, screenshots, sample, tour, link; '' for a batch saved before 15 Nov)
 let parts=[], pick=0, src='', srcWhy='', touched=false, yieldSet=false, skipped=0, wants={batch:14,scale:4};
 const have=new Set();
 // anonymous, cookie-free counts for the go/no-go test (Vercel Web Analytics)
@@ -1358,6 +1620,7 @@ function ghostRow(ul,pos,hh,title,sub,more){
 
 /* theme */
 const root=document.documentElement, sw=$('#theme');
+addEventListener('keydown',(e)=>{if(e.key==='Tab')root.classList.add('kb')},true);addEventListener('pointerdown',()=>root.classList.remove('kb'),true); // see html.docked.kb
 function curTheme(){const t=root.dataset.theme;return t==='dark'||t==='light'?t:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
 function syncSwitch(){sw.setAttribute('aria-checked',curTheme()==='dark')}
 syncSwitch();
@@ -1392,9 +1655,10 @@ function placeAd(){
 }
 function show(v,push){
   if(v!=='sheet'||!plan)v='add';
-  view=v;
+  const was=view;view=v;
   ['add','sheet'].forEach((k)=>{const el=$('#v-'+k);const on=k===v;el.classList.toggle('hidden',!on);if(on){el.style.animation='none';el.offsetHeight;el.style.animation=''}});
-  $('#dock').classList.toggle('on',v==='sheet');$('#main').classList.toggle('docked',v==='sheet');
+  if(v!==was)hideToast(); // a toast belongs to the screen it was raised on
+  $('#dock').classList.toggle('on',v==='sheet');$('#main').classList.toggle('docked',v==='sheet');root.classList.toggle('docked',v==='sheet');
   try{if(v==='sheet'&&curId)sessionStorage.setItem('bd-open',curId);else sessionStorage.removeItem('bd-open')}catch(e){}
   if(push){const rd=history.state&&history.state.reading;history[rd?'replaceState':'pushState']({v},'','#'+(v==='add'?'':v))} // the reading screen's entry becomes the recipe's
   scrollTo(0,0);syncBar();
@@ -1410,7 +1674,7 @@ addEventListener('popstate',(e)=>{
 let quiet=false;
 const startHash=location.hash;
 history.replaceState({v:'add'},'',location.pathname+location.search);
-$('#newRec').onclick=()=>{addState('pick');show('add',true)};
+$('#newRec').onclick=()=>{addState('pick');show('add',true);const to=$('#pick').classList.contains('hidden')?$('#paste'):$('#choose');to.focus({preventScroll:true})};
 
 /* 1. add */
 const file=$('#file'), card=$('#dropcard');
@@ -1459,13 +1723,14 @@ function coded(c){const e=new Error(c);e.code=c;return e}
 function shrink(f){return new Promise((ok,no)=>{const img=new Image();img.onerror=no;img.onload=()=>{
   const w=Math.min(1000,img.width),h=Math.round(img.height*w/img.width),c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);
   let q=.85,d=c.toDataURL('image/jpeg',q);while(d.length>1.8e6&&q>.4){q-=.15;d=c.toDataURL('image/jpeg',q)}URL.revokeObjectURL(img.src);ok(d)};img.src=URL.createObjectURL(f)})}
+const aiSays=(n)=>'The AI is reading '+(n>1?`your ${n} screenshots`:'your screenshot'); // one status line for the whole wait
 async function aiRead(list,run){
   let images;
   try{images=await Promise.all(list.map(shrink))}catch(e){throw coded('badfile')}
   if(run.dead)throw coded('cancel');
   run.ctrl=new AbortController();
   const to=setTimeout(()=>{run.late=true;run.ctrl.abort()},TIMEOUT);
-  setStatus('The AI is reading '+(list.length>1?`your ${list.length} screenshots`:'your screenshot'));setNote('Usually under a minute');startClock(list.length);
+  setStatus(aiSays(list.length));setNote('Usually under a minute');startClock(list.length);
   try{
     const r=await fetch(READER+'/read',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({images}),signal:run.ctrl.signal});
     const j=await r.json().catch(()=>({}));
@@ -1545,7 +1810,7 @@ async function readShots(again){
   const th=$('#thumbs');th.innerHTML='';th.classList.toggle('many',list.length>4);
   list.forEach((f,k)=>{const d=document.createElement('div'),i=new Image();d.className='th scan';d.style.animationDelay=k*120+'ms';i.src=URL.createObjectURL(f);i.alt='';i.onload=()=>URL.revokeObjectURL(i.src);d.appendChild(i);th.appendChild(d)});
   $('#rdTitle').textContent='Reading your recipe';$('#rdDevice').classList.add('hidden');
-  setStatus('Getting your screenshots ready');setNote(skipped?`${files(skipped)} couldn't be opened`:extra?'Reading the first 6':'');prog(.02);
+  setStatus(READER&&navigator.onLine!==false?aiSays(list.length):'');setNote(skipped?`${files(skipped)} couldn't be opened`:extra?'Reading the first 6':'');prog(.02);
   addState('read');if(again){if(view!=='add')show('add',false)}else enterReading();
   $('#rdTitle').focus({preventScroll:true});
   const back=()=>{job=null;addState('pick');show('sheet',false)};
@@ -1574,7 +1839,7 @@ async function readShots(again){
   }
   if(again){back();if(why!=='choice')toast(WHY[why]||WHY.error);return}
   // fallback: read on this device
-  setStatus((WHY[why]?WHY[why]+' ':'')+'Reading on this device instead.');
+  setStatus((WHY[why]?WHY[why]+' ':'')+'Reading on this device.');
   let ok=false;
   try{text=await deviceRead(list,run);ok=true}catch(e){if(run!==job)return}
   if(run!==job)return;
@@ -1584,7 +1849,7 @@ async function readShots(again){
   if(ok){addState('pick');return}
   if(why==='none'){none();return}
   if(navigator.onLine===false)fail("Couldn't read those","You're offline.",true);
-  else fail("Couldn't read those",'Try clearer screenshots, or paste the text.');
+  else fail("Couldn't read those",''); // the two buttons under it say what to try
 }
 $('#rdCancel').onclick=()=>{const run=job;if(run&&!run.worker&&run.ctrl)track('AI read',{shots:shots.length,result:'cancel'});const st=history.state||{};stopRead();if(st.reading)history.back();else if(plan&&st.v==='sheet')show('sheet',false)};
 $('#rdDevice').onclick=()=>{if(job&&job.ctrl){job.skip=true;job.ctrl.abort()}};
@@ -1597,7 +1862,7 @@ function guessTitle(raw){
   const first=(raw.split('\n').find((l)=>l.trim())||'').trim();
   // keep every script (Chinese, Arabic, accents); drop only hashtags and control characters
   if(first.length&&first.length<48&&!/^[\d½¼¾⅓⅔]/.test(first)&&!/serves|servings|ingredients/i.test(first)){const t=first.replace(/#[^\s#]+/g,' ').replace(/[\u0000-\u001f\u007f-\u009f]/g,'').replace(/\s+/g,' ').trim();if(t)return t}
-  return 'Your recipe';
+  return 'Recipe';
 }
 const FRIENDLY={range:'Range given, using the middle',noamount:'No amount given, estimated',amount:'May be misread'};
 function defWant(m){return m==='batch'?14:Math.max(1,Math.round(recipe?recipe.yield:4))}
@@ -1607,9 +1872,10 @@ function isOdd(i){return !!i.odd||/\d\s*e\s*[+-]?\d/i.test(i.raw||'')||/^\s*[-�
 function cutOff(){const s=recipe.steps[recipe.steps.length-1];return !!s&&recipe.flags.some((f)=>f.type==='cutoff')&&/([,;:\-–]|\b(and|or|with|the|a|an|to|of|in|on|for|until|then|into|over))\s*$/i.test(s.text.trim())}
 // a fresh recipe from screenshots, pasted text or the sample; false when there is nothing to cook
 function load(raw,replace){
-  const ps=String(raw).split(SPLIT).map((s)=>s.trim()).filter((p)=>p&&E.parseRecipe(p).ingredients.length);
+  const got=new Map(),ps=String(raw).split(SPLIT).map((s)=>s.trim()).filter((p)=>{if(!p)return false;const r=E.parseRecipe(p);got.set(p,r);return r.ingredients.length});
   if(!ps.length)return false;
-  parts=ps;pick=0;curId=null;touched=false;yieldSet=false;have.clear();tab='shop';stEd=panOpen=false;
+  parsed=[ps[0],got.get(ps[0])]; // parse() takes this one instead of parsing the same text again
+  parts=ps;pick=0;curId=null;origin=from;touched=false;yieldSet=false;have.clear();tab='shop';stEd=panOpen=false;
   $('#text').value=parts[0];$('#edit').open=false;
   parse();
   wants={batch:14,scale:defWant('scale')};$('#want').value=wants[mode];
@@ -1618,24 +1884,25 @@ function load(raw,replace){
   if(!replace)track('Plan',{mode,from});
   return true;
 }
+let parsed=null;
 function parse(){
   const raw=$('#text').value.split(SPLIT)[0];
-  recipe=E.parseRecipe(raw);
+  recipe=parsed&&parsed[0]===raw?parsed[1]:E.parseRecipe(raw);parsed=null;
   recipe.title=recipe.title||guessTitle(raw);
   $('#yield').value=recipe.yield;
   $('#sTitle').textContent=$('#barTitle').textContent=recipe.title;
-  mode=recipe.baking?'scale':userMode;
+  mode=recipe.baking&&!recipe.savoryBake?'scale':userMode; // sweet baking is set to Just scale. A savory bake (meat, cheese, beans) is a meal: Batch day stores it in the fridge and freezer, never at room temperature
   syncMode();
 }
 function drawHead(){
   $('#yieldNote').classList.toggle('hidden',!(recipe.yieldGuessed&&!yieldSet));
   // alerts: only things the cook needs to act on
   const al=[];
-  if(src==='device'&&shots.length)al.push([(WHY[srcWhy]?WHY[srcWhy]+' ':'')+'Read on this device, so check the amounts.',READER&&srcWhy!=='none'?'ai':'']);
+  if(src==='device'&&shots.length)al.push([(WHY[srcWhy]?WHY[srcWhy]+' ':'')+'Read on this device. Check the amounts.',READER&&srcWhy!=='none'?'ai':'']);
   if(skipped&&shots.length)al.push([`${files(skipped)} couldn't be opened.`]);
   if(extra&&shots.length)al.push(['Only the first 6 screenshots were read.']);
-  if(cutOff())al.push(['The steps look cut off. Add the next screenshot too.']);
-  if(recipe.baking)al.push(['Baking doesn’t scale well past 2×, so this is set to Just scale.']);
+  if(cutOff())al.push(['Steps look cut off. Add the next screenshot.']);
+  if(recipe.baking&&!recipe.savoryBake)al.push(['Baking: set to Just scale.']);
   const odd=recipe.ingredients.filter(isOdd);
   if(odd.length)al.push([`Some amounts look off (${odd.slice(0,3).map((i)=>i.name||i.raw).join(', ')}). Check them.`,'edit']);
   if(!recipe.ingredients.length)al.push(['No ingredients found.','edit']);
@@ -1721,7 +1988,7 @@ function ingRows(items){
     if(i.section!==sec){sec=i.section;if(sec)h+=`<tr class="sec"><td colspan="3">${esc(sec)}</td></tr>`}
     const orig=i.qty==null?'':esc(i.raw.match(/^[^a-zA-Z]*[a-zA-Z]*/)[0].trim());
     const f=byLine[i.raw];
-    h+=`<tr><td class="q num"><span data-a="r:${k}">${esc(i.scaled||'')}</span></td><td>${esc(i.name)}${i.adjusted?'<span class="tag">eased back</span>':''}${i.estimated?'<span class="tag">estimate</span>':''}${isOdd(i)?'<small class="w">Check this amount</small>':f&&FRIENDLY[f.type]?`<small class="${f.type==='amount'?'w':''}">${FRIENDLY[f.type]}</small>`:''}</td><td class="o num">${orig}</td></tr>`;
+    h+=`<tr><td class="q num"><span data-a="r:${k}">${esc(i.scaled||'')}</span></td><td>${esc(i.label||i.name)}${i.adjusted?'<span class="tag">eased back</span>':''}${i.estimated?'<span class="tag">estimate</span>':''}${isOdd(i)?'<small class="w">Check this amount</small>':f&&FRIENDLY[f.type]?`<small class="${f.type==='amount'?'w':''}">${FRIENDLY[f.type]}</small>`:''}</td><td class="o num">${orig}</td></tr>`;
   });
   return h;
 }
@@ -1735,12 +2002,12 @@ function build(fresh,soft){
   if(!soft){late=false;drawHead()}
   const say=(a,b)=>{if(soft)return;$('#sMeta').textContent=a;$('#pSum').textContent=b};
   let h='';
-  const steps=recipe.steps.length?`<div class="card${R}"><h3>Steps</h3><ol class="osteps">${recipe.steps.map((s)=>`<li>${esc(s.text)}</li>`).join('')}</ol></div>`:'';
+  const steps=recipe.steps.length?`<div class="card${R}"><h3 aria-level="2">Steps</h3><ol class="osteps">${recipe.steps.map((s)=>`<li>${esc(s.text)}</li>`).join('')}</ol></div>`:'';
   if(mode==='batch'){
     const p=E.batchDay(recipe,want);plan={mode,p,want};
     const mins=Math.round(p.totalMin/5)*5;
     say(`${fmtX(p.factor)}× the recipe${mins?` · about ${mins} minutes`:''}`,`${want} meals · ${fmtX(p.factor)}× the recipe${mins?` · about ${mins} minutes`:''}`);
-    p.notes.forEach((n)=>h+=`<div class="note">${esc(n)}</div>`);
+    (p.notes||[]).forEach((n)=>h+=`<div class="note">${esc(n)}</div>`);
     h+=`<div class="seg tabs noprint" id="tabs" role="group" aria-label="Sections"><span class="pill"></span>${[['shop','Shop'],['cook','Cook'],['store','Store'],['recipe','Recipe']].map((t)=>`<button data-tab="${t[0]}">${t[1]}</button>`).join('')}</div>`;
     // shop
     const seen={};p.grocery.forEach((g)=>{const n=seen[g.name]=(seen[g.name]||0)+1;g.key=n>1?g.name+' #'+n:g.name}); // "ginger paste" can be on the list twice
@@ -1748,17 +2015,17 @@ function build(fresh,soft){
     h+=`<div data-panel="shop">${shopHTML(R)}</div>`;
     // cook
     h+=`<div data-panel="cook">`;
-    if(p.pots.length)h+=`<div class="card${R}"><h3>Pots and pans</h3><ul class="plain">${p.pots.map((x,k)=>`<li data-a="p:${k}">${esc(x)}</li>`).join('')}</ul></div>`;
-    h+=`<div class="card${R}"><h3>Cook order</h3><ol class="order">${p.order.map((o,k)=>`<li><div>${esc(o.t)}<small data-a="d:${k}">${esc(o.d)}</small></div><span class="t num" data-a="m:${k}">${o.min?o.min+' min':''}</span></li>`).join('')}</ol></div></div>`;
+    if(p.pots.length)h+=`<div class="card${R}"><h3 aria-level="2">Pots and pans</h3><ul class="plain">${p.pots.map((x,k)=>`<li data-a="p:${k}">${esc(x)}</li>`).join('')}</ul></div>`;
+    h+=`<div class="card${R}"><h3 aria-level="2">Cook order</h3><ol class="order">${p.order.map((o,k)=>`<li><div>${esc(o.t)}<small data-a="d:${k}">${esc(o.d)}</small></div><span class="t num" data-a="m:${k}">${o.min?o.min+' min':''}</span></li>`).join('')}</ol></div></div>`;
     // store
-    h+=`<div data-panel="store"><div class="card${R}"><h3>Where it goes</h3><div class="split"><div><h4>${IC.freezer}Freezer</h4><p data-a="f:z">${esc(p.split.freezer.join(' ')||'Nothing this time.')}</p></div><div><h4>${IC.fridge}Fridge</h4><p data-a="f:r">${esc(p.split.fridge.join(' '))}</p></div><div><h4>${IC.fresh}Fresh at serving</h4><p>${esc(p.split.fresh.join(', ')||'Nothing extra.')}</p></div></div>${AFF.amazonTag&&portioned(p)?affRow('affGear','https://www.amazon.com/s?k=freezer+meal+prep+containers&tag='+encodeURIComponent(AFF.amazonTag),'Freezer containers',AMZ_NOTE):''}</div>${labelCard(R)}${cookCard(R)}</div>`;
+    h+=`<div data-panel="store"><div class="card${R}"><h3 aria-level="2">Where it goes</h3><div class="split"><div><h4 aria-level="3">${IC.freezer}Freezer</h4><p data-a="f:z">${esc(p.split.freezer.join(' ')||'Nothing this time.')}</p></div><div><h4 aria-level="3">${IC.fridge}Fridge</h4><p data-a="f:r">${esc(p.split.fridge.join(' '))}</p></div>${p.split.fresh.length?`<div><h4 aria-level="3">${IC.fresh}Fresh at serving</h4><p>${esc(p.split.fresh.join(', '))}</p></div>`:''}</div>${AFF.amazonTag&&portioned(p)?affRow('affGear','https://www.amazon.com/s?k=freezer+meal+prep+containers&tag='+encodeURIComponent(AFF.amazonTag),'Freezer containers',AMZ_NOTE):''}</div>${labelCard(R)}${cookCard(R)}</div>`;
     // recipe: what was read, next to what it became
-    h+=`<div data-panel="recipe"><div class="card${R}"><h3>Amounts <small>original on the right</small></h3><table class="tbl">${ingRows(p.items)}</table></div>${steps}</div>`;
+    h+=`<div data-panel="recipe"><div class="card${R}"><h3 aria-level="2">Amounts <small>original on the right</small></h3><table class="tbl">${ingRows(p.items)}</table></div>${steps}</div>`;
   }else{
     const s=E.scaleAll(recipe,want);plan={mode,s,want};
     say(`${fmtX(s.factor)}× the recipe`,`${want} servings · ${fmtX(s.factor)}× the recipe`);
-    if(recipe.baking&&s.factor>2)h+=`<div class="note">Baking doesn't scale well past 2×. Make ${Math.ceil(s.factor/2)} batches instead of one big one.</div>`;
-    h+=`<div class="card${R}"><h3>Ingredients <small>original on the right</small></h3><table class="tbl">${ingRows(s.items)}</table></div>${steps}`;
+    if(recipe.baking&&s.factor>2)h+=`<div class="note">Baking past 2×: make ${Math.ceil(s.factor/2)} batches.</div>`;
+    h+=`<div class="card${R}"><h3 aria-level="2">Ingredients <small>original on the right</small></h3><table class="tbl">${ingRows(s.items)}</table></div>${steps}`;
   }
   if(soft){late=true;remember(want);return} // the plan is new, the page is still the old one: it is drawn once the tap has landed
   sh.innerHTML=h;
@@ -1780,14 +2047,16 @@ const SK_IC='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-w
 const STK='bd-staples';let panOpen=false,stEd=false;
 function staples(){try{const a=JSON.parse(localStorage.getItem(STK));return new Set(Array.isArray(a)?a.filter((x)=>typeof x==='string'&&x).slice(0,500):[])}catch(e){return new Set()}}
 function putStaples(set){try{localStorage.setItem(STK,JSON.stringify([...set].slice(0,500)));return true}catch(e){return false}}
-function gline(g){return g.amt==='for serving'?`${g.name} (for serving)`:`${g.amt?g.amt+' ':''}${g.name}`}
+const gname=(g)=>g.label||g.name; // what the cook reads ("2 onions"); name stays the key for ticks, staples and store sections
+const tail=(g)=>g.amt==='for serving'||g.amt==='to taste'; // not an amount to buy: it reads after the name ("Chili flakes, to taste")
+function gline(g){return tail(g)?`${gname(g)} (${g.amt})`:`${g.amt?g.amt+' ':''}${gname(g)}`}
 function shopHTML(R){
   const S=plan.shop=E.shopList(plan.p.grocery,staples()),oddN=new Set(recipe.ingredients.filter(isOdd).map((i)=>i.name));
   // Copy keeps the section names; Add to list doesn't, because list apps would turn them into items
   const text=S.groups.map((s)=>s.name+'\n'+s.items.map(gline).join('\n')).concat(S.pantry.length?['Check your pantry\n'+S.pantry.map(gline).join('\n')]:[]).join('\n\n');
-  const li=(g,pan)=>`<li><label><input type="checkbox" data-k="${esc(g.key)}"${have.has(g.key)?' checked':''}><span><span class="tx">${g.amt==='for serving'?`${esc(g.name)} <span class="muted">for serving</span>`:`<b class="num" data-a="s:${esc(g.key)}">${esc(g.amt)}</b> ${esc(g.name)}`}${oddN.has(g.name)?'<span class="tag">check amount</span>':''}</span></span></label><button class="stp noprint" data-st="${esc(g.key)}" aria-pressed="${pan}" aria-label="Always have ${esc(g.name)}">${pan?SK_IC:''}Always have</button></li>`;
-  return `<div class="card shop${stEd?' ed':''}${R}"><h3><span>Grocery list<small class="cnt" id="gcount" aria-live="polite"></small></span><span class="acts noprint"><button class="link hidden" data-addlist>Add to list</button><button class="link" data-copy>Copy</button></span></h3><div class="pick noprint hidden" id="gpick"><button class="link" data-rem>Reminders</button><button class="link" data-other>Other apps</button></div>`
-    +S.groups.map((s)=>`<h4 class="aisle">${esc(s.name)}</h4><ul class="checks">${s.items.map((g)=>li(g,false)).join('')}</ul>`).join('')
+  const li=(g,pan)=>`<li><label><input type="checkbox" data-k="${esc(g.key)}"${have.has(g.key)?' checked':''}><span><span class="tx">${tail(g)?`${esc(gname(g))} <span class="muted">${esc(g.amt)}</span>`:`<b class="num" data-a="s:${esc(g.key)}">${esc(g.amt)}</b> ${esc(gname(g))}`}${oddN.has(g.name)?'<span class="tag">check amount</span>':''}</span></span></label><button class="stp noprint" data-st="${esc(g.key)}" aria-pressed="${pan}" aria-label="Always have ${esc(gname(g))}">${pan?SK_IC:''}Always have</button></li>`;
+  return `<div class="card shop${stEd?' ed':''}${R}"><h3 aria-level="2" aria-labelledby="glName"><span><span id="glName">Grocery list</span><small class="cnt" id="gcount" aria-live="polite"></small></span><span class="acts noprint"><button class="link hidden" data-addlist>Add to list</button><button class="link" data-copy>Copy</button></span></h3><div class="pick noprint hidden" id="gpick"><button class="link" data-rem>Reminders</button><button class="link" data-other>Other apps</button></div>`
+    +S.groups.map((s)=>`<h4 class="aisle" aria-level="3">${esc(s.name)}</h4><ul class="checks">${s.items.map((g)=>li(g,false)).join('')}</ul>`).join('')
     +(S.pantry.length?`<div class="pantry${S.groups.length?'':' only'}"><button class="ptog" id="ptog" aria-expanded="${panOpen}" aria-controls="pan"><span>Check your pantry <span class="muted num" id="pcount">(${S.pantry.length})</span></span>${CHEV_IC}</button><ul class="checks pan${panOpen?'':' shut'}" id="pan">${S.pantry.map((g)=>li(g,true)).join('')}</ul></div>`:'')
     +(plan.p.grocery.length?`<div class="gfoot noprint"><button class="link" id="stEdit">${stEd?'Done':'Mark staples'}</button></div>`:'')
     +(AFF.instacart&&plan.p.grocery.length?affRow('affShop',AFF.instacart,'Shop on Instacart'):'')
@@ -1825,6 +2094,7 @@ function setTab(t,quiet){
   $$('#tabs [data-tab]').forEach((b)=>b.setAttribute('aria-pressed',b.dataset.tab===t));
   $$('[data-panel]').forEach((p)=>{const on=p.dataset.panel===t;p.classList.toggle('hidden',!on);if(on&&!quiet){p.querySelectorAll('.rise').forEach((el,k)=>{el.classList.remove('in');el.style.transitionDelay=Math.min(k,4)*60+'ms';requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('in')))})}});
   $('#editCard').classList.toggle('hidden',t!=='recipe');
+  if(t==='store')fillLbl();
   moveTabs();
   if(!quiet){const tb=$('#tabs');if(tb&&tb.getBoundingClientRect().top<60)scrollTo({top:tb.offsetTop-72,behavior:reduce?'auto':'smooth'})}
 }
@@ -1835,6 +2105,12 @@ function watch(el,delay){if(delay)el.style.transitionDelay=delay+'ms';io.observe
 
 /* saving: on this device, no account */
 const KEY='bd-batches',CAP=200,MAXT=20000;let curId=null,full=false,junk=[];
+const OKF=/^(paste|screenshots|sample|tour|link)$/;
+// a batch the cook made: pasted or read from screenshots. Not the sample (alone or in the tour) and not one that was only opened from a shared link.
+// Batches saved before 15 Nov carry no origin and count, unless they are the sample
+function mine(x){return x.id!=='sample'&&(x.f==null||x.f==='paste'||x.f==='screenshots')}
+// for events: paste, screenshots, sample, tour, shared (a share link) or reopened (a saved batch of the cook's own)
+function cameFrom(){if(from==='link')return 'shared';if(from!=='saved')return from;return curId==='sample'||origin==='sample'?'sample':origin==='tour'?'tour':origin==='link'?'shared':'reopened'}
 function okB(x){return !!x&&typeof x==='object'&&typeof x.text==='string'&&!!x.text.trim()&&(typeof x.id==='string'||typeof x.id==='number')&&(x.title==null||typeof x.title==='string')&&isFinite(+x.w)&&+x.w>0&&isFinite(+x.at)&&+x.at>0}
 // entries that can't be shown are skipped in the list but kept in storage; nothing is ever dropped here
 function allB(){junk=[];try{const a=JSON.parse(localStorage.getItem(KEY));if(!Array.isArray(a))return[];const ok=[];a.forEach((x)=>{if(okB(x))ok.push(Object.assign(x,{id:String(x.id),k:Array.isArray(x.k)?x.k.filter((s)=>typeof s==='string'):[]}));else junk.push(x)});return ok}catch(e){return[]}}
@@ -1846,14 +2122,14 @@ function remember(want){
   const note=$('#savedNote');
   if((from==='sample'||from==='tour')&&!touched&&!curId){note.classList.add('hidden');full=false;$('#fullNote').classList.add('hidden');return} // a look at the sample isn't a batch
   const text=$('#text').value,a0=allB();
-  const rec={id:batchId(),title:recipe.title,text,y:recipe.yield,w:want,m:mode,at:Date.now(),k:[...have]};
+  const rec={id:batchId(),title:recipe.title,text,y:recipe.yield,w:want,m:mode,at:Date.now(),k:[...have]};if(origin)rec.f=origin;
   const a=a0.filter((x)=>x.id!==rec.id&&x.text!==text);
   full=a.length===a0.length&&a0.length>=CAP; // a new batch and no room: keep it open, save nothing, drop nothing
   $('#fullNote').classList.toggle('hidden',!full);
   if(full){note.classList.add('hidden');return}
   a.unshift(rec);curId=rec.id;
   const kept=putB(a);if(kept)persistOnce();
-  note.textContent=kept?'Saved on this device':"Couldn't save on this device. Share a link to keep it.";
+  note.textContent=kept?'Saved on this device':"Couldn't save. Share a link to keep it.";
   note.classList.remove('hidden');
   try{if(view==='sheet')sessionStorage.setItem('bd-open',curId)}catch(e){}
   renderSaved();
@@ -1861,7 +2137,7 @@ function remember(want){
 // My batches was full when this one was read: try again, in case room has been made
 function retryFull(){if(!full||!plan)return;remember(plan.want);if(!full){didFull=false;drawDid()}}
 function openRec(r,push){
-  curId=r.id||null;parts=[];pick=0;shots=[];extra=0;skipped=0;src='';touched=false;yieldSet=true;have.clear();(r.k||[]).forEach((k)=>have.add(k));tab='shop';plan=null;stEd=panOpen=false;
+  curId=r.id||null;origin=OKF.test(r.f)?r.f:'';parts=[];pick=0;shots=[];extra=0;skipped=0;src='';touched=false;yieldSet=true;have.clear();(r.k||[]).forEach((k)=>have.add(k));tab='shop';plan=null;stEd=panOpen=false;
   userMode=r.m==='scale'?'scale':'batch';
   $('#text').value=r.text;$('#edit').open=false;parse();
   $('#yield').value=r.y||recipe.yield;snapN($('#yield'),recipe.yield);recipe.yield=+$('#yield').value;
@@ -1874,7 +2150,8 @@ function isHome(){return matchMedia('(display-mode: standalone)').matches||navig
 function tipOff(){try{return localStorage.getItem('bd-tip')==='1'}catch(e){return false}}
 function renderSaved(){
   const a=allB();$('#mine').classList.toggle('hidden',!a.length);
-  $('#savedList').innerHTML=a.map((r)=>`<li><button class="open" data-id="${esc(r.id)}"><b>${esc(r.title||'Recipe')}</b><span class="num">${r.m==='scale'?`${esc(r.w)} servings`:`${esc(r.w)} meals`} · ${new Date(r.at).toLocaleDateString(undefined,{month:'short',day:'numeric'})}</span></button><button class="rm" data-rm="${esc(r.id)}" aria-label="Remove ${esc(r.title||'recipe')}">${X_IC}</button></li>`).join('');
+  const ck={};allF().forEach((e)=>{if(e.bid!=null&&(!ck[e.bid]||e.date>ck[e.bid]))ck[e.bid]=e.date}); // the last day each batch was cooked, from My freezer
+  $('#savedList').innerHTML=a.map((r)=>`<li><button class="open" data-id="${esc(r.id)}"><b>${esc(r.title||'Recipe')}</b><span class="num">${r.m==='scale'?`${esc(r.w)} servings`:`${esc(r.w)} meals`} · ${ck[r.id]?'Cooked '+esc(fzDay(ck[r.id])):new Date(r.at).toLocaleDateString(undefined,{month:'short',day:'numeric'})}</span></button><button class="rm" data-rm="${esc(r.id)}" aria-label="Remove ${esc(r.title||'recipe')}">${X_IC}</button></li>`).join('');
   $$('#savedList .open').forEach((b)=>b.onclick=()=>{const r=allB().find((x)=>x.id===b.dataset.id);if(r){from='saved';openRec(r);track('Reopen saved')}});
   $$('#savedList .rm').forEach((b)=>b.onclick=()=>{if(settling('saved'))return;const all=allB(),i=all.findIndex((x)=>x.id===b.dataset.rm);if(i<0)return;const gone=all.splice(i,1)[0];putB(all);
     const li=b.closest('li'),hh=li.offsetHeight,pos=[...li.parentNode.children].indexOf(li),was=[li.querySelector('.open b').textContent,li.querySelector('.open span').textContent];
@@ -1895,7 +2172,7 @@ function persistOnce(){if(flag('bd-ps'))return;setFlag('bd-ps');try{const st=nav
 
 /* backup and restore: one file, made and read on this device. Batches (with their ticks), theme and staples; nothing else */
 const BK_APP='batch.recipes',BK_V=1,BK_MAX=2e6;
-function cleanB(x){const o={id:String(x.id),text:x.text,w:+x.w,m:x.m==='scale'?'scale':'batch',at:+x.at,k:Array.isArray(x.k)?x.k.filter((t)=>typeof t==='string'):[]};if(typeof x.title==='string')o.title=x.title;if(isFinite(+x.y)&&+x.y>0)o.y=+x.y;return o}
+function cleanB(x){const o={id:String(x.id),text:x.text,w:+x.w,m:x.m==='scale'?'scale':'batch',at:+x.at,k:Array.isArray(x.k)?x.k.filter((t)=>typeof t==='string'):[]};if(typeof x.title==='string')o.title=x.title;if(isFinite(+x.y)&&+x.y>0)o.y=+x.y;if(OKF.test(x.f))o.f=x.f;return o}
 function backupData(){
   let th=null;try{th=localStorage.getItem('bd-theme')}catch(e){}
   return {app:BK_APP,v:BK_V,at:new Date().toISOString(),batches:allB().map(cleanB),freezer:allF(),settings:{theme:th==='dark'||th==='light'?th:null,staples:[...staples()]}};
@@ -1972,8 +2249,8 @@ function fillInst(el){
   const ios=isIOS();
   if(tipOff()||isHome()||!(ios||bip)||!curId){el.classList.add('hidden');return}
   el.innerHTML=ios
-    ?`<b>Use it like an app.</b> Tap ${SHARE_IC.replace('<svg','<svg class="ic" aria-label="Share"')} Share, then <b>Add to Home Screen</b>. Safari won't clear your batches.<button class="link" data-no>Got it</button>`
-    :`<b>Use it like an app.</b> It opens full screen from your Home Screen.<span class="instrow"><button class="pillb" data-yes>Add to Home Screen</button><button class="link" data-no>Not now</button></span>`;
+    ?`<b>Use it like an app.</b> Tap ${SHARE_IC.replace('<svg','<svg class="ic" aria-label="Share"')} Share, then <b>Add to Home Screen</b>.<button class="link" data-no>Got it</button>`
+    :`<b>Use it like an app.</b><span class="instrow"><button class="pillb" data-yes>Add to Home Screen</button><button class="link" data-no>Not now</button></span>`;
   el.classList.remove('hidden');
   const done=()=>{try{localStorage.setItem('bd-tip','1')}catch(e){}$$('[data-inst]').forEach((x)=>x.classList.add('hidden'))};
   el.querySelector('[data-no]').onclick=done;
@@ -1985,12 +2262,12 @@ $('#tipX').onclick=()=>{try{localStorage.setItem('bd-tip','1')}catch(e){}$('#tip
 
 /* tour: five bubbles on the real controls, using the sample. Offered on a first visit, always in the footer.
    bd-tour = done | skip once it has been finished or waved off; the offer never comes back after that */
-const CAN_LIST=!!navigator.share, CAN_WAKE='wakeLock' in navigator;
+const CAN_WAKE='wakeLock' in navigator;
 const TOUR=[
-  {t:()=>$('#choose'),s:"Add screenshots of any recipe. Here's a sample."},
+  {t:()=>$('#choose'),s:"Add screenshots. Here's a sample."},
   {t:()=>$('#want').closest('.step'),s:'Set how many meals.'},
-  {t:()=>$('#tabs [data-tab=shop]'),s:CAN_LIST?'Your grocery list. Tick as you shop, or send it to your list app.':'Your grocery list. Tick as you shop.',up:true},
-  {t:()=>$('#dCook'),s:CAN_WAKE?'Cook one step at a time. The screen stays on.':'Cook one step at a time.'},
+  {t:()=>$('#tabs [data-tab=shop]'),s:'Your grocery list. Tick as you shop.',up:true},
+  {t:()=>$('#dCook'),s:CAN_WAKE?'One step at a time. Screen stays on.':'One step at a time.'},
   {t:()=>$('#dShare'),s:'Save it or share it.'}];
 let touring=false,ti=0,tSide='',tKey='',tRaf=0,tFrom=null,offerGone=false,tAt=0,tWas=null,tNextAt=0,tNextPt=null;
 function offerSync(){$('#tourOffer').classList.toggle('hidden',!(NEWBIE&&!offerGone&&!touring&&!flag('bd-tour')&&!allB().length&&!/^#[rb]=/.test(startHash)))}
@@ -2001,8 +2278,8 @@ function tourPos(){
   const el=TOUR[ti].t();if(!el)return;
   const bub=$('#tBub'),r=el.getBoundingClientRect(),W=document.documentElement.clientWidth,bw=bub.offsetWidth,bh=bub.offsetHeight,e=tourEdges(el);
   const L=r.left-4,T=r.top-4,w=r.width+8,h=r.height+8;
-  const fitB=T+h+12+bh<=e.bot,fitA=T-12-bh>=e.top;
-  if(!tSide)tSide=TOUR[ti].up?(fitA||!fitB?'above':'below'):(fitB||!fitA?'below':'above');
+  const fitB=T+h+12+bh<=e.bot,fitA=T-12-bh>=e.top,fitW=T+h+12+bh<=innerHeight-8; // fitW: below the control with the bubble over the dock
+  if(!tSide)tSide=TOUR[ti].up?(fitA?'above':fitB||fitW||innerHeight-(T+h)>T?'below':'above'):(fitB||!fitA?'below':'above'); // nothing fits: the side with more room
   else if(tSide==='below'&&!fitB&&fitA)tSide='above';
   else if(tSide==='above'&&!fitA&&fitB)tSide='below';
   const x=Math.round(Math.max(16,Math.min(W-16-bw,r.left+r.width/2-bw/2))),y=Math.round(Math.max(8,Math.min(innerHeight-8-bh,tSide==='below'?T+h+12:T-12-bh))),ax=Math.round(Math.max(24,Math.min(bw-24,r.left+r.width/2-x)))-7;
@@ -2015,6 +2292,7 @@ function tourPos(){
 function tourScroll(el,up){
   if($('#dock').contains(el))return;
   const r=el.getBoundingClientRect(),bh=$('#tBub').offsetHeight,e=tourEdges(el);
+  if(up&&bh+16+r.height+8>e.bot-e.top){scrollBy(0,r.top-(e.top+4));return} // no room for the bubble above and the control under it (a short window, or 400% zoom): the control goes to the top, clear of the dock
   const ok=up?(r.top-16-bh>=e.top&&r.bottom+4<=e.bot):(r.top-4>=e.top&&r.bottom+16+bh<=e.bot);
   if(!ok)scrollBy(0,r.top-(up?e.top+bh+16:e.top+16));
 }
@@ -2052,13 +2330,14 @@ function endTour(how,quiet){
   setFlag('bd-tour',how==='done'?'done':'skip');track('Tour',{step:ti+1,end:how});offerSync();
   if(quiet)return;
   const to=view==='sheet'?$('#sTitle'):(tFrom&&tFrom.isConnected&&tFrom.offsetParent?tFrom:$('#choose'));to.focus({preventScroll:true});
-  if(how!=='done'&&tFrom!==$('#tourGo'))toast(view==='sheet'?"Tour's at the bottom of the home page anytime.":"Tour's at the bottom of the page anytime.",null,4000);
+  if(how!=='done'&&tFrom!==$('#tourGo'))toast(view==='sheet'?'Tour is in the home page footer.':'Tour is in the footer.',null,4000);
 }
 $('#tourYes').onclick=()=>{track('Tour',{step:0,choice:'show'});startTour($('#choose'),$('#tourYes'))};
-$('#tourNo').onclick=()=>{offerGone=true;setFlag('bd-tour','skip');track('Tour',{step:0,choice:'skip'});offerSync();$('#choose').focus({preventScroll:true});toast("Tour's at the bottom of the page anytime.",null,4000)};
+$('#tourNo').onclick=()=>{offerGone=true;setFlag('bd-tour','skip');track('Tour',{step:0,choice:'skip'});offerSync();$('#choose').focus({preventScroll:true});toast('Tour is in the footer.',null,4000)};
 $('#tourGo').onclick=()=>{track('Tour',{step:0,choice:'link'});startTour($('#tourGo'))};
 $('#tNext').onclick=tourNext;
-$('#tSkip').onclick=()=>endTour('skip');
+// on phones the offer is centred, so the bubble's Skip tour can come up right where Show me was: a second tap there, just after the tour opens, is not a Skip
+$('#tSkip').onclick=(e)=>{const w=tWas;if(ti===0&&!tNextAt&&e&&e.detail&&w&&Date.now()-tAt<1200&&e.clientX>=w.left-8&&e.clientX<=w.right+8&&e.clientY>=w.top-8&&e.clientY<=w.bottom+8)return;endTour('skip')};
 // a tap off the bubble ends the tour, unless it lands where the bubble (or the button that started the tour) was a moment ago: that tap was for Next
 $('#tour').addEventListener('click',(e)=>{
   if(e.target.closest('#tBub'))return;
@@ -2095,6 +2374,7 @@ async function encode(o){
 async function decode(code){
   const bytes=unb64u(code.slice(1));
   if(code[0]==='z'){ // stop inflating once it is clearly too big to be a recipe
+    if(!window.DecompressionStream)throw new Error('old'); // Safari before 16.4 can't open a compressed link
     const rd=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw')).getReader(),got=[];let n=0;
     for(;;){const {done,value}=await rd.read();if(done)break;n+=value.length;if(n>MAXT*4){try{rd.cancel()}catch(e){}throw new Error('big')}got.push(value)}
     return JSON.parse(await new Blob(got).text());
@@ -2111,7 +2391,7 @@ async function copyLink(){
 function plainText(){
   const L=[];
   if(plan.mode==='batch'){
-    const p=plan.p;L.push(`${recipe.title}: ${plan.want} meals (${fmtX(p.factor)}× the recipe)`,'','Shopping');
+    const p=plan.p;L.push(`${recipe.title}: ${plan.want} meals (${fmtX(p.factor)}× the recipe)`);(p.notes||[]).forEach((n)=>L.push(n));L.push('','Shopping');
     plan.shop.buy.concat(plan.shop.pantry).forEach((g)=>L.push('- '+gline(g))); // same order as the Shop tab
     L.push('','Cook order');
     p.order.forEach((o,k)=>{L.push(`${k+1}. ${o.t}${o.min?` (${o.min} min)`:''}`);(o.use||[]).forEach((u)=>L.push(`   ${u.amt?u.amt+' ':''}${u.name}`))});
@@ -2120,14 +2400,14 @@ function plainText(){
     if(p.split.fresh.length)L.push('Fresh at serving: '+p.split.fresh.join(', '));
   }else{
     L.push(`${recipe.title}: ${plan.want} servings (${fmtX(plan.s.factor)}×)`,'');
-    plan.s.items.forEach((i)=>L.push(`- ${i.scaled?i.scaled+' ':''}${i.name}`));
+    plan.s.items.forEach((i)=>L.push(`- ${i.scaled?i.scaled+' ':''}${i.label||i.name}`));
     if(recipe.steps.length){L.push('');recipe.steps.forEach((s,k)=>L.push(`${k+1}. ${s.text}`))}
   }
   return L.join('\n');
 }
 // grocery list out to the phone's list apps: one item per line, in store order, only what's not ticked yet. No section names, no staples
 const SHORTCUT_NAME='Add to Reminders';
-function needList(){const all=plan.shop.buy.length?plan.shop.buy:plan.shop.pantry,left=all.filter((g)=>!have.has(g.key));return (left.length?left:all).map((g)=>g.amt==='for serving'?g.name:`${g.amt?g.amt+' ':''}${g.name}`).join('\n')}
+function needList(){const all=plan.shop.buy.length?plan.shop.buy:plan.shop.pantry,left=all.filter((g)=>!have.has(g.key));return (left.length?left:all).map((g)=>tail(g)?gname(g):`${g.amt?g.amt+' ':''}${gname(g)}`).join('\n')}
 // one share sheet at a time: a tap while one is open does nothing
 let shareOn=false,shareAt=0,listAt=0;
 function shareBusy(){return shareOn}
@@ -2159,8 +2439,10 @@ function openBatch(id,how){
 async function openFromHash(h){
   if(/^#b=/.test(h)){let id='';try{id=decodeURIComponent(h.slice(3))}catch(e){}openBatch(id.slice(0,200),'label');return}
   const m=h.match(/^#r=([\w-]+)$/);if(!m){if(/^#r=/.test(h))toast("That link didn't open");return}
-  try{if(m[1].length>MAXT*8)throw 0;const o=await decode(m[1]);if(!o||typeof o.t!=='string'||!o.t.trim()||o.t.length>MAXT)throw 0;from='link';track('Open shared link');openRec({text:o.t,y:o.y,w:o.w,m:o.m==='scale'?'scale':'batch'},true)}
-  catch(e){toast("That link didn't open")}
+  try{if(m[1].length>MAXT*8)throw 0;const o=await decode(m[1]);if(!o||typeof o.t!=='string'||!o.t.trim()||o.t.length>MAXT)throw 0;from='link';track('Open shared link');
+    const s=allB().find((x)=>x.text===o.t); // already saved here (your own link, or one opened before): same id, same ticks; the link only sets meals, servings and mode
+    openRec({id:s?s.id:null,k:s?s.k:[],f:s?s.f:'link',text:o.t,y:o.y,w:o.w,m:o.m==='scale'?'scale':'batch'},true)}
+  catch(e){toast(e&&e.message==='old'?'This link needs a newer browser. Update your phone, or ask for the recipe text.':"That link didn't open",null,6000)}
 }
 
 /* store links. Shop on Instacart: the list still to buy goes on the clipboard, then the store opens in a new tab */
@@ -2168,7 +2450,7 @@ function needItems(){const all=plan.shop.buy.length?plan.shop.buy:plan.shop.pant
 function portioned(p){return p.order.some((o)=>/portion|container/i.test(o.t+' '+o.d))||p.split.freezer.some((x)=>/\bmeals\b/.test(x))}
 function shopOut(e){
   e.preventDefault();if(!plan||plan.mode!=='batch'||!AFF.instacart)return;
-  const items=needItems().map((g)=>({name:g.name,text:g.amt==='for serving'?g.name:`${g.amt?g.amt+' ':''}${g.name}`}));
+  const items=needItems().map((g)=>({name:g.name,text:tail(g)?gname(g):`${g.amt?g.amt+' ':''}${gname(g)}`}));
   let c=null;try{c=navigator.clipboard.writeText(items.map((i)=>i.text).join('\n'))}catch(er){}
   if(c&&c.then)c.then(()=>toast('List copied'),()=>{});
   track('Shop link',{to:'instacart'});
@@ -2220,7 +2502,8 @@ function cvFit(c,text,w){let s=String(text);if(c.measureText(s).width<=w)return 
 /* share picture: the dish, how many meals, the pot and the name, drawn on a canvas. Always the light look, whatever the theme */
 const PIC={story:{w:1080,h:1920,x:64,y:256,r:64},pin:{w:1000,h:1500,x:48,y:48,r:56}}; // the white card's inset and corner. A story keeps 256 clear top and bottom, where the apps lay their own buttons
 const POT=['M20 16c-2-3 2-5 0-8','M28 16c-2-3 2-5 0-8','M36 16c-2-3 2-5 0-8','M10 24h36','M13 24v16a6 6 0 0 0 6 6h18a6 6 0 0 0 6-6V24','M6 28h7M43 28h7']; // the one mark (brand/mark.py PATHS), on its 56 grid
-const PIC_INK='#1d1d1f',PIC_ACC='#c2410c',PIC_BG='#f5f5f7',PIC_CARD='#ffffff';
+const PIC_INK='#1d1d1f',PIC_INK2='#6e6e73',PIC_ACC='#c2410c',PIC_BG='#f5f5f7',PIC_CARD='#ffffff';
+const PIC_SAY='Batch plan from a recipe screenshot'; // under the word mark, so someone who sees the picture knows what made it
 function picCount(){const n=plan.want;return plan.mode==='batch'?`${n} ${n===1?'meal':'meals'}`:`${n} ${n===1?'serving':'servings'}`}
 function drawPic(size){
   const S=PIC[size],W=S.w,H=S.h,u=W/1080,cv=document.createElement('canvas'),c=cv.getContext('2d'),ff=cvFont(),cx=W/2,pad=Math.round(96*u),side=S.x+Math.round(80*u),maxW=W-2*side;
@@ -2235,8 +2518,9 @@ function drawPic(size){
   const tlh=Math.round(tpx*1.1),capT=cvMid(c,lines[0],cx,0,false).asc; // gaps are measured to the letters, not to the line box
   let npx=Math.round(208*u);for(;;){cvSet(c,npx,600,ff,-.035);if(c.measureText(count).width<=maxW||npx<=Math.round(96*u))break;npx-=Math.round(8*u)}
   const mN=cvMid(c,count,cx,0,false),capN=mN.asc,dipN=cost?0:mN.bottom,cpx=Math.round(56*u),costH=cost?gap3+cpx:0;
-  // the word mark sits one pad above the card's foot; the block is centred in what is left, one pad clear at each end
-  const wpx=Math.round(48*u),wBase=H-S.y-pad;cvSet(c,wpx,600,ff,-.02);const wTop=Math.round(wBase-cvMid(c,'batch.recipes',cx,0,false).asc);
+  // one line saying what batch.recipes does sits one pad above the card's foot, the word mark over it; the block is centred in what is left, one pad clear at each end
+  const spx=Math.round(30*u),sBase=H-S.y-pad;cvSet(c,spx,400,ff,-.01);const sTop=Math.round(sBase-cvMid(c,PIC_SAY,cx,0,false).asc);
+  const wpx=Math.round(48*u),wBase=sTop-Math.round(24*u);cvSet(c,wpx,600,ff,-.02);const wTop=Math.round(wBase-cvMid(c,'batch.recipes',cx,0,false).asc);
   const blockH=potH+gap1+capT+(lines.length-1)*tlh+gap2+capN+dipN+costH;
   const free0=S.y+pad,free1=wTop-pad,y0=Math.round(free0+Math.max(0,(free1-free0-blockH)/2));
   // pot: the drawing is x 6..50, y 8..46 on the 56 grid
@@ -2246,12 +2530,13 @@ function drawPic(size){
   y+=(lines.length-1)*tlh+gap2+capN;
   cvSet(c,npx,600,ff,-.035);cvMid(c,count,cx,y);
   const slot={x:side,y:Math.round(y+gap3),w:maxW,h:cpx}; // reserved for cost per meal
-  if(cost){cvSet(c,cpx,400,ff,-.02);c.fillStyle='#6e6e73';cvMid(c,cost,cx,y+gap3+Math.round(cpx*.8))}
+  if(cost){cvSet(c,cpx,400,ff,-.02);c.fillStyle=PIC_INK2;cvMid(c,cost,cx,y+gap3+Math.round(cpx*.8))}
   // batch.recipes, with the dot in the accent
   cvSet(c,wpx,600,ff,-.02);
   const a=c.measureText('batch').width,d=c.measureText('.').width,mb=c.measureText('batch'),mr=c.measureText('recipes');let x=cx-(a+d+mr.actualBoundingBoxRight-mb.actualBoundingBoxLeft)/2; // drawn in three pieces, so centred from the pieces
   c.fillStyle=PIC_INK;c.fillText('batch',x,wBase);x+=a;c.fillStyle=PIC_ACC;c.fillText('.',x,wBase);x+=d;c.fillStyle=PIC_INK;c.fillText('recipes',x,wBase);
-  cv.dataset.geo=JSON.stringify({w:W,h:H,card:[S.x,S.y,W-2*S.x,H-2*S.y],side,top:y0,bottom:Math.round(y),free:[free0,free1],word:[wTop,wBase],slot,lines:lines.length});
+  cvSet(c,spx,400,ff,-.01);c.fillStyle=PIC_INK2;cvMid(c,cvFit(c,PIC_SAY,maxW),cx,sBase);
+  cv.dataset.geo=JSON.stringify({w:W,h:H,card:[S.x,S.y,W-2*S.x,H-2*S.y],side,top:y0,bottom:Math.round(y),free:[free0,free1],word:[wTop,wBase],say:[sTop,sBase],slot,lines:lines.length});
   return cv;
 }
 const pic=$('#pic');let picFrom=null,picT=null,picSize='story',picFile=null,picN=0;
@@ -2261,12 +2546,12 @@ function picDraw(){
   $$('#picSize button').forEach((b)=>b.setAttribute('aria-pressed',b.dataset.s===picSize));slide($('#picSize'));
   let cv=null;try{cv=drawPic(picSize)}catch(e){}
   if(!cv){closePic();toast("Couldn't make the picture");return}
-  img.dataset.geo=cv.dataset.geo;
+  img.dataset.geo=cv.dataset.geo;img.alt=`${recipe.title||'Recipe'}, ${picCount()}`; // named before the file is ready, so the preview is never silent
   pngOf(cv).then((b)=>{
     if(n!==picN||!picOpen())return;if(!b){closePic();toast("Couldn't make the picture");return}
     picFile=new File([b],`batch-recipes-${slug(recipe.title)}-${picSize}.png`,{type:'image/png'});
     if(img.src&&/^blob:/.test(img.src))URL.revokeObjectURL(img.src);
-    img.width=S.w;img.height=S.h;img.alt=`${recipe.title||'Recipe'}, ${picCount()}`;img.src=URL.createObjectURL(picFile);go.disabled=false;
+    img.width=S.w;img.height=S.h;img.src=URL.createObjectURL(picFile);go.disabled=false;
   });
 }
 function openPic(){
@@ -2323,16 +2608,19 @@ function lblData(){const title=recipe.title||'Recipe',qr=lblQR();return {title,n
 function lblHTML(d,k){
   if(d.qr)return `<div class="lbl q"><div class="lt"><div><b dir="auto" style="font-size:${d.pt}pt">${esc(d.title)}</b></div><div><span>Cooked${d.when?' '+esc(d.when):''}</span>${d.when?'':'<i></i>'}</div><div><span>Use by</span><i></i></div><div>${d.rh?`<span class="rh">${esc(d.rh)}</span>`:'<i></i>'}</div></div><div class="lq"><svg viewBox="0 0 ${d.qr.size} ${d.qr.size}" shape-rendering="crispEdges" aria-hidden="true"><path fill="#000" d="${window.BatchQR.path(d.qr)}"/></svg><span>${k} of ${d.n}</span></div></div>`;
   return `<div class="lbl"><div><b dir="auto">${esc(d.title)}</b><span>${k} of ${d.n}</span></div><div><span>Cooked${d.when?' '+esc(d.when):''}</span>${d.when?'':'<i></i>'}<span>Use by</span><i></i></div><div>${d.rh?`<span class="rh">${esc(d.rh)}</span>`:'<i></i>'}</div></div>`}
+/* the preview is the slowest thing on the page to make (the QR code), and it sits on the Store tab: it is drawn at once when that tab is showing,
+   otherwise when the tab opens or a moment after the page has painted, so the tap that builds the page isn't held up */
+let lblT=0;
+function fillLbl(){clearTimeout(lblT);const pv=$('#lblPrev');if(pv&&!pv.firstChild&&plan&&plan.mode==='batch')pv.innerHTML=lblHTML(lblData(),1)}
 function labelCard(R){
-  const d=lblData();
-  return `<div class="card labels noprint${R}"><h3>Freezer labels</h3><div class="lprev" id="lblPrev" aria-hidden="true">${lblHTML(d,1)}</div>`
+  return `<div class="card labels noprint${R}"><h3 aria-level="2">Freezer labels</h3><div class="lprev" id="lblPrev" aria-hidden="true">${tab==='store'?lblHTML(lblData(),1):''}</div>`
     +`<div class="set"><label for="lblDate">Cooked</label><input class="date num" type="date" id="lblDate" value="${esc(lblDate)}"></div>`
-    +`<button class="btn soft" id="lblPrint">Print labels</button><p class="hint">Avery 5160, 30 a sheet. Print at 100%.</p>`
+    +`<button class="btn soft" id="lblPrint">Print labels</button><p class="hint">Avery 5160. Print at 100%.</p>`
     +`<div id="lblFoot"></div></div>`;
 }
 function wireLabels(){
   const i=$('#lblDate');if(!i)return;
-  wireDay(i);
+  wireDay(i);clearTimeout(lblT);lblT=setTimeout(fillLbl,120);
   $('#lblPrint').onclick=printLabels;lblAsk=false;drawLblFoot();
 }
 // print: only the labels, laid out for Avery 5160. The page rule is added for this print alone, so printing the recipe keeps its own margins
@@ -2422,18 +2710,23 @@ function putF(a){try{localStorage.setItem(FZK,JSON.stringify(a.concat(fzJunk)));
 const fzHas=(e,p)=>e['f'+p+'0']>0&&!e[p+'x']; // p is z (freezer) or r (fridge)
 const meals=(n)=>`${n} ${n===1?'meal':'meals'}`;
 function fzDay(s){const m=/^(\d{4})-(\d\d)-(\d\d)$/.exec(s),d=m?new Date(+m[1],m[2]-1,+m[3]):null;if(!d||isNaN(d))return '';return d.toLocaleDateString(undefined,d.getFullYear()===new Date().getFullYear()?{month:'short',day:'numeric'}:{month:'short',day:'numeric',year:'numeric'})}
+/* fridge meals keep 4 days: the Store tab says "eat within 4 days", and a fridge row older than that says so here and offers Remove.
+   Freezer rows are never flagged */
+const FR_DAYS=4;
+function daysOld(s){const m=/^(\d{4})-(\d\d)-(\d\d)$/.exec(s);if(!m)return 0;const n=new Date();return Math.round((new Date(n.getFullYear(),n.getMonth(),n.getDate())-new Date(+m[1],m[2]-1,+m[3]))/864e5)}
 // the home card: fridge first, then the freezer, each oldest first. Hidden when there is nothing in it
 function renderFz(){
   const a=allF().sort((x,y)=>x.date<y.date?-1:x.date>y.date?1:x.at-y.at),fr=a.filter((e)=>fzHas(e,'r')),fz=a.filter((e)=>fzHas(e,'z'));
   $('#fz').classList.toggle('hidden',!(fr.length+fz.length));
   const nz=fz.reduce((s,e)=>s+e.fz,0),nr=fr.reduce((s,e)=>s+e.fr,0);
   $('#fzSum').textContent=nz?`${meals(nz)} in the freezer`:nr?`${meals(nr)} in the fridge`:'Nothing left';
-  const row=(e,p)=>{const n=e['f'+p],t=e.title||'Recipe';return `<li><button class="open" data-fo="${esc(e.id)}"><b dir="auto">${esc(t)}</b><span class="num"><span data-n="${esc(e.id)}:${p}">${n?n+' left':'None left'}</span> · Cooked ${esc(fzDay(e.date))}</span></button><button class="ate" data-${n?'ate':'frm'}="${esc(e.id)}" data-p="${p}" aria-label="${n?'Ate one':'Remove'}, ${esc(t)}">${n?'Ate one':'Remove'}</button></li>`};
+  const row=(e,p)=>{const n=e['f'+p],t=e.title||'Recipe',old=p==='r'&&n>0&&daysOld(e.date)>FR_DAYS,eat=n&&!old;return `<li><button class="open" data-fo="${esc(e.id)}"><b dir="auto">${esc(t)}</b><span class="num"><span data-n="${esc(e.id)}:${p}">${n?n+' left':'None left'}</span> · Cooked ${esc(fzDay(e.date))}</span>${old?`<span class="old">Past ${FR_DAYS} days. Toss it.</span>`:''}</button><button class="ate" data-${eat?'ate':'frm'}="${esc(e.id)}" data-p="${p}" aria-label="${eat?'Ate one':'Remove'}, ${esc(t)}">${eat?'Ate one':'Remove'}</button></li>`};
   const list=(rows,p)=>`<ul class="saved">${rows.map((e)=>row(e,p)).join('')}</ul>`;
-  $('#fzList').innerHTML=(fr.length?`<h4 class="aisle">In the fridge</h4>${list(fr,'r')}`:'')+(fz.length?(fr.length?'<h4 class="aisle">In the freezer</h4>':'')+list(fz,'z'):'');
+  $('#fzList').innerHTML=(fr.length?`<h4 class="aisle" aria-level="3">In the fridge</h4>${list(fr,'r')}`:'')+(fz.length?(fr.length?'<h4 class="aisle" aria-level="3">In the freezer</h4>':'')+list(fz,'z'):'');
   $$('#fzList [data-fo]').forEach((b)=>b.onclick=()=>{const e=allF().find((x)=>x.id===b.dataset.fo);openBatch(e&&e.bid,'card')});
   $$('#fzList [data-ate]').forEach((b)=>b.onclick=()=>fzAte(b.dataset.ate,b.dataset.p));
   $$('#fzList [data-frm]').forEach((b)=>b.onclick=()=>fzRemove(b.dataset.frm,b.dataset.p));
+  renderSaved(); // My batches shows each batch's last cooked date
 }
 function fzFocus(id,p){const b=$(`#fzList .ate[data-p="${p}"][data-ate="${CSS.escape(id)}"],#fzList .ate[data-p="${p}"][data-frm="${CSS.escape(id)}"]`)||$('#fzList .ate')||($('#fz').classList.contains('hidden')?$('#choose'):$('#fzH'));if(b)b.focus({preventScroll:true})}
 function fzFlash(id,p){const n=$(`#fzList [data-n="${CSS.escape(id+':'+p)}"]`);if(n)n.classList.add('chg');$('#fzSum').classList.remove('chg');$('#fzSum').offsetWidth;$('#fzSum').classList.add('chg')}
@@ -2474,7 +2767,7 @@ function cooked(){
   const a=allF();if(a.length>=FZCAP){toast('My freezer is full. Remove a few first.');return null}
   const e={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),bid:curId,title:String(recipe.title||'Recipe').slice(0,300),date:cookDay(),fz:po.freezer,fr:po.fridge,fz0:po.freezer,fr0:po.fridge,at:Date.now()};
   a.push(e);if(!putF(a)){toast("Couldn't save on this device");return null}
-  track('Cooked',{portions:po.freezer+po.fridge});HAP.buzz('done');renderFz();return e;
+  track('Cooked',{portions:po.freezer+po.fridge,from:cameFrom()});HAP.buzz('done');renderFz();return e;
 }
 function uncook(id){const a=allF(),i=a.findIndex((x)=>x.id===id);if(i<0)return;a.splice(i,1);putF(a);renderFz()}
 function fzSay(po){return po.freezer&&po.fridge?`${meals(po.freezer)} for the freezer, ${po.fridge} for the fridge.`:po.freezer?`${meals(po.freezer)} for the freezer.`:`${meals(po.fridge)} for the fridge.`}
@@ -2483,13 +2776,13 @@ const FULL_MSG='My batches is full. Remove a few to save this one.'; // the same
 function goMine(){addState('pick');show('add',true);const m=$('#mine');m.scrollIntoView({block:'start',behavior:reduce?'auto':'smooth'});$('#mineH').focus({preventScroll:true})}
 function cookCard(R){
   const po=fzPortions();if(!po)return '';
-  return `<div class="card didc noprint${R}"><h3>My freezer</h3><p class="didp num" data-a="f:n">${esc(fzSay(po))}</p>`
+  return `<div class="card didc noprint${R}"><h3 aria-level="2">My freezer</h3><p class="didp num" data-a="f:n">${esc(fzSay(po))}</p>`
     +`<div class="set"><label for="ckDate">Cooked</label><input class="date num" type="date" id="ckDate" value="${esc(lblDate)}"></div><div id="didBox"></div></div>`;
 }
 function drawDid(focus){
   const box=$('#didBox');if(!box)return;
   box.innerHTML=didAsk
-    ?`<div class="tip"><b>Already added for ${esc(fzDay(cookDay()))}.</b> Add it again?<span class="instrow"><button class="pillb" id="didAgain">Add again</button><button class="link" id="didNo">Cancel</button></span></div>`
+    ?`<div class="tip"><b>Already added for ${esc(fzDay(cookDay()))}.</b><span class="instrow"><button class="pillb" id="didAgain">Add again</button><button class="link" id="didNo">Cancel</button></span></div>`
     :`${didFull&&!curId?`<div class="alert" id="didFull" role="status"><div>${FULL_MSG}<button class="link" id="didMine">My batches</button></div></div>`:''}<button class="btn soft" id="didGo">I cooked this</button>${fzMine()?'<div class="gfoot"><button class="link" id="didSee">See My freezer</button></div>':''}`;
   const add=()=>{didAsk=false;const e=cooked();drawDid(true);if(e)toast('Added to My freezer',()=>{uncook(e.id);drawDid()})};
   const mn=$('#didMine');if(mn)mn.onclick=goMine;
@@ -2503,20 +2796,30 @@ function wireCooked(){
   wireDay(i);
   drawDid();
 }
-// the same, quietly, when the last step is done
-let cDidState='';
+/* the same on cook mode's last screen. There "I cooked this" is the big button, where Next was, so a thumb working through the steps logs the cook
+   instead of closing; Close is the small one. Once it is logged (or there is a question to answer) the big button is Close.
+   cHold: the big button has just changed what it does, so a second tap of a double tap is dropped */
+let cDidState='',cHold=0;
+const C_HOLD=450;
+function cAsks(){return !!$('#cDidBox')&&cDidState===''} // the big button still says "I cooked this"
 function drawCDid(focus){
-  const box=$('#cDidBox');if(!box)return;
+  const box=$('#cDidBox'),nx=$('#cNext');
+  if(!box){nx.textContent='Close';return}
   box.innerHTML=cDidState==='done'?`<span class="cdone" role="status">${CHECK_IC}In My freezer</span>`
-    :cDidState==='ask'?`<span>Already added today. Add it again?</span><span class="instrow"><button class="pillb" id="cDidAgain">Add again</button><button class="link" id="cDidNo">Cancel</button></span>`
-    :`${cDidState==='full'?`<span role="status">${FULL_MSG}</span><span class="instrow"><button class="link" id="cDidMine">My batches</button></span>`:'<button class="pillb soft" id="cDid">I cooked this</button>'}`;
-  const add=()=>{cDidState=cooked()?'done':didFull?'full':'';drawCDid(true);drawDid()};
+    :cDidState==='ask'?`<span>Already added for ${esc(fzDay(cookDay()))}.</span><span class="instrow"><button class="pillb soft" id="cDidAgain">Add again</button><button class="link" id="cDidNo">Cancel</button></span>`
+    :cDidState==='full'?`<span role="status">${FULL_MSG}</span><span class="instrow"><button class="link" id="cDidMine">My batches</button></span>`
+    :'<button class="pillb soft" id="cDone">Close</button>';
+  nx.textContent=cAsks()?'I cooked this':'Close';
+  const add=()=>{const e=cooked();cDidState=e?'done':didFull?'full':'';cHold=Date.now()+C_HOLD;drawCDid(true);drawDid();
+    if(e)toast('Added to My freezer',()=>{uncook(e.id);if(cs>=csteps.length&&cDidState==='done'){cDidState='';drawCDid()}drawDid()})};
+  cDidGo=()=>{if(fzDup()){cDidState='ask';cHold=Date.now()+C_HOLD;drawCDid(true)}else add()};
   const mn=$('#cDidMine');if(mn)mn.onclick=()=>{ // out of cook mode first, then to the list
     if(history.state&&history.state.cook){const after=()=>{removeEventListener('popstate',after);setTimeout(goMine,0)};addEventListener('popstate',after);closeCook()}else{closeCook();goMine()}};
-  const go=$('#cDid');if(go)go.onclick=()=>{if(fzDup()){cDidState='ask';drawCDid(true)}else add()};
-  const ag=$('#cDidAgain');if(ag){ag.onclick=add;$('#cDidNo').onclick=()=>{cDidState='';drawCDid(true)}}
-  if(focus)(ag||go||mn||$('#cNext')).focus({preventScroll:true});
+  const dn=$('#cDone');if(dn)dn.onclick=()=>closeCook();
+  const ag=$('#cDidAgain');if(ag){ag.onclick=add;$('#cDidNo').onclick=()=>{cDidState='';cHold=Date.now()+C_HOLD;drawCDid(true)}}
+  if(focus)(ag||nx).focus({preventScroll:true});
 }
+let cDidGo=()=>{};
 const menu=$('#menu');let menuFrom=null,menuT=null;
 function menuOpen(){return !menu.classList.contains('hidden')&&!menu.classList.contains('out')} // a sheet that is fading out counts as closed
 function openMenu(){if(!plan||menuOpen())return;clearTimeout(menuT);menu.classList.remove('out');menuFrom=document.activeElement;menu.querySelector('[data-share]').classList.toggle('hidden',!navigator.share);menu.classList.remove('hidden');(menu.querySelector('.mrow:not(.hidden)')).focus()}
@@ -2540,7 +2843,7 @@ function openCook(){
   clearTimeout(cookT);if($('#cook').classList.contains('out')){$('#cook').classList.add('hidden');$('#cook').classList.remove('out');$('#cook').offsetHeight} // reopened while it was still fading out
   csteps=plan.mode==='batch'?plan.p.order.map((o)=>({t:o.t,d:o.d,min:o.min,use:o.use||[]})):recipe.steps.map((s)=>({t:s.text,d:'',min:0}));
   if(!csteps.length)csteps=[{t:'No steps found',d:'Add them under Edit the text.',min:0}];
-  track('Cook mode');keep();
+  track('Cook mode',{from:cameFrom()});keep();
   cs=0;$('#cook').classList.remove('hidden');document.body.style.overflow='hidden';
   try{history.scrollRestoration='manual'}catch(e){} // closing steps back in history; without this the browser moves the recipe page to an old scroll position behind the fade
   history.pushState({v:view,cook:1},'');wake();drawStep(0);$('#cNext').focus();
@@ -2558,9 +2861,9 @@ function drawStep(dir){
   b.className='body'+(dir>0?' go':dir<0?' back':'');
   if(cs>=n){
     b.className+=' done';
-    b.innerHTML=`<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="28"/><path d="M20 33l8 8 16-17"/></svg><h2>That’s the week, done.</h2><p>Label the bags with today’s date.</p>${fzPortions()?'<div class="cdid" id="cDidBox"></div>':''}`;
-    cDidState='';drawCDid();
-    $('#cStep').textContent='Done';$('#cLive').textContent='Done. That’s the week, done.';$('#cProg').style.width='100%';$('#cNext').textContent='Close';$('#cBack').disabled=false;return;
+    b.innerHTML=`<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="28"/><path d="M20 33l8 8 16-17"/></svg><h2>Done.</h2>${plan&&plan.mode==='batch'?'<p>Label the bags with today’s date.</p>':''}${fzPortions()?'<div class="cdid" id="cDidBox"></div>':''}`;
+    cDidState='';cHold=Date.now()+C_HOLD;drawCDid();
+    $('#cStep').textContent='Done';$('#cLive').textContent=cAsks()?'Done. Tap I cooked this to add it to My freezer.':'Done.';$('#cProg').style.width='100%';$('#cBack').disabled=false;return;
   }
   const s=csteps[cs];
   b.innerHTML=`<h2>${esc(s.t)}</h2>${s.d?`<p>${esc(s.d)}</p>`:''}${s.use&&s.use.length?`<ul class="uses">${s.use.map((u)=>`<li><b class="num">${esc(u.amt)}</b><span>${esc(u.name)}</span></li>`).join('')}</ul>`:''}${s.min?`<span class="time"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="11" r="7"/><path d="M10 7v4l2.5 2M8 2h4"/></svg>About ${s.min} min</span>`:''}`;
@@ -2570,7 +2873,11 @@ function drawStep(dir){
   $('#cBack').disabled=cs===0;$('#cNext').textContent=cs===n-1?'Finish':'Next';
 }
 $('#dCook').onclick=openCook;
-$('#cNext').onclick=()=>{if(cs>=csteps.length){closeCook();return}cs++;HAP.buzz(cs>=csteps.length?'done':'tick');drawStep(1)};
+$('#cNext').onclick=()=>{
+  if(cs>=csteps.length){if(Date.now()<cHold)return;if(cAsks())cDidGo();else closeCook();return} // the last screen: log the cook, or close
+  cs++;HAP.buzz(cs>=csteps.length?'done':'tick');drawStep(1)};
+// the right arrow and a swipe step forward and close the last screen; they never log a cook
+function cFwd(){if(cs>=csteps.length&&cAsks())return;$('#cNext').click()}
 $('#cBack').onclick=()=>{if(cs>0){cs--;HAP.buzz('tick');drawStep(-1)}};
 $('#cClose').onclick=()=>closeCook();
 // keep Tab inside the open sheet or cook mode
@@ -2584,10 +2891,10 @@ addEventListener('keydown',(e)=>{
   if(e.key==='Escape'&&menuOpen()){closeMenu();return}
   if(e.key==='Escape'&&picOpen()){closePic();return}
   if(!cookOpen())return;
-  if(e.key==='ArrowRight')$('#cNext').click();else if(e.key==='ArrowLeft')$('#cBack').click();else if(e.key==='Escape')closeCook();
+  if(e.key==='ArrowRight')cFwd();else if(e.key==='ArrowLeft')$('#cBack').click();else if(e.key==='Escape')closeCook();
 });
 let tx=null;$('#cBody').addEventListener('touchstart',(e)=>{tx=e.touches[0].clientX},{passive:true});
-$('#cBody').addEventListener('touchend',(e)=>{if(tx==null)return;const dx=e.changedTouches[0].clientX-tx;tx=null;if(Math.abs(dx)>60){if(dx<0)$('#cNext').click();else $('#cBack').click()}},{passive:true});
+$('#cBody').addEventListener('touchend',(e)=>{if(tx==null)return;const dx=e.changedTouches[0].clientX-tx;tx=null;if(Math.abs(dx)>60){if(dx<0)cFwd();else $('#cBack').click()}},{passive:true});
 
 /* recipe name in the top bar once the title has scrolled under it */
 function syncBar(){const r=$('#sTitle').getBoundingClientRect();$('.bar').classList.toggle('t',view==='sheet'&&r.height>0&&r.bottom<52)}
@@ -2636,9 +2943,10 @@ Directions
 7. Add the chicken back and simmer until cooked through. Add bok choy until just tender.
 8. Spoon rice into bowls, ladle the broth over, and finish with green onion, lime and chili oil.`;
 // once per browser session, and never in the session that made the first batch
-{let seen=false;try{seen=sessionStorage.getItem('bd-rv')==='1';sessionStorage.setItem('bd-rv','1')}catch(e){}if(!seen){track('Visit');if(allB().length)track('Returning visit')}} // Visit: once per session, carries src
+{let seen=false;try{seen=sessionStorage.getItem('bd-rv')==='1';sessionStorage.setItem('bd-rv','1')}catch(e){}if(!seen){track('Visit');if(allB().some(mine))track('Returning visit')}} // Visit: once per session, carries src. Returning visit: only with a batch the cook made (see mine)
 renderSaved();
 renderFz();
+setTimeout(()=>{try{fzDay(today());lblWhen()}catch(e){}},400); // the first date format is slow (it loads the locale); do it while idle, not inside the tap that builds a recipe
 /* another tab of this site changed what is saved: show it here too. A batch removed there is closed here, so this tab can't save it back.
    Two tabs changing the same batch: the later change wins */
 addEventListener('storage',(e)=>{

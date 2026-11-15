@@ -1,12 +1,12 @@
 <h1>Privacy</h1>
-<p class="muted">Last updated 14 November 2026</p>
-<p>batch.recipes turns recipe screenshots into a batch-cooking plan. There are no accounts, so we never know who you are.</p>
+<p class="muted">Last updated 15 November 2026</p>
+<p>batch.recipes turns recipe screenshots into a batch-cooking plan. There are no accounts.</p>
 
 <h2>Screenshots</h2>
-<p>When you add screenshots, they are sent to our reader on Hugging Face. The reader passes them to an AI model through Hugging Face Inference Providers and sends back the recipe text. The reader doesn't save the screenshots or the text. To enforce read limits it keeps your IP address in memory for up to a day, and nothing else.</p>
+<p>When you add screenshots, they are sent to our reader on Hugging Face. The reader passes them to an AI model through Hugging Face Inference Providers, which runs the model on a third-party provider's servers, and sends back the recipe text. Our reader doesn't save the screenshots or the text. Hugging Face and the provider handle them under their own terms. To enforce read limits, the reader keeps your IP address and the times of your recent reads in memory until it restarts. It keeps nothing else.</p>
 <ul>
 <li>Screenshots are only sent when you add them. Nothing is sent in the background.</li>
-<li>If the AI reader doesn't answer or is over its limit, your screenshots are read in your browser instead. If you're offline, they aren't sent at all.</li>
+<li>If the AI reader doesn't answer or is over its limit, your screenshots are read on your device instead. If you're offline, they aren't sent at all.</li>
 <li>Don't add screenshots that show anything private.</li>
 </ul>
 
@@ -14,17 +14,17 @@
 <ul>
 <li>Recipe text you paste is read in your browser and isn't uploaded.</li>
 <li>Recipes are saved in your browser's storage under My batches. Clearing your browser data removes them. We can't see or recover them.</li>
-<li><b>Back up</b> makes a file on your device with your batches, your theme and your staples. It goes only where you save or send it.</li>
+<li><b>Back up</b> makes a file on your device with your batches, My freezer, your theme and your staples. It goes only where you save or send it.</li>
 <li>When you use <b>Copy link</b> or <b>Send</b>, the recipe goes inside the link itself. The part of a link after the # isn't sent to our servers.</li>
 </ul>
 
 <h2>Services the site uses</h2>
 <ul>
-<li><b>Vercel</b> hosts the site. Like any web host, it handles basic request information such as your IP address so the page can load.</li>
+<li><b>Vercel</b> hosts the site and sees your IP address.</li>
 <li><b>Hugging Face</b> runs the AI reader described above and passes screenshots to the AI model through its Inference Providers.</li>
-<li><b>jsDelivr</b> serves the in-browser reader, which is only loaded if the AI reader can't be used.</li>
-<li><b>Vercel Web Analytics</b> counts visits and a few anonymous actions, like reading a recipe or opening cook mode. It uses no cookies and stores no personal information. We use it to see whether the site is worth keeping.</li>
-<li><b>Umami</b> counts the same visits and actions so we can see how many people are on the site right now. It also uses no cookies and stores no personal information.</li>
+<li><b>jsDelivr</b> serves the on-device reader, which is only loaded if the AI reader can't be used.</li>
+<li><b>Vercel Web Analytics</b> counts visits, the site a visit came from and a few anonymous actions, like reading a recipe or opening cook mode. It uses no cookies and stores no personal information.</li>
+<li><b>Umami</b> counts the same visits and actions. It also uses no cookies and stores no personal information.</li>
 </ul>
 
 <h2>Advertising</h2>
@@ -33,17 +33,18 @@
 <li>Third-party vendors, including Google, use cookies to serve ads based on your earlier visits to this website or other websites.</li>
 <li>Google's advertising cookies let Google and its partners serve ads to you based on your visits to this site and other sites.</li>
 <li>You can opt out of personalized advertising in <a href="https://adssettings.google.com" rel="noopener">Google's Ads Settings</a>. You can also opt out of some third-party vendors' use of cookies at <a href="https://www.aboutads.info" rel="noopener">aboutads.info</a>.</li>
-<li>Visitors in the EEA, the UK and Switzerland are asked for consent before personalized ads are used. You can change your choice any time with the privacy button on the page.</li>
+<li>Where the law requires consent, such as in the EEA, the UK and Switzerland, Google's consent message asks for your choice before personalized ads are used and lets you change it later.</li>
 </ul>
 
 <h2>Affiliate links</h2>
-<p>Some links to stores, such as Amazon, are affiliate links. If you buy something after following one, batch.recipes may earn a commission. The link takes you to the store's own site, which has its own privacy terms.</p>
+<p>Some links to stores, such as Amazon, are affiliate links. If you buy something after following one, batch.recipes may earn a commission. The link takes you to the store's own site, which has its own privacy terms. After you follow an Amazon link, Amazon sets its own cookies to track the commission.</p>
 <p>As an Amazon Associate I earn from qualifying purchases.</p>
 
 <h2>California and other US states</h2>
 <p>Showing personalized ads can count as "selling" or "sharing" personal information under laws in California and some other US states. batch.recipes doesn't sell anything else about you.</p>
 <ul>
-<li>Use the <b>Do not sell or share my personal information</b> option on the site to opt out. Ads will still show, but they won't be personalized.</li>
+<li>Where the law requires it, Google's privacy message on the site gives you a way to opt out of the sale or sharing of your personal information. Ads will still show, but they won't be personalized.</li>
+<li>You can opt out any time in <a href="https://adssettings.google.com" rel="noopener">Google's Ads Settings</a>.</li>
 <li>If your browser sends a Global Privacy Control signal, Google treats it as an opt-out.</li>
 <li>You can also ask about your information through the contact below.</li>
 </ul>

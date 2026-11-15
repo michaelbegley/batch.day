@@ -94,7 +94,7 @@ async def main():
         want=[n.strip() for k,n in enumerate(names) if k not in (0,1)]
         await pg.locator('#affShop').click(); await pg.wait_for_timeout(300)
         clip=(await pg.evaluate('navigator.clipboard.readText()')).split('\n')
-        norm=lambda s:' '.join(s.replace('check amount','').replace('for serving','').split())
+        norm=lambda s:' '.join(s.replace('check amount','').replace('for serving','').replace('to taste','').split())  # the engine now lists to-taste items; like for-serving ones they go out by name alone
         log('shop: clipboard has what is left to buy (no ticked item, no staple)',[norm(x) for x in clip]==[norm(x) for x in want],f'{len(clip)} of {len(names)}: {clip[:3]}')
         log('shop: toast says List copied',(await pg.inner_text('#toast')).strip()=='List copied',await pg.inner_text('#toast'))
         op=await pg.evaluate('window.__open'); log('shop: store opened in a new tab with the tracking URL',op==[['https://example.com/instacart-stub?x=1','_blank','noopener']],op)

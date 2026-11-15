@@ -80,7 +80,8 @@ async def main():
             # CSP: one inline script, allowed by its hash
             inl=re.findall(r'<script>(.*?)</script>',html,re.S); csp=re.search(r'http-equiv="Content-Security-Policy" content="([^"]+)"',html)
             hs=["'sha256-"+base64.b64encode(hashlib.sha256(m.encode()).digest()).decode()+"'" for m in inl]
-            log(f'{slug}: one small inline script, hashed in the page\'s CSP; no unsafe-inline for scripts',len(inl)==1 and len(inl[0])<6000 and csp and all(h in csp.group(1) for h in hs) and "'unsafe-inline'" not in csp.group(1).split('script-src')[1].split(';')[0],[len(i) for i in inl])
+            inl=[i for i in inl if 'var C=' in i]+[i for i in inl if 'var C=' not in i]  # the calculator first, then the shell's script (theme, source, Vercel Web Analytics)
+            log(f'{slug}: two small inline scripts (calculator, shell), hashed in the page\'s CSP; no unsafe-inline for scripts',len(inl)==2 and len(inl[0])<6000 and len(inl[1])<3000 and csp and all(h in csp.group(1) for h in hs) and "'unsafe-inline'" not in csp.group(1).split('script-src')[1].split(';')[0],[len(i) for i in inl])
             # what a crawler gets without scripts is what the calculator shows
             first=await pg.evaluate(READ)
             c2,p2,e2,_=await fresh(b,slug,js=False); raw=await p2.evaluate(READ) if False else None
@@ -160,8 +161,8 @@ async def main():
                 m=await pg.evaluate("""()=>{const W=document.documentElement.clientWidth,r=s=>document.querySelector(s).getBoundingClientRect(),c=r('.card'),a=r('.g'),s0=r('.set'),st=r('.step'),lab=r('.set label'),btn=r('.btn'),big=r('.big');
                   return {colL:Math.round(a.left),colR:Math.round(W-a.right),cardL:Math.round(c.left-a.left),cardR:Math.round(a.right-c.right),padL:Math.round(lab.left-c.left),padR:Math.round(c.right-st.right),padT:Math.round(s0.top-c.top),bigL:Math.round(big.left-c.left),btnL:Math.round(btn.left-a.left),btnR:Math.round(a.right-btn.right),btnH:btn.height,
                    padB:Math.round(c.bottom-[...document.querySelectorAll('.card > *')].pop().getBoundingClientRect().bottom)}}""")
-                ok=abs(m['colL']-m['colR'])<=1 and m['cardL']==0 and m['cardR']==0 and m['padL']==m['padR']==m['padT']==m['bigL']==m['padB']==21 and m['btnL']==0 and m['btnR']==0 and m['btnH']==56
-                log(f'{slug} {w}: even: column centred, card padding 20 + hairline on all four sides, button full width and 56 high',ok,m); await ctx.close()
+                ok=abs(m['colL']-m['colR'])<=1 and m['cardL']==0 and m['cardR']==0 and m['padL']==m['padR']==m['padT']==m['bigL']==m['padB']==(33 if w>720 else 21) and m['btnL']==0 and m['btnR']==0 and m['btnH']==56
+                log(f'{slug} {w}: even: column centred, card padding 20 (32 on desktop) + hairline on all four sides, button full width and 56 high',ok,m); await ctx.close()
             # reduced motion and a blocked engine
             ctx,pg,errs,_=await fresh(b,slug,block=('**/engine.js',)); st=norm(await pg.inner_text('[data-o=big]'))
             log(f'{slug}: if engine.js doesn\'t load, the built-in answer stays and nothing errors',st==first['big'] and not errs,[st,errs[:2]]); await ctx.close()

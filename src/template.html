@@ -293,6 +293,10 @@ details.edit[open] summary{margin-bottom:8px}
 @media (max-width:480px){.offer{justify-content:center;text-align:center}} /* phones: centred, like the button and the line above it */
 .offer p{margin:0}
 .sampleRow{display:flex;justify-content:center;margin-top:16px}
+/* video: a quiet second way in. The box swaps into the card like the paste box does */
+#videobox .hint+.hint{margin-top:4px}
+.alert .lnacts{display:flex;flex-wrap:wrap;gap:0 24px}.alert .lnacts .link{display:inline-block}
+.head #sFrom{margin:0}.head #sFrom a{color:var(--accent);font-weight:600;text-decoration:none;display:inline-flex;align-items:center;min-height:44px}
 .offer .instrow{margin:0}
 .tour{position:fixed;inset:0;z-index:70}
 .tring{position:fixed;left:0;top:0;border-radius:24px;box-shadow:0 0 0 2px var(--accent),0 0 0 200vmax rgba(0,0,0,.12);pointer-events:none}
@@ -489,6 +493,7 @@ details.edit[open] summary{margin-bottom:8px}
   .lsheet:last-child{break-after:auto;page-break-after:auto}
   .lsheet .lbl{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+.novideo #videoToggle,.novideo #lnVideo,.novideo #rdVideo{display:none!important}
 </style>
 </head>
 <body>
@@ -519,7 +524,14 @@ details.edit[open] summary{margin-bottom:8px}
           <p class="hint">Sent to an AI reader. We don't keep them.</p>
           <div class="sampleRow"><button class="pillb soft" id="sample">See a sample plan</button></div>
         </div>
+        <div class="hidden" id="videobox">
+          <input type="file" id="vfile" accept="video/*" hidden>
+          <button class="btn" id="vchoose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="13" height="14" rx="3"/><path d="M16 10l5-3v10l-5-3"/></svg>Choose a video</button>
+          <p class="hint">Save or screen record the video, then pick it here.</p>
+          <p class="hint">A few frames and the sound go to an AI reader. We don't keep them. The video stays on this device.</p>
+        </div>
         <div class="hidden" id="pastebox">
+          <div class="alert hidden" id="linkNote" role="status"><div><span id="linkText"></span><span class="lnacts" id="lnActs"><button class="link" id="lnVideo">Add a video</button><button class="link" id="lnShots">Choose screenshots</button></span></div></div>
           <textarea id="paste" placeholder="Ingredients, steps, servings" aria-label="Recipe text"></textarea>
           <button class="btn" id="usePaste" disabled>Use this recipe</button>
           <p class="hint">Stays on this device.</p>
@@ -527,6 +539,7 @@ details.edit[open] summary{margin-bottom:8px}
       </div>
       <div class="links">
         <button class="link" id="pasteToggle">Paste text</button>
+        <button class="link" id="videoToggle">Add a video</button>
       </div>
 
       <div class="card fz hidden" id="fz">
@@ -577,7 +590,7 @@ details.edit[open] summary{margin-bottom:8px}
       </div>
       <div class="failed">
         <button class="btn" id="rdAgain">Choose other screenshots</button>
-        <div><button class="link" id="rdPaste">Paste text</button><button class="link hidden" id="rdOther">Choose other screenshots</button></div>
+        <div><button class="link" id="rdPaste">Paste text</button><button class="link hidden" id="rdOther">Choose other screenshots</button><button class="link hidden" id="rdVideo">Add a video</button></div>
       </div>
     </section>
   </div>
@@ -585,7 +598,7 @@ details.edit[open] summary{margin-bottom:8px}
   <!-- 2. the recipe -->
   <div class="view hidden" id="v-sheet">
     <button class="link back noprint" id="newRec"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>New recipe</button>
-    <div class="head"><h2 id="sTitle" tabindex="-1" dir="auto" aria-level="1"></h2><p class="noprint num" id="sMeta"></p></div>
+    <div class="head"><h2 id="sTitle" tabindex="-1" dir="auto" aria-level="1"></h2><p class="noprint num" id="sMeta"></p><p class="noprint hidden" id="sFrom"></p></div>
     <p class="printonly" id="pSum"></p>
     <div class="noprint" id="alerts"></div>
     <div class="alert noprint hidden" id="fullNote"><div>My batches is full. Remove a few to save this one.<button class="link" id="fullGo">My batches</button></div></div>
@@ -669,7 +682,7 @@ details.edit[open] summary{margin-bottom:8px}
 'use strict';
 const $=(s)=>document.querySelector(s), $$=(s)=>[...document.querySelectorAll(s)], E=window.BatchEngine;
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-let recipe=null, mode='batch', userMode='batch', view='add', plan=null, tab='shop', shots=[], extra=0, from='paste', origin='paste'; // from: how this recipe was opened now. origin: how it was first made (paste, screenshots, sample, tour, link; '' for a batch saved before 15 Nov)
+let recipe=null, mode='batch', userMode='batch', view='add', plan=null, tab='shop', shots=[], extra=0, from='paste', origin='paste'; // from: how this recipe was opened now. origin: how it was first made (paste, screenshots, video, youtube, sample, tour, link; '' for a batch saved before 15 Nov)
 let parts=[], pick=0, src='', srcWhy='', touched=false, yieldSet=false, skipped=0, wants={batch:14,scale:4};
 const have=new Set();
 // anonymous, cookie-free counts for the go/no-go test (Vercel Web Analytics)
@@ -680,6 +693,8 @@ function track(name,data){data=Object.assign({src:SRC},data||{});try{window.va('
 // a first visit: nothing of ours stored on this device before this session. Read before anything else writes a bd- key
 const NEWBIE=(()=>{try{let n=sessionStorage.getItem('bd-new');if(n===null){let old=false;for(let i=0;i<localStorage.length;i++)if(/^bd-/.test(localStorage.key(i)))old=true;localStorage.setItem('bd-seen','1');n=old?'0':'1';sessionStorage.setItem('bd-new',n)}return n==='1'}catch(e){return false}})();
 const READER='/*READER*/';
+const VIDEO_ON=false||(()=>{try{return localStorage.getItem('bd-video')==='1'}catch(e){return false}})(); // bd-video=1 turns it on for tests. Video and YouTube reading: on once the reader Space has /watch and /link (15 Nov). Off: no video buttons, links get the screenshot message
+if(!VIDEO_ON)document.documentElement.classList.add('novideo');
 const SPLIT=/\n-{3,}\n/;
 function esc(s){return String(s).replace(/[&<>"]/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function fmtX(f){return (f>0&&f<.095?+f.toPrecision(2):Math.abs(f*4-Math.round(f*4))<.005&&f<10?Math.round(f*4)/4:Math.round(f*10)/10).toString()} // 0.012×, never 0×: a tiny batch still shows its size
@@ -774,13 +789,38 @@ $('#choose').onclick=()=>file.click();
 file.addEventListener('change',()=>{handleFiles([...file.files]);file.value=''});
 ['dragenter','dragover'].forEach((t)=>card.addEventListener(t,(e)=>{e.preventDefault();card.classList.add('over')}));
 ['dragleave','drop'].forEach((t)=>card.addEventListener(t,(e)=>{e.preventDefault();card.classList.remove('over')}));
-card.addEventListener('drop',(e)=>handleFiles([...e.dataTransfer.files]));
+card.addEventListener('drop',(e)=>{const fs=[...e.dataTransfer.files],v=fs.find((f)=>f&&(f.type||'').startsWith('video/'));if(v)pickVideo(v);else handleFiles(fs)});
 document.addEventListener('paste',(e)=>{if(view!=='add'||job)return;const imgs=[...((e.clipboardData||{}).items||[])].filter((i)=>i.type.startsWith('image/')).map((i)=>i.getAsFile());if(imgs.length){e.preventDefault();handleFiles(imgs)}});
 const paste=$('#paste');
-function pasteMode(on){$('#pastebox').classList.toggle('hidden',!on);$('#pick').classList.toggle('hidden',on);$('#pasteToggle').textContent=on?'Use screenshots':'Paste text';if(on)paste.focus()}
+function pasteMode(on){$('#videobox').classList.add('hidden');$('#videoToggle').textContent='Add a video';$('#linkNote').classList.add('hidden');$('#pastebox').classList.toggle('hidden',!on);$('#pick').classList.toggle('hidden',on);$('#pasteToggle').textContent=on?'Use screenshots':'Paste text';if(on)paste.focus()}
 $('#pasteToggle').onclick=()=>pasteMode($('#pastebox').classList.contains('hidden'));
-paste.addEventListener('input',()=>$('#usePaste').disabled=!paste.value.trim());
-$('#usePaste').onclick=()=>{from='paste';shots=[];extra=0;src='';if(!load(paste.value))toast('No ingredients found')};
+paste.addEventListener('input',()=>{$('#usePaste').disabled=!paste.value.trim();$('#linkNote').classList.add('hidden')});
+// the video box takes the card's place, the way the paste box does
+function videoMode(on){pasteMode(false);if(!on)return;$('#pick').classList.add('hidden');$('#videobox').classList.remove('hidden');$('#videoToggle').textContent='Use screenshots';$('#vchoose').focus({preventScroll:true})}
+$('#videoToggle').onclick=()=>videoMode($('#videobox').classList.contains('hidden'));
+const vfile=$('#vfile');
+$('#vchoose').onclick=()=>vfile.click();
+vfile.addEventListener('change',()=>{const f=vfile.files[0];vfile.value='';if(f)pickVideo(f)});
+$('#lnVideo').onclick=()=>videoMode(true);
+$('#lnShots').onclick=()=>{pasteMode(false);file.click()};
+/* a paste that is only a link is not a recipe. YouTube links go to the reader, which asks YouTube; nothing is sent for any other site */
+const SITE_NAME={youtube:'YouTube',tiktok:'TikTok',instagram:'Instagram',facebook:'Facebook',pinterest:'Pinterest'};
+function linkOnly(t){
+  t=String(t).trim();if(!t||t.length>2000||/\s/.test(t))return null;
+  const m=/^(?:https?:\/\/)?((?:[a-z0-9-]+\.)+[a-z]{2,})(?::\d+)?([\/?#]\S*)?$/i.exec(t);if(!m)return null;
+  const h=m[1].toLowerCase(),is=(re)=>new RegExp('(^|\\.)('+re+')$').test(h);
+  const site=is('youtube\\.com|youtu\\.be')?'youtube':is('tiktok\\.com')?'tiktok':is('instagram\\.com|instagr\\.am')?'instagram':is('facebook\\.com|fb\\.watch|fb\\.com|fb\\.me')?'facebook':is('pinterest\\.[a-z.]+|pin\\.it')?'pinterest':'web';
+  if(site==='web'&&!/^https?:\/\//i.test(t)&&!/^www\./i.test(t))return null; // "rice.flour" is not a link
+  return {site,url:/^https?:\/\//i.test(t)?t:'https://'+t};
+}
+function linkNote(msg,acts){$('#linkText').textContent=msg;$('#lnActs').classList.toggle('hidden',!acts);$('#linkNote').classList.remove('hidden')}
+function pastedLink(L){
+  if(L.site==='youtube'&&VIDEO_ON){track('Link paste',{site:'youtube',result:'read'});readLink(L.url);return}
+  track('Link paste',{site:L.site,result:'unsupported'});
+  if(L.site==='web'){linkNote('That looks like a web page. Copy the recipe from the page and paste it here.',false);paste.focus();paste.select();return}
+  linkNote(VIDEO_ON?`We can't read ${SITE_NAME[L.site]} links. Add the video or a screenshot instead.`:`We can't read ${SITE_NAME[L.site]} links yet. Add a screenshot of the recipe instead.`,true);
+}
+$('#usePaste').onclick=()=>{const L=linkOnly(paste.value);if(L){pastedLink(L);return}from='paste';shots=[];extra=0;src='';if(!load(paste.value))toast('No ingredients found')};
 $('#sample').onclick=()=>{from='sample';shots=[];extra=0;src='';load(SAMPLE)};
 
 /* reading: AI first, this device as the fallback */
@@ -802,11 +842,12 @@ function stopRead(){
   const run=job;if(!run)return;job=null;run.dead=true;stopClock();
   try{if(run.ctrl)run.ctrl.abort()}catch(e){}
   try{if(run.worker)run.worker.terminate()}catch(e){}
+  try{if(run.stop)run.stop()}catch(e){}
   addState('pick');
 }
 function fail(title,line,retry){
   stopClock();job=null;scanAll(false);$('#rdTitle').textContent=title;setStatus(line);
-  const b=$('#rdAgain');b.textContent=retry?'Try again':'Choose other screenshots';b.dataset.retry=retry?'1':'';$('#rdOther').classList.toggle('hidden',!retry);
+  const b=$('#rdAgain');b.textContent=retry?'Try again':'Choose other screenshots';b.dataset.retry=retry?'1':'';b.dataset.act='';$('#rdOther').textContent='Choose other screenshots';$('#rdOther').classList.toggle('hidden',!retry);$('#rdVideo').classList.add('hidden');
   addState('fail');$('#rdTitle').focus({preventScroll:true});
 }
 function coded(c){const e=new Error(c);e.code=c;return e}
@@ -943,10 +984,200 @@ async function readShots(again){
   if(navigator.onLine===false)fail("Couldn't read those","You're offline.",true);
   else fail("Couldn't read those",''); // the two buttons under it say what to try
 }
-$('#rdCancel').onclick=()=>{const run=job;if(run&&!run.worker&&run.ctrl)track('AI read',{shots:shots.length,result:'cancel'});const st=history.state||{};stopRead();if(st.reading)history.back();else if(plan&&st.v==='sheet')show('sheet',false)};
+$('#rdCancel').onclick=()=>{const run=job;if(run&&run.kind)track('Video read',{from:run.kind==='link'?'youtube':'file',result:'cancel'});else if(run&&!run.worker&&run.ctrl)track('AI read',{shots:shots.length,result:'cancel'});const st=history.state||{};stopRead();if(st.reading)history.back();else if(plan&&st.v==='sheet')show('sheet',false)};
 $('#rdDevice').onclick=()=>{if(job&&job.ctrl){job.skip=true;job.ctrl.abort()}};
-$('#rdAgain').onclick=()=>{if($('#rdAgain').dataset.retry&&shots.length){readShots(false);return}addState('pick');file.click()};
-$('#rdOther').onclick=()=>{addState('pick');file.click()};
+$('#rdAgain').onclick=()=>{
+  const b=$('#rdAgain'),a=b.dataset.act;
+  if(a==='retry'){if(b.dataset.kind==='link'&&lastLink){readLink(lastLink);return}if(b.dataset.kind!=='link'&&lastVideo){readVideo(lastVideo.file,lastVideo.pay);return}}
+  if(a==='retry'||a==='video'){addState('pick');videoMode(true);vfile.click();return}
+  if(a==='shots'){addState('pick');pasteMode(false);file.click();return}
+  if(b.dataset.retry&&shots.length){readShots(false);return}addState('pick');file.click()};
+$('#rdOther').onclick=()=>{addState('pick');pasteMode(false);file.click()};
+$('#rdVideo').onclick=()=>{const link=$('#rdAgain').dataset.kind==='link';addState('pick');videoMode(true);if(!link)vfile.click()};
+
+/* video. The cook picks a video file; this device pulls out a few still frames and the sound; only those go to the reader.
+   The file itself is never uploaded. A YouTube link goes to the reader as a link, and the reader asks YouTube and Google about it */
+const V={MAXS:600,MAXB:1e9,SOUNDB:2e8,FRAMES:8,CAND:16,SND:180,RATE:16000,TIMEOUT:100000}; // 10 minutes, 1 GB, sound only under 200 MB, 8 frames, 180 s of 16 kHz sound
+let lastVideo=null,lastLink='',cred=null,nextCred=null,vinfo={used:'',sound:false,big:false};
+const VFAIL={ // title, line under it, main button: retry, video or shots
+  notvideo:["That file isn't a video",'Choose a video, or add screenshots.','video'],
+  cantopen:["This phone couldn't open that video",'Try a screen recording.','video'],
+  toolong:['That video is over 10 minutes','Trim it to the cooking part and try again.','video'],
+  toobig:['That video is too big','Trim it to the cooking part and try again.','video'],
+  none:['No recipe found in that video',"If it's in the caption, add a screenshot of the caption.",'shots'],
+  limit:["That's a lot of videos",'Try again in a bit, or add screenshots.','shots'],
+  busy:['The video reader is busy today','Try again tomorrow, or add screenshots.','shots'],
+  error:["The video reader couldn't read it right now",'Add screenshots instead.','retry'],
+  offline:["You're offline",'Videos need the AI reader.','retry'],
+  off:["YouTube links aren't on yet",'Add the video or screenshots.','shots'],
+  private:['That video is private','Add screenshots or paste the recipe.','shots'],
+  linklong:['That video is too long to read from a link','Add screenshots or paste the recipe.','shots']};
+const VRES={none:'none',limit:'limit',busy:'limit',timeout:'timeout',offline:'offline',off:'off',private:'private',linklong:'toolong'}; // what the event calls each ending; anything else is error
+function failV(why,kind){
+  const f=VFAIL[why]||VFAIL.error,act=f[2];stopClock();job=null;scanAll(false);
+  $('#rdTitle').textContent=f[0];setStatus(kind==='link'&&why==='none'?'':f[1]);
+  const b=$('#rdAgain');b.dataset.retry='';b.dataset.act=act;b.dataset.kind=kind;
+  b.textContent=act==='retry'?'Try again':act==='video'?'Choose another video':'Choose screenshots';
+  const o=$('#rdOther');o.textContent='Choose screenshots';o.classList.toggle('hidden',act==='shots');
+  const v=$('#rdVideo');v.textContent=kind==='link'?'Add a video':'Choose another video';v.classList.toggle('hidden',act==='video');
+  addState('fail');$('#rdTitle').focus({preventScroll:true});
+}
+function vclock(run,exp,base){
+  const t0=Date.now();stopClock();
+  clock=setInterval(()=>{const t=Date.now()-t0;prog(base+(.95-base)*(1-Math.exp(-2.2*t/(exp*1000))));
+    if(run.listen&&t>run.listen&&run===job){run.listen=0;setStatus('Reading')}},200);
+}
+async function vpost(path,body,run,exp,base){
+  run.ctrl=new AbortController();
+  const to=setTimeout(()=>{run.late=true;run.ctrl.abort()},V.TIMEOUT);vclock(run,exp,base);
+  try{
+    const r=await fetch(READER+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:run.ctrl.signal});
+    const j=await r.json().catch(()=>({})),w=j&&typeof j.why==='string'?j.why:'';
+    if(r.status===422)throw coded('none');
+    if(r.status===429)throw coded(w==='busy'?'busy':'limit');
+    if(r.status===503&&w==='off')throw coded('off');
+    if(r.status===404&&w==='private')throw coded('private');
+    if(r.status===413&&w==='toolong')throw coded('linklong');
+    if(!r.ok||!j||typeof j.text!=='string'||!j.text.trim())throw coded('error');
+    return j;
+  }catch(e){
+    if(typeof e.code==='string')throw e;
+    throw coded(run.dead?'cancel':run.late?'timeout':navigator.onLine===false?'offline':'error');
+  }finally{clearTimeout(to);stopClock()}
+}
+function vwait(el,ev,ms){return new Promise((ok,no)=>{
+  const off=()=>{clearTimeout(t);el.removeEventListener(ev,on);el.removeEventListener('error',bad)},on=()=>{off();ok()},bad=()=>{off();no(coded('cantopen'))},t=setTimeout(bad,ms);
+  el.addEventListener(ev,on);el.addEventListener('error',bad)})}
+function jpegOf(c){let q=.8,d=c.toDataURL('image/jpeg',q);while(d.length>1.9e6&&q>.35){q-=.15;d=c.toDataURL('image/jpeg',q)}return d} // under 1.5 MB once decoded
+function b64(u8){let s='';for(let i=0;i<u8.length;i+=0x8000)s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));return btoa(s)}
+// the first 3 minutes of sound as 16 kHz mono WAV, in base64. '' when there is no sound track or it is silent
+async function soundOf(f,run){
+  const AC=window.OfflineAudioContext||window.webkitOfflineAudioContext;if(!AC)return '';
+  let ctx;try{ctx=new AC(1,V.RATE,V.RATE)}catch(e){ctx=new AC(1,44100,44100)} // decoding at 16 kHz keeps a long video small in memory
+  const buf=await f.arrayBuffer();if(run.dead)throw coded('cancel');
+  const ab=await new Promise((ok,no)=>{try{const p=ctx.decodeAudioData(buf,ok,no);if(p&&p.catch)p.catch(no)}catch(e){no(e)}});
+  if(run.dead)throw coded('cancel');
+  const sr=ab.sampleRate,n=Math.min(ab.length,Math.floor(V.SND*sr)),nc=ab.numberOfChannels;if(!n||!nc)return '';
+  const step=sr/V.RATE,m=Math.floor(n/step),ch=[];for(let c=0;c<nc;c++)ch.push(ab.getChannelData(c));
+  if(m<V.RATE/2)return '';
+  const out=new Uint8Array(44+m*2),dv=new DataView(out.buffer);let peak=0;
+  for(let i=0;i<m;i++){
+    const a=Math.floor(i*step),b=Math.max(a+1,Math.min(n,Math.floor((i+1)*step)));let x=0;
+    for(let j=a;j<b;j++)for(let c=0;c<nc;c++)x+=ch[c][j];
+    x/=(b-a)*nc;if(x>peak)peak=x;else if(-x>peak)peak=-x;
+    dv.setInt16(44+i*2,Math.max(-32768,Math.min(32767,Math.round(x*32767))),true);
+  }
+  if(peak<.003)return ''; // silence: nothing to listen to
+  const tag=(o,t)=>{for(let i=0;i<4;i++)out[o+i]=t.charCodeAt(i)};
+  tag(0,'RIFF');dv.setUint32(4,36+m*2,true);tag(8,'WAVE');tag(12,'fmt ');dv.setUint32(16,16,true);dv.setUint16(20,1,true);dv.setUint16(22,1,true);
+  dv.setUint32(24,V.RATE,true);dv.setUint32(28,V.RATE*2,true);dv.setUint16(32,2,true);dv.setUint16(34,16,true);tag(36,'data');dv.setUint32(40,m*2,true);
+  return b64(out);
+}
+function sigDiff(a,b){let sum=0,big=0;for(let i=0;i<a.length;i++){const d=Math.abs(a[i]-b[i]);sum+=d;if(d>24)big++}return sum/a.length>5||big/a.length>.02}
+// up to 8 frames that differ from each other, the first and the last always among them, and the sound
+async function prepVideo(f,run){
+  if(!(f.type||'').startsWith('video/')&&!/\.(mp4|mov|m4v|webm|mkv|3gp|avi)$/i.test(f.name||''))throw coded('notvideo');
+  if(f.size>V.MAXB)throw coded('toobig'); // refused before anything is opened
+  if(!f.size)throw coded('cantopen');
+  const v=document.createElement('video'),url=URL.createObjectURL(f);
+  v.muted=true;v.playsInline=true;v.preload='auto';v.setAttribute('playsinline','');v.setAttribute('aria-hidden','true');v.tabIndex=-1;
+  v.style.cssText='position:fixed;left:0;top:0;width:2px;height:2px;opacity:0;pointer-events:none';
+  const stop=run.stop=()=>{run.stop=null;try{v.pause();v.removeAttribute('src');v.load()}catch(e){}v.remove();URL.revokeObjectURL(url)};
+  document.body.appendChild(v);
+  try{
+    v.src=url;await vwait(v,'loadedmetadata',20000);
+    if(run.dead)throw coded('cancel');
+    let dur=v.duration;
+    if(!isFinite(dur)){v.currentTime=1e7;try{await vwait(v,'seeked',8000)}catch(e){}dur=isFinite(v.duration)?v.duration:v.currentTime} // some recordings only know their length after a seek to the end
+    if(!v.videoWidth||!v.videoHeight)throw coded('notvideo'); // sound only
+    if(!(dur>0))throw coded('cantopen');
+    if(dur>V.MAXS)throw coded('toolong');
+    if(v.readyState<2)await vwait(v,'loadeddata',20000);
+    const n=Math.max(2,Math.min(V.CAND,Math.ceil(dur/2)+1)),first=Math.min(.1,dur/4),last=Math.max(first,dur-.2),times=[];
+    for(let k=0;k<n;k++)times.push(first+(last-first)*k/(n-1));
+    const sc=Math.min(1,1000/Math.max(v.videoWidth,v.videoHeight)),c=document.createElement('canvas'),sm=document.createElement('canvas');
+    c.width=Math.max(2,Math.round(v.videoWidth*sc));c.height=Math.max(2,Math.round(v.videoHeight*sc));sm.width=sm.height=48;
+    const cx=c.getContext('2d'),sx=sm.getContext('2d',{willReadFrequently:true});
+    let kept=[],prev=null;
+    for(let k=0;k<n;k++){
+      if(run.dead)throw coded('cancel');
+      v.currentTime=times[k];
+      try{await vwait(v,'seeked',6000)}catch(e){if(!k)throw e;continue}
+      if(run.dead)throw coded('cancel');
+      sx.drawImage(v,0,0,48,48);const d=sx.getImageData(0,0,48,48).data,sig=new Uint8Array(2304);
+      for(let i=0;i<2304;i++)sig[i]=(d[i*4]*77+d[i*4+1]*150+d[i*4+2]*29)>>8;
+      prog(.02+.2*(k+1)/n);
+      if(prev&&!sigDiff(sig,prev))continue; // the same picture as the one before
+      cx.drawImage(v,0,0,c.width,c.height);kept.push({t:times[k],url:jpegOf(c)});prev=sig;
+    }
+    if(!kept.length)throw coded('cantopen');
+    if(kept.length>V.FRAMES){const mid=kept.slice(1,-1),out=[kept[0]];for(let i=0;i<V.FRAMES-2;i++)out.push(mid[Math.round(i*(mid.length-1)/(V.FRAMES-3))]);out.push(kept[kept.length-1]);kept=out}
+    stop();
+    let audio='';const big=f.size>V.SOUNDB;
+    if(!big){prog(.24);try{audio=await soundOf(f,run)}catch(e){if(e&&e.code==='cancel')throw e;audio=''}} // no sound track is fine: the frames are still read
+    if(run.dead)throw coded('cancel');
+    return {frames:kept.map((x)=>x.url),at:kept.map((x)=>Math.round(x.t*10)/10),audio,secs:dur,big};
+  }finally{if(run.stop)run.stop()}
+}
+function pickVideo(f){track('Add video',{how:'file'});readVideo(f)}
+function vdone(kind,t0,result,used){const d={from:kind,result,ms:Math.round((Date.now()-t0)/1000)*1000};if(used)d.used=used;track('Video read',d)}
+function vamounts(){track('Video amounts',{n:recipe.ingredients.length,missing:recipe.flags.filter((x)=>x.type==='noamount').length})}
+async function readVideo(f,pay){
+  if(job)stopRead();
+  const run=job={kind:'video'},t0=Date.now();lastVideo={file:f,pay:pay||null};lastLink='';
+  pasteMode(false);
+  const th=$('#thumbs');th.innerHTML='';
+  $('#rdTitle').textContent='Reading your recipe';$('#rdDevice').classList.add('hidden');
+  setStatus('Getting the video ready');setNote('The video stays on this device');prog(.02);
+  addState('read');enterReading();$('#rdTitle').focus({preventScroll:true});
+  if(navigator.onLine===false){vdone('file',t0,'offline');failV('offline','video');return}
+  if(!pay){
+    let why='';
+    try{pay=await prepVideo(f,run)}catch(e){why=e&&typeof e.code==='string'?e.code:'cantopen'}
+    if(run!==job||run.dead)return;
+    if(!pay){track('Video prep',{frames:0,sound:'no',ok:'no',why:why==='notvideo'?'badfile':why});failV(why,'video');return}
+    track('Video prep',{secs:Math.round(pay.secs/10)*10,frames:pay.frames.length,sound:pay.audio?'yes':'no',ok:'yes'});
+    lastVideo.pay=pay;
+  }
+  th.classList.toggle('many',pay.frames.length>4);
+  pay.frames.forEach((u,k)=>{const d=document.createElement('div'),i=new Image();d.className='th scan';d.style.animationDelay=k*120+'ms';i.src=u;i.alt='';d.appendChild(i);th.appendChild(d)});
+  if(!READER){vdone('file',t0,'error');failV('error','video');return}
+  run.listen=pay.audio?Math.min(12000,3000+pay.secs*40):0; // the reader listens first, then reads: the line changes at about the time it does
+  setStatus(pay.audio?'Listening':'Reading');setNote('Usually under a minute');
+  let j=null,why='';
+  try{j=await vpost('/watch',{frames:pay.frames,audio:pay.audio,caption:''},run,pay.audio?25:15,.3)}catch(e){why=typeof e.code==='string'?e.code:'error'}
+  if(run!==job||why==='cancel')return;
+  if(!j){vdone('file',t0,VRES[why]||'error');failV(why,'video');return}
+  prog(1);scanAll(false);
+  await new Promise((r)=>setTimeout(r,reduce?0:350));
+  if(run!==job)return;
+  const used=/^(speech|screen|caption|mix)$/.test(j.used)?j.used:pay.audio?'mix':'screen',was=[src,from,vinfo];
+  job=null;from='video';shots=[];extra=0;skipped=0;src='video';srcWhy='';vinfo={used,sound:!!pay.audio,big:pay.big};
+  if(!load(j.text)){[src,from,vinfo]=was;vdone('file',t0,'none',used);failV('none','video');return}
+  vdone('file',t0,'ok',used);vamounts();addState('pick');
+}
+async function readLink(url){
+  if(job)stopRead();
+  const run=job={kind:'link'},t0=Date.now();lastLink=url;lastVideo=null;
+  $('#thumbs').innerHTML='';$('#rdTitle').textContent='Reading your recipe';$('#rdDevice').classList.add('hidden');
+  setStatus('Reading the video');setNote('Usually under a minute');prog(.02);
+  addState('read');enterReading();$('#rdTitle').focus({preventScroll:true});
+  if(!READER){vdone('youtube',t0,'off');failV('off','link');return}
+  if(navigator.onLine===false){vdone('youtube',t0,'offline');failV('offline','link');return}
+  let j=null,why='';
+  try{j=await vpost('/link',{url},run,20,.02)}catch(e){why=typeof e.code==='string'?e.code:'error'}
+  if(run!==job||why==='cancel')return;
+  if(!j){vdone('youtube',t0,VRES[why]||'error');failV(why,'link');return}
+  prog(1);
+  await new Promise((r)=>setTimeout(r,reduce?0:350));
+  if(run!==job)return;
+  const used=j.used==='caption'?'caption':'mix',was=[src,from,vinfo];
+  job=null;from='youtube';shots=[];extra=0;skipped=0;src='youtube';srcWhy='';vinfo={used,sound:true,big:false};
+  nextCred=okBy({n:j.creator,u:j.url});
+  if(!load(j.text)){[src,from,vinfo]=was;nextCred=null;vdone('youtube',t0,'none',used);failV('none','link');return}
+  pasteMode(false);paste.value='';$('#usePaste').disabled=true;
+  vdone('youtube',t0,'ok',used);vamounts();addState('pick');
+}
 $('#rdPaste').onclick=()=>{addState('pick');pasteMode(true)};
 
 /* 2. the recipe */
@@ -967,7 +1198,7 @@ function load(raw,replace){
   const got=new Map(),ps=String(raw).split(SPLIT).map((s)=>s.trim()).filter((p)=>{if(!p)return false;const r=E.parseRecipe(p);got.set(p,r);return r.ingredients.length});
   if(!ps.length)return false;
   parsed=[ps[0],got.get(ps[0])]; // parse() takes this one instead of parsing the same text again
-  parts=ps;pick=0;curId=null;origin=from;touched=false;yieldSet=false;have.clear();tab='shop';stEd=panOpen=false;
+  parts=ps;pick=0;curId=null;origin=from;cred=nextCred;nextCred=null;touched=false;yieldSet=false;have.clear();tab='shop';stEd=panOpen=false;
   $('#text').value=parts[0];$('#edit').open=false;
   parse();
   wants={batch:14,scale:defWant('scale')};$('#want').value=wants[mode];
@@ -990,6 +1221,15 @@ function drawHead(){
   $('#yieldNote').classList.toggle('hidden',!(recipe.yieldGuessed&&!yieldSet));
   // alerts: only things the cook needs to act on
   const al=[];
+  if(src==='video'||src==='youtube'){ // read from a video: say so, and say how many amounts the video never gave. No amount is ever made up
+    al.push([src==='youtube'?(vinfo.used==='caption'?"Read from the video's description. Check the amounts.":'Read from the video. Check the amounts.')
+      :vinfo.used!=='screen'?'Read from your video. Check the amounts.':vinfo.big?'Read from the screen. This video was too big to listen to.':'Read from the screen. This video has no speech.']);
+    const miss=recipe.flags.filter((x)=>x.type==='noamount').length;
+    if(miss&&miss*2>recipe.ingredients.length)al.push(["This video doesn't give amounts for most things. The plan can scale what it has.",'first']);
+    else if(miss)al.push([miss===1?'1 ingredient had no amount in the video. Add it, or cook by eye.':`${miss} ingredients had no amount in the video. Add them, or cook by eye.`,'first']);
+  }
+  const sf=$('#sFrom');sf.classList.toggle('hidden',!cred);
+  sf.innerHTML=cred?`From <a href="${esc(cred.u)}" target="_blank" rel="noopener">${esc(cred.n||'this video')}</a> on YouTube<span aria-hidden="true"> · </span><a href="https://www.youtube.com/t/terms" target="_blank" rel="noopener">YouTube Terms</a>`:'';
   if(src==='device'&&shots.length)al.push([(WHY[srcWhy]?WHY[srcWhy]+' ':'')+'Read on this device. Check the amounts.',READER&&srcWhy!=='none'?'ai':'']);
   if(skipped&&shots.length)al.push([`${files(skipped)} couldn't be opened.`]);
   if(extra&&shots.length)al.push(['Only the first 6 screenshots were read.']);
@@ -999,9 +1239,10 @@ function drawHead(){
   const odd=recipe.ingredients.filter(isOdd);
   if(odd.length)al.push([`Some amounts look off (${odd.slice(0,3).map((i)=>i.name||i.raw).join(', ')}). Check them.`,'edit']);
   if(!recipe.ingredients.length)al.push(['No ingredients found.','edit']);
-  $('#alerts').innerHTML=al.map((a)=>`<div class="alert"><div>${esc(a[0])}${a[1]==='ai'?'<button class="link" id="aiGo">Try AI again</button>':a[1]==='edit'?'<button class="link" data-edit>Edit the text</button>':''}</div></div>`).join('');
+  $('#alerts').innerHTML=al.map((a)=>`<div class="alert"><div>${esc(a[0])}${a[1]==='ai'?'<button class="link" id="aiGo">Try AI again</button>':a[1]==='edit'?'<button class="link" data-edit>Edit the text</button>':a[1]==='first'?'<button class="link" data-edit="first">Edit the text</button>':''}</div></div>`).join('');
   const go=$('#aiGo');if(go)go.onclick=()=>{track('Read with AI');readShots(true)};
-  $$('#alerts [data-edit]').forEach((b)=>b.onclick=()=>{if(mode==='batch')setTab('recipe',true);$('#edit').open=true;const t=$('#text');t.scrollIntoView({block:'center',behavior:reduce?'auto':'smooth'});t.focus({preventScroll:true})});
+  $$('#alerts [data-edit]').forEach((b)=>b.onclick=()=>{if(mode==='batch')setTab('recipe',true);$('#edit').open=true;const t=$('#text');t.scrollIntoView({block:'center',behavior:reduce?'auto':'smooth'});t.focus({preventScroll:true});
+    if(b.dataset.edit==='first'){const f=recipe.flags.find((x)=>x.type==='noamount'),i=f?t.value.indexOf(f.line):-1;if(i>=0)t.setSelectionRange(i,i+f.line.length)}}); // the first line with no amount is picked out
   // more than one recipe in the screenshots
   const w=$('#which');w.classList.toggle('hidden',parts.length<2);
   w.innerHTML=parts.length<2?'':`<p>${parts.length} recipes found</p><div>${parts.map((p,k)=>`<button class="chip" aria-pressed="${k===pick}" data-k="${k}">${esc(k===pick?recipe.title:(E.parseRecipe(p).title||guessTitle(p)))}</button>`).join('')}</div>`;
@@ -1080,9 +1321,9 @@ function ingRows(items){
   let sec=null,h='';
   items.forEach((i,k)=>{
     if(i.section!==sec){sec=i.section;if(sec)h+=`<tr class="sec"><td colspan="3">${esc(sec)}</td></tr>`}
-    const orig=i.qty==null?'':esc(i.raw.match(/^[^a-zA-Z]*[a-zA-Z]*/)[0].trim());
+    const orig=i.qty==null?esc(i.vague||''):esc(i.raw.match(/^[^a-zA-Z]*[a-zA-Z]*/)[0].trim());
     const f=byLine[i.raw];
-    h+=`<tr><td class="q num"><span data-a="r:${k}">${esc(i.scaled||'')}</span></td><td>${esc(i.label||i.name)}${i.adjusted?'<span class="tag">eased back</span>':''}${i.estimated?'<span class="tag">estimate</span>':''}${isOdd(i)?'<small class="w">Check this amount</small>':f&&FRIENDLY[f.type]?`<small class="${f.type==='amount'?'w':''}">${FRIENDLY[f.type]}</small>`:''}</td><td class="o num">${orig}</td></tr>`;
+    h+=`<tr><td class="q num"><span data-a="r:${k}">${esc(i.scaled||'')}</span></td><td>${esc(i.label||i.name)}${i.adjusted?'<span class="tag">eased back</span>':''}${i.estimated?'<span class="tag">estimate</span>':''}${isOdd(i)?'<small class="w">Check this amount</small>':f&&FRIENDLY[f.type]?`<small class="${f.type==='amount'?'w':''}">${f.type==='noamount'&&i.vague&&!i.estimated?'No amount given':FRIENDLY[f.type]}</small>`:''}</td><td class="o num">${orig}</td></tr>`;
   });
   return h;
 }
@@ -1143,7 +1384,7 @@ const STK='bd-staples';let panOpen=false,stEd=false;
 function staples(){try{const a=JSON.parse(localStorage.getItem(STK));return new Set(Array.isArray(a)?a.filter((x)=>typeof x==='string'&&x).slice(0,500):[])}catch(e){return new Set()}}
 function putStaples(set){try{localStorage.setItem(STK,JSON.stringify([...set].slice(0,500)));return true}catch(e){return false}}
 const gname=(g)=>g.label||g.name; // what the cook reads ("2 onions"); name stays the key for ticks, staples and store sections
-const tail=(g)=>g.amt==='for serving'||g.amt==='to taste'; // not an amount to buy: it reads after the name ("Chili flakes, to taste")
+const tail=(g)=>g.amt==='for serving'||g.amt==='to taste'||!!g.vague; // not an amount to buy: it reads after the name ("Chili flakes, to taste", "honey, a drizzle")
 function gline(g){return tail(g)?`${gname(g)} (${g.amt})`:`${g.amt?g.amt+' ':''}${gname(g)}`}
 function shopHTML(R){
   const S=plan.shop=E.shopList(plan.p.grocery,staples()),oddN=new Set(recipe.ingredients.filter(isOdd).map((i)=>i.name));
@@ -1200,10 +1441,12 @@ function watch(el,delay){if(delay)el.style.transitionDelay=delay+'ms';io.observe
 
 /* saving: on this device, no account */
 const KEY='bd-batches',CAP=200,MAXT=20000;let curId=null,full=false,junk=[];
-const OKF=/^(paste|screenshots|sample|tour|link)$/;
+const OKF=/^(paste|screenshots|video|youtube|sample|tour|link)$/;
+/* a recipe read from a YouTube link keeps its maker's name and the link, on this device only. Nothing else may sit in the address */
+function okBy(x){return x&&typeof x==='object'&&typeof x.u==='string'&&/^https:\/\/www\.youtube\.com\/watch\?v=[\w-]{11}$/.test(x.u)?{n:String(x.n==null?'':x.n).replace(/[\u0000-\u001f\u007f-\u009f]/g,'').trim().slice(0,100),u:x.u}:null}
 // a batch the cook made: pasted or read from screenshots. Not the sample (alone or in the tour) and not one that was only opened from a shared link.
 // Batches saved before 15 Nov carry no origin and count, unless they are the sample
-function mine(x){return x.id!=='sample'&&(x.f==null||x.f==='paste'||x.f==='screenshots')}
+function mine(x){return x.id!=='sample'&&(x.f==null||x.f==='paste'||x.f==='screenshots'||x.f==='video'||x.f==='youtube')}
 // for events: paste, screenshots, sample, tour, shared (a share link) or reopened (a saved batch of the cook's own)
 function cameFrom(){if(from==='link')return 'shared';if(from!=='saved')return from;return curId==='sample'||origin==='sample'?'sample':origin==='tour'?'tour':origin==='link'?'shared':'reopened'}
 function okB(x){return !!x&&typeof x==='object'&&typeof x.text==='string'&&!!x.text.trim()&&(typeof x.id==='string'||typeof x.id==='number')&&(x.title==null||typeof x.title==='string')&&isFinite(+x.w)&&+x.w>0&&isFinite(+x.at)&&+x.at>0}
@@ -1217,7 +1460,7 @@ function remember(want){
   const note=$('#savedNote');
   if((from==='sample'||from==='tour')&&!touched&&!curId){note.classList.add('hidden');full=false;$('#fullNote').classList.add('hidden');return} // a look at the sample isn't a batch
   const text=$('#text').value,a0=allB();
-  const rec={id:batchId(),title:recipe.title,text,y:recipe.yield,w:want,m:mode,at:Date.now(),k:[...have]};if(origin)rec.f=origin;
+  const rec={id:batchId(),title:recipe.title,text,y:recipe.yield,w:want,m:mode,at:Date.now(),k:[...have]};if(origin)rec.f=origin;if(cred)rec.by=cred;
   const a=a0.filter((x)=>x.id!==rec.id&&x.text!==text);
   full=a.length===a0.length&&a0.length>=CAP; // a new batch and no room: keep it open, save nothing, drop nothing
   $('#fullNote').classList.toggle('hidden',!full);
@@ -1232,7 +1475,7 @@ function remember(want){
 // My batches was full when this one was read: try again, in case room has been made
 function retryFull(){if(!full||!plan)return;remember(plan.want);if(!full){didFull=false;drawDid()}}
 function openRec(r,push){
-  curId=r.id||null;origin=OKF.test(r.f)?r.f:'';parts=[];pick=0;shots=[];extra=0;skipped=0;src='';touched=false;yieldSet=true;have.clear();(r.k||[]).forEach((k)=>have.add(k));tab='shop';plan=null;stEd=panOpen=false;
+  curId=r.id||null;origin=OKF.test(r.f)?r.f:'';cred=okBy(r.by);parts=[];pick=0;shots=[];extra=0;skipped=0;src='';touched=false;yieldSet=true;have.clear();(r.k||[]).forEach((k)=>have.add(k));tab='shop';plan=null;stEd=panOpen=false;
   userMode=r.m==='scale'?'scale':'batch';
   $('#text').value=r.text;$('#edit').open=false;parse();
   $('#yield').value=r.y||recipe.yield;snapN($('#yield'),recipe.yield);recipe.yield=+$('#yield').value;
@@ -1267,7 +1510,7 @@ function persistOnce(){if(flag('bd-ps'))return;setFlag('bd-ps');try{const st=nav
 
 /* backup and restore: one file, made and read on this device. Batches (with their ticks), theme and staples; nothing else */
 const BK_APP='batch.recipes',BK_V=1,BK_MAX=2e6;
-function cleanB(x){const o={id:String(x.id),text:x.text,w:+x.w,m:x.m==='scale'?'scale':'batch',at:+x.at,k:Array.isArray(x.k)?x.k.filter((t)=>typeof t==='string'):[]};if(typeof x.title==='string')o.title=x.title;if(isFinite(+x.y)&&+x.y>0)o.y=+x.y;if(OKF.test(x.f))o.f=x.f;return o}
+function cleanB(x){const o={id:String(x.id),text:x.text,w:+x.w,m:x.m==='scale'?'scale':'batch',at:+x.at,k:Array.isArray(x.k)?x.k.filter((t)=>typeof t==='string'):[]};if(typeof x.title==='string')o.title=x.title;if(isFinite(+x.y)&&+x.y>0)o.y=+x.y;if(OKF.test(x.f))o.f=x.f;const by=okBy(x.by);if(by)o.by=by;return o}
 function backupData(){
   let th=null;try{th=localStorage.getItem('bd-theme')}catch(e){}
   return {app:BK_APP,v:BK_V,at:new Date().toISOString(),batches:allB().map(cleanB),freezer:allF(),settings:{theme:th==='dark'||th==='light'?th:null,staples:[...staples()]}};

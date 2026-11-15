@@ -89,11 +89,29 @@
     return /(^|\s)(\d*%|Y2|\$)(\s|$)/.test(raw) || /^\d{2}\/\d\b/.test(raw.trim()) || /^\.\d/.test(raw.trim());
   }
 
+  // amounts given as a word. "a pinch of" and "a handful of" stay units (one pinch, one handful) unless a describing word comes first ("a big handful of")
+  const VAGUE_W = 'drizzles?|glugs?|splash(?:es)?|dash(?:es)?|sprinkles?|sprinkling|knobs?|squeezes?|dollops?|squirts?|swirls?|dustings?|touch|bit|handfuls?|pinch(?:es)?';
+  const VAGUE_ADJ = 'good|big|large|generous|healthy|hefty|heavy|nice|little|small|tiny|light|quick|couple|few';
+  const VAGUE_RE = new RegExp('^((?:a|an|one|a\\s+couple(?:\\s+of)?|a\\s+few)\\s+(?:(?:' + VAGUE_ADJ + ')\\s+)*(?:' + VAGUE_W + '))\\s+of\\s+(?:the\\s+)?(\\S.*)$', 'i');
+  const VAGUE_NOTE = new RegExp('^(?:(?:a|an|one|just a|a\\s+couple(?:\\s+of)?|a\\s+few)\\s+)?(?:(?:' + VAGUE_ADJ + ')\\s+)*(?:' + VAGUE_W + '|some)$', 'i');
+  function vagueOf(line) {
+    let m = line.match(VAGUE_RE);
+    if (m) {
+      if (/^an?\s+(pinch|handful)(es|s)?$/i.test(m[1])) return null; // already a unit: 1 pinch, 1 handful
+      return { word: m[1].toLowerCase().replace(/\s+/g, ' '), name: m[2].trim() };
+    }
+    m = line.match(/^some\s+(?!(?:more|of|for|to|extra\s+for)\b)([a-z].*)$/i);
+    if (m && m[1].trim().split(/\s+/).length <= 6) return { word: 'some', name: m[1].trim() };
+    return null;
+  }
   function parseIngredient(raw) {
     const line = cleanLine(raw);
     const flag = suspicious(raw) || (/[%¥]|Y2/.test(raw) && /½/.test(line)) || /^\s*\$/.test(raw);
     let fixed = line.replace(/^(\d)([1-3])\/([2-4])\b/, (m, a, b, c) => (+b < +c ? `${a} ${b}/${c}` : m));
-    let rest = fixed, qty = null, qtyHi = null, unit = null;
+    let rest = fixed, qty = null, qtyHi = null, unit = null, vague = '';
+    // "a drizzle of honey", "a good glug of olive oil", "some rice": the food is the name, the cook's word is kept beside it, and no number is made up
+    const vm = vagueOf(fixed);
+    if (vm) { vague = vm.word; rest = fixed = vm.name; }
     const sci = /^\d+(\.\d+)?e[+-]?\d+/i.test(rest);
     const neg = /^[-−–]\s*\d/.test(rest);
     const m = sci || neg ? null : rest.match(QTY_RE);
@@ -122,6 +140,7 @@
     let note = '';
     const cm = name.match(/^(.*?)(,\s*|\s+\()(.*)$/);
     if (cm && cm[1].length > 2) { note = (cm[3] || '').replace(/\)$/, ''); name = cm[1]; }
+    if (!vague && qty == null && note && VAGUE_NOTE.test(note)) vague = note.toLowerCase(); // "soy sauce (a splash)"
     const toTaste = /to taste/i.test(line);
     name = name.replace(/,?\s*\bto taste\b/i, '').trim() || name;
     const optional = /optional/i.test(line);
@@ -132,6 +151,7 @@
     if (qty != null && unit && VOL_TSP[unit] && qty * VOL_TSP[unit] > 48 * 40) odd = true;
     const out = { raw: line, qty, qtyHi, unit, name: name.trim(), note: note.trim(), toTaste, optional, flag, odd };
     if (size) out.size = size;
+    if (vague && qty == null && !toTaste) out.vague = vague;
     return out;
   }
 
@@ -277,7 +297,8 @@
       if (/recipe/i.test(line) && !QTY_RE.test(line) && !r.title) { r.title = line.replace(/\s*recipe.*$/i, '').replace(/[^\p{L}\p{M}\p{N}\s'&-]/gu, '').trim(); continue; }
       const prev = r.ingredients[r.ingredients.length - 1];
       // a lowercase line with no number is a wrapped note only when it reads like one; "kosher salt" or "fresh parsley, chopped" is its own ingredient
-      if (prev && !QTY_RE.test(line) && (/^[a-z(]/.test(line) || /^[A-Za-z ]{1,20}\)$/.test(line))) {
+      const vagueLine = !!vagueOf(line) || (/^(.{2,}?)\s*\(([^()]+)\)$/.test(line) && VAGUE_NOTE.test(RegExp.$2.trim())) || /^[a-z][a-z' -]{1,40},?\s+to taste$/i.test(line); // "honey (a drizzle)" and "hot sauce to taste" are ingredients, not a note on the line above
+      if (prev && !vagueLine && !QTY_RE.test(line) && (/^[a-z(]/.test(line) || /^[A-Za-z ]{1,20}\)$/.test(line))) {
         const cont = /^\(|^[A-Za-z ]{1,20}\)$/.test(line) || /[,(]$/.test(prev.raw) || (prev.raw.split('(').length > prev.raw.split(')').length) ||
           /^(or|and|plus|such as|divided|about|roughly|cut|chopped|minced|diced|sliced|peeled|seeded|trimmed|finely|thinly|coarsely|roughly|room temp|softened|melted|at room|if |for the|drained|rinsed|packed|heaping|optional|see note)\b/.test(line);
         const strong = isMeat(line) || PERISH.test(line.toLowerCase()) || /\b(crab|cheddar|pumpkin|ham|bacon)\b/i.test(line);
@@ -287,8 +308,8 @@
       } }
       const ing = parseIngredient(line);
       // drop lines that are clearly not ingredients
-      if (!ing.qty && !ing.toTaste && !/^(salt|pepper|neutral|green onion|baby|fresh|optional|red chili|parish|cilantro|chili|black pepper)/i.test(ing.name) && line.split(' ').length > 7) { r.notes.push(line); continue; }
-      if (!section && !r.ingredients.length && ing.qty == null && !ing.toTaste && !(r.title && classify(ing, '') !== 'other')) { r.notes.push(line); continue; }
+      if (!ing.vague && !ing.qty && !ing.toTaste && !/^(salt|pepper|neutral|green onion|baby|fresh|optional|red chili|parish|cilantro|chili|black pepper)/i.test(ing.name) && line.split(' ').length > 7) { r.notes.push(line); continue; }
+      if (!ing.vague && !section && !r.ingredients.length && ing.qty == null && !ing.toTaste && !(r.title && classify(ing, '') !== 'other')) { r.notes.push(line); continue; }
       ing.section = section;
       ing.cls = classify(ing, section);
       if (ing.cls === 'liquid' && ing.unit === 'oz') ing.unit = 'fl oz';
@@ -296,7 +317,7 @@
       if (key && r.ingredients.some((x) => norm(x.name) === key && x.section === section && x.qty === ing.qty && x.qtyHi === ing.qtyHi && x.unit === ing.unit)) continue; // the same line twice (overlapping screenshots); a second amount of the same thing is kept
       if (ing.flag) r.flags.push({ type: 'amount', line: ing.raw, msg: 'Amount may have been misread' });
       if (ing.qtyHi) r.flags.push({ type: 'range', line: ing.raw, msg: 'Range: using the middle' });
-      if (!ing.qty && !ing.toTaste && ing.cls !== 'finisher' && !ing.optional && !['salt', 'oil'].includes(ing.cls) && !/pepper|for cooking|for frying/i.test(ing.raw)) r.flags.push({ type: 'noamount', line: ing.raw, msg: 'No amount given' });
+      if (ing.vague ? !r.flags.some((f) => f.type === 'noamount' && f.line === ing.raw) : (!ing.qty && !ing.toTaste && ing.cls !== 'finisher' && !ing.optional && !['salt', 'oil'].includes(ing.cls) && !/pepper|for cooking|for frying/i.test(ing.raw))) r.flags.push({ type: 'noamount', line: ing.raw, msg: 'No amount given' });
       r.ingredients.push(ing);
     }
     pushStep();
@@ -731,7 +752,8 @@
       }
       if (i.cls === 'finisher' && i.qty == null) plan.grocery.push({ name: i.name, amt: 'for serving' });
       else if (i.qty != null || i.estimated) plan.grocery.push({ name: i.name, label, amt });
-      else plan.grocery.push({ name: i.name, amt: i.toTaste ? 'to taste' : '' });
+      else if (i.vague && !i.toTaste) plan.grocery.push({ name: i.name, amt: i.vague, vague: true });
+      else plan.grocery.push({ name: i.name, amt: i.toTaste ? 'to taste' : '' }); // "honey, a drizzle": the cook's own word, never a number
     });
     return plan;
   }

@@ -327,3 +327,140 @@ From report A (recipe accuracy). Tests: test_sweep.js (227 checks), plus updated
 - UI: focus ring full accent (3:1+), Meals field labelled by "Meals" with the note as description, bake count carried across modes, "Just scale" banner only in Just scale, pan note when a bake is scaled up, share picture never cuts a word, factor shows quarters (1.75×), Share event only after a link is copied. About page trimmed.
 
 - Home: the first-visit "Quick tour / Show me / Skip" row is gone (five-second test: 2 of 3 viewers could not tell what it did). One grey "See a sample plan" button under Choose screenshots opens the finished sample. The tour stays in the footer; its toast only shows when it ends on a plan.
+
+## Video to recipe (15 Nov 2026)
+
+Built from `/home/claude/sweep/video-recipe-research-20261115.md` sections 3 and 4. Built and tested locally only. Not committed, not deployed, the Space not touched. The lead deploys.
+
+### What was built
+
+**Step zero: a paste that is only a link.** `linkOnly()` in `template.html`. The whole text must be one link (no spaces). A link with words around it, or a recipe that has a link in it, is still text.
+- YouTube (`youtube.com`, `youtu.be`): sent to the reader's `/link`.
+- TikTok, Instagram, Facebook, Pinterest: nothing is sent. The paste box shows "We can't read TikTok links. Add the video or a screenshot instead." with Add a video and Choose screenshots.
+- Any other site: "That looks like a web page. Copy the recipe from the page and paste it here."
+- A bare word with a dot ("rice.flour") is not a link. An unknown site needs `http(s)://` or `www.` to count.
+- No TikTok link reading (gray area, Michael to read their terms first).
+
+**Add a video.** A link beside Paste text opens a box in the card (the way the paste box does) with one button, Choose a video, and two lines: how to get the video, and what is sent. The first screen still has one orange button.
+- On the device (`prepVideo`, `soundOf`): the file plays from a `blob:` address in a hidden muted player. Up to 16 moments are looked at, spread over the video, the first at 0.1 s and the last 0.2 s before the end. A frame is kept when it differs from the one kept before it (48 px grey thumbnail: mean change over 5, or over 2% of pixels changed by more than 24). More than 8: the first, the last and 6 spread between. JPEG, 1000 px on the long side, quality stepped down until under 1.5 MB.
+- Sound: decoded at 16 kHz, mixed to mono, first 180 s, 16-bit WAV, base64. No sound track, under half a second, or silence (peak under 0.003): no sound is sent and the frames are still read.
+- Refused before anything is opened: not a video type or name, over 1 GB ("too big", my number), 0 bytes. Refused after the header is read: over 10 minutes, no picture (sound only).
+- Over 200 MB the sound is not decoded (it would mean reading the whole file into memory). Frames only, and the recipe page says "Read from the screen. This video was too big to listen to."
+- The video file is never uploaded. `/watch` gets `{frames, audio, caption: ""}`.
+- Status line: Getting the video ready, then Listening (when there is sound), then Reading. The reader does both in one call, so the change from Listening to Reading is on a timer (3 s plus 40 ms per second of video, 12 s at most), not a signal from the reader.
+- Cancel, Back, a second video while one is reading, and Try again (resends what was already prepared) all work. The hidden player is removed every time.
+- Recipe page: "Read from your video. Check the amounts." (or "Read from the screen. This video has no speech."), then "N ingredients had no amount in the video. Add them, or cook by eye." with Edit the text, which picks out the first such line. Over half missing: "This video doesn't give amounts for most things. The plan can scale what it has."
+- A video dropped on the card is read as a video.
+
+**YouTube link.** `/link {url}`. The page shows "Reading the video". Recipe page: "From <channel> on YouTube · YouTube Terms" under the title, both links 44 px. The channel name and the clean link (`https://www.youtube.com/watch?v=<id>`, nothing else passes `okBy`) are saved with the batch as `by`, on the device only, so a reopened batch still says who it is from. Share links do not carry it.
+- Off until the Space has `GOOGLE_API_KEY`: `/link` answers 503 and the page says "YouTube links aren't on yet. Add the video or screenshots."
+
+**Never guess an amount** is a hard rule in all three reader prompts and in the engine.
+
+**Engine: amounts given as a word.** "a drizzle of honey" used to be folded into the line above as a note and lost. Now `vagueOf()` reads "a/an/one [good|big|little...] drizzle|glug|splash|dash|sprinkle|knob|squeeze|dollop|squirt|swirl|dusting|touch|bit of X" and "some X" as ingredient X with `vague: "a drizzle"`, no number, and a "No amount given" flag. "X (a splash)" is the same. "X to taste" is kept as before, and "hot sauce to taste" is no longer folded into the line above.
+- "a pinch of salt" and "a handful of spinach" stay 1 pinch and 1 handful, as before: those are units the engine already scales. With a describing word ("a big handful of") they are vague.
+- Grocery list: name first, the word after it in grey ("honey a drizzle"), like "to taste". Copy gives "honey (a drizzle)".
+- Recipe tab: the word shows in the "original" column, and the row says "No amount given".
+- Not changed: plain "some rice" still gets the engine's labelled estimate of dry rice per meal (that was there before). It is marked "estimate".
+- 164 new checks in `test_sweep.js` (631 in all).
+
+**Privacy, About.** Privacy has new sections Videos and YouTube links (marked as only when that path is used), the Google line in services, and "Last updated 15 November 2026". About has two new questions.
+
+**Saved batches.** `f` can now be `video` or `youtube`; both count as the cook's own batches.
+
+### Messages
+
+| Case | Heading | Line | Main button, then links |
+|---|---|---|---|
+| Not a video (picture, PDF, sound only) | That file isn't a video | Choose a video, or add screenshots. | Choose another video; Paste text, Choose screenshots |
+| Can't open (renamed PDF, 0 bytes, broken) | This phone couldn't open that video | Try a screen recording. | same |
+| Over 10 minutes | That video is over 10 minutes | Trim it to the cooking part and try again. | same |
+| Over 1 GB | That video is too big | Trim it to the cooking part and try again. | same |
+| No recipe | No recipe found in that video | If it's in the caption, add a screenshot of the caption. | Choose screenshots; Paste text, Choose another video |
+| Per-visitor limit | That's a lot of videos | Try again in a bit, or add screenshots. | same |
+| Daily cap or kill switch | The video reader is busy today | Try again tomorrow, or add screenshots. | same |
+| Reader error or timeout (100 s) | The video reader couldn't read it right now | Add screenshots instead. | Try again; Paste text, Choose screenshots, Choose another video |
+| Offline | You're offline | Videos need the AI reader. | same |
+| YouTube not on | YouTube links aren't on yet | Add the video or screenshots. | Choose screenshots; Paste text, Add a video |
+| YouTube private or unlisted | That video is private | Add screenshots or paste the recipe. | same |
+| YouTube over the length limit, or live | That video is too long to read from a link | Add screenshots or paste the recipe. | same |
+| YouTube no recipe | No recipe found in that video | | same |
+
+### Events
+
+No link, caption, file name or recipe text in any event. `src` rides on every one as before.
+
+| Event | Data |
+|---|---|
+| `Link paste` | `site`: youtube, tiktok, instagram, facebook, pinterest, web. `result`: read (sent to the reader), unsupported |
+| `Add video` | `how`: file |
+| `Video prep` | ok: `secs` (to the nearest 10), `frames`, `sound` yes/no, `ok` yes. Failed: `frames` 0, `sound` no, `ok` no, `why`: badfile, cantopen, toolong, toobig |
+| `Video read` | `from`: file, youtube. `result`: ok, none, limit (per-visitor or daily), error, timeout, cancel, offline, and for YouTube also off, private, toolong. `used`: speech, screen, caption, mix (on ok and on none after an answer). `ms` in whole seconds |
+| `Video amounts` | `n` ingredients, `missing` with no amount |
+| `Plan` | `from` can now be video or youtube |
+
+Order on a good read: Add video, Video prep, Plan, Video read, Video amounts.
+
+### The Space (`/home/claude/batch.day/reader/app.py`)
+
+`POST /watch {frames, audio, caption?}` and `POST /link {url}`, beside `/read`. Both answer `{text, model, used}` (`/watch` adds `speech`: yes, empty, none or failed; `/link` adds `creator` and `url`). Errors are `{error, why}`; `why` is the word the page picks its message from: limit, busy, off, private, toolong, none, badlink.
+
+`/watch`: origin check, kill switch, daily cap, per-visitor cap, then the body (refused over the size cap before it is read whole). Frames must be JPEG, PNG or WebP data URLs of 1.5 MB or less. Sound must be PCM WAV (data URL or bare base64), within the byte and second limits. Speech to text tries each model in `STT_MODELS` at `STT_URL`. Then one vision call (same `MODELS` as `/read`) with the prompt, the transcript, the caption and the frames. If speech to text fails the frames are still read; if they then hold no recipe the answer is an error, not "no recipe". The model ends its answer with a `USED:` line, which is cut off and returned as `used`.
+
+`/link`: only `youtube.com`, `www.`, `m.`, `music.youtube.com` and `youtu.be`, only `watch?v=`, `/shorts/`, `/embed/`, `/live/` and `youtu.be/<id>`, and the id must be 11 characters of `A-Z a-z 0-9 _ -`. The reader builds every outside address itself from that id; the visitor's own URL is never fetched or passed on. `videos.list` (snippet, contentDetails, status; 1 quota unit), key in the `X-Goog-Api-Key` header. If the description has three or more lines that start with an amount, it goes through the text prompt on `TEXT_MODELS`. Otherwise, or if that finds no recipe: not public gives "private"; longer than `MAX_YOUTUBE_SECONDS`, or live, gives "too long"; else Gemini `generateContent` with the YouTube address as `file_data.file_uri` and the same rules.
+
+Logs: counts and model names only. Never images, sound, transcripts, captions, links, channel names, addresses or keys (checked in `reader/test_app.py`).
+
+Counters are in memory and reset when the Space restarts, so a restart gives a fresh daily allowance. Fine at these numbers.
+
+**X-Forwarded-For.** The limiter used to take the first value, which any script can set. It now reads the header from the right and takes the first public address, skipping private and loopback hops; with none, the socket address. That is right for any proxy that appends the address it saw, which is the normal behaviour. What Hugging Face's proxy actually sends: could not determine from here (no documentation found, and I may not call the Space). The lead should check live (below).
+
+| Variable | Default | What it does |
+|---|---|---|
+| `HF_TOKEN` (secret) | none | As before. Also pays for speech to text |
+| `GOOGLE_API_KEY` (secret) | none | Turns `/link` on. YouTube Data API v3 and Gemini API. Not set: `/link` is 503 |
+| `VIDEO` | on | `off` makes `/watch` and `/link` answer "busy today" (429). `/read` is not touched |
+| `VIDEO_PER_VISITOR_PER_HOUR` | 3 | |
+| `VIDEO_DAILY_CAP` | 100 | The real spend cap for video |
+| `MAX_AUDIO_SECONDS` | 180 | Longer WAV is refused (413). The page trims to 180 |
+| `MAX_FRAMES` | 8 | |
+| `MAX_AUDIO_BYTES` | 6000000 | |
+| `STT_MODELS` | `openai/whisper-large-v3-turbo,openai/whisper-large-v3` | Tried in order |
+| `STT_URL` | `https://router.huggingface.co/hf-inference/models/{model}` | `{model}` is replaced. Raw WAV bytes, `Content-Type: audio/wav`, bearer token, answer `{"text": ...}`. For one provider: e.g. `https://router.huggingface.co/fal-ai/models/{model}` |
+| `TEXT_MODELS` | same as `MODELS` | Reads a YouTube description |
+| `GEMINI_MODEL` | `gemini-2.5-flash-lite` | |
+| `GEMINI_URL` | `https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent` | `{model}` is replaced |
+| `LINK_PER_VISITOR_PER_HOUR` | 5 | |
+| `LINK_DAILY_CAP` | 200 | |
+| `MAX_YOUTUBE_SECONDS` | 1200 | |
+| `MODELS`, `ALLOWED_ORIGINS`, `PER_VISITOR_PER_HOUR`, `DAILY_CAP` | as before | |
+
+### CSP
+
+One addition on the home page: `media-src blob:` (the picked video plays from a `blob:` address while frames are taken). `connect-src` already had the Space. Frames show as `data:` pictures, already allowed. No video site is in the policy. `build.py` writes it.
+
+### What the lead must verify live
+
+1. **Speech route.** With the real token: does `https://router.huggingface.co/hf-inference/models/openai/whisper-large-v3-turbo` take raw `audio/wav` bytes and answer `{"text": ...}`? If not, set `STT_URL` to a provider route. Send a full 180 s clip (5.8 MB) to find out whether the route has a size or length limit. Read the price per minute off the Inference Providers usage page after a few reads.
+2. **Vision call with 8 frames.** Same models as screenshots, but 8 images and a transcript. Check it answers within the page's 100 s and what it costs.
+3. **The `USED:` line.** Check the model writes it. If it doesn't, `used` falls back to mix (speech heard) or screen.
+4. **Gemini.** The model name: the docs page today showed examples with `gemini-4-hydrogen` on a newer "interactions" endpoint (`POST /v1beta/interactions`, `{"type":"video","uri":...}`), not `generateContent` with `file_data`. The code uses `generateContent` as asked. Check that `gemini-2.5-flash-lite` on `generateContent` still takes a YouTube address, and what the cheapest Flash-Lite is called now. `gemini_text()` also reads the interactions answer shape, but the request body is the `generateContent` one, so moving to the new endpoint needs a code change, not just a variable.
+5. **Google key.** Restrict it to YouTube Data API v3 and the Generative Language API. Check `videos.list` works with a key alone in the `X-Goog-Api-Key` header.
+6. **X-Forwarded-For.** Send 4 `/watch` calls from one machine, each with a different made-up `X-Forwarded-For`; the 4th must be 429. If all pass, the Space's proxy does not append the real address and the limiter needs another header. If everyone is limited together, the proxy's own address is public and is being counted.
+7. **CSP on the live host.** Pick a video on batch.recipes and watch the console for a `media-src` violation. `vercel.json` sets no CSP header today (the policy is the meta tag); if that changes, add `media-src blob:` there too.
+8. **Real phones.** iPhone Safari and Android Chrome, with a saved TikTok or Reel and a screen recording (H.264 and HEVC; the tests here use WebM because the test browser has no H.264). Seeking and drawing frames from phone video is where browsers differ. Also a 4K clip of a minute or more for memory, and whether Safari accepts a 16 kHz `OfflineAudioContext` (the code falls back to 44.1 kHz and resamples).
+9. **Kill switch and caps** on the Space: `VIDEO=off`, then the per-visitor and daily caps.
+
+### Tests
+
+- `test_sweep.js`: 631 (467 before).
+- `breakit13.py`: makes its own test videos with ffmpeg (test pattern, tone, burned-in "2 cups rice"), mocks `/watch` and `/link`, blocks every outside host. Covers every row above, cancel, double submit, Back, 0 bytes, renamed PDF, 2 GB file, no sound, silent sound, frame picking, each site's link, events, nothing sent for unsupported links, light and dark at 390 and 1440, keyboard, reduced motion, CSP.
+- `/home/claude/batch.day/reader/test_app.py`: 170 checks with every outside call faked. `python3 test_app.py`.
+
+### Not done
+
+- TikTok link reading (option 3), Android share target, on-device Whisper, "Suggest amounts".
+- A caption box for the cook. `/watch` takes a caption; the page sends an empty one.
+- Accuracy against real videos. Needs Michael's own recordings (research doc 4.2).
+
+- 15 Nov, lead: the reader Space could not be updated yet (Claude in Chrome was offline), so the site ships with `VIDEO_ON=false` in template.html: no video buttons, YouTube links get the screenshot message, About keeps its old text (the video version waits in pages/about.video.body.keep). To switch on: upload reader/app.py to the Space, check GET / shows video:true and the proxy fields (hops, first), run 2 or 3 real /watch reads, then set VIDEO_ON=true, swap the About text, rebuild, run breakit13 and deploy. Tests force video on with localStorage bd-video=1.

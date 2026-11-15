@@ -1,0 +1,33 @@
+<h1>About batch.recipes</h1>
+<p><strong>A free site that turns a recipe into a batch plan: grocery list, cook order, fridge and freezer plan.</strong> Add a screenshot, a video or the text, pick how many meals, and it does the rest.</p>
+<p>For meal preppers who save recipes from TikTok and Reels.</p>
+
+<h2>What you get</h2>
+<ul>
+<li><strong>The recipe, scaled</strong> to the meals you pick, in cups, ounces and pounds.</li>
+<li><strong>A grocery list in store order.</strong> Tick it off as you shop, or send it to Reminders, Notes or Keep.</li>
+<li><strong>A cook order</strong>, one step at a time, with the screen kept on.</li>
+<li><strong>Where it all goes</strong>: freezer, fridge, and what to add fresh.</li>
+<li><strong>Freezer labels</strong> for Avery 5160 sheets, or as an image.</li>
+</ul>
+
+<h2>Questions</h2>
+<h3>Is it free?</h3>
+<p>Yes. No account. Store links and ads keep it free.</p>
+<h3>Where are my recipes saved?</h3>
+<p>On your phone or computer. Back them up to a file to move them.</p>
+<h3>What happens to my screenshots?</h3>
+<p>An AI reader reads them and doesn't keep them. If it can't, they're read on your device instead. More in <a href="privacy">Privacy</a>.</p>
+<h3>What happens to my video?</h3>
+<p>The video stays on your device. A few still frames and the sound go to the AI reader, which doesn't keep them. More in <a href="privacy">Privacy</a>.</p>
+<h3>Can I paste a link?</h3>
+<p>A YouTube link, when that is switched on. For TikTok, Instagram and the rest, add the video or a screenshot. Amounts are never guessed: if the video says "a splash", the plan says a splash.</p>
+<h3>Is there an app?</h3>
+<p>It runs in the browser. Add it to your Home Screen to use it as an app.</p>
+
+<p><a href="guides">All guides</a>: how much rice, how big a pot, how to double a recipe.</p>
+
+<p>Made by Michael Begley.</p>
+<h2>Contact</h2>
+<p>Ideas, bugs or questions: open an issue at <a href="https://github.com/michaelbegley/batch.day/issues" rel="noopener">github.com/michaelbegley/batch.day</a>.</p>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"batch.recipes","url":"https://batch.recipes/","description":"Free website that turns any recipe screenshot or text into a batch-cooking plan: scaled amounts, a grocery list in store order, a cook order and a fridge and freezer plan.","applicationCategory":"LifestyleApplication","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"creator":{"@type":"Person","name":"Michael Begley"}}</script>

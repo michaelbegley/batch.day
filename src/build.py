@@ -11,7 +11,7 @@ import re, hashlib, base64
 h=open('site/index.html').read()
 hashes=["'sha256-"+base64.b64encode(hashlib.sha256(m.encode()).digest()).decode()+"'" for m in re.findall(r'<script>(.*?)</script>', h, re.S)]
 csp=("default-src 'self'; script-src 'self' "+' '.join(hashes)+" https://cdn.jsdelivr.net https://cloud.umami.is 'wasm-unsafe-eval' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com; worker-src blob: https://cdn.jsdelivr.net; "
-     "connect-src 'self' https://cdn.jsdelivr.net https://gateway.umami.is "+G+(" "+READER if READER else "")+"; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: "+G+"; frame-src "+G+"; fenced-frame-src "+G+"; font-src 'self'; "
+     "connect-src 'self' https://cdn.jsdelivr.net https://gateway.umami.is "+G+(" "+READER if READER else "")+"; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: "+G+"; media-src blob:; frame-src "+G+"; fenced-frame-src "+G+"; font-src 'self'; "
      "base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests")
 h=h.replace('<meta charset="utf-8">','<meta charset="utf-8">\n<meta http-equiv="Content-Security-Policy" content="'+csp+'">\n<meta name="referrer" content="strict-origin-when-cross-origin">',1)
 open('site/index.html','w').write(h)

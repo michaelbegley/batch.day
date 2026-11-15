@@ -223,5 +223,44 @@ ok(P('Chicken Curry - serves 4\n2 lb chicken').title === 'Chicken Curry', 'title
   ok(B('Sheet pan salmon\nServes 4\n4 salmon fillets\n2 heads broccoli\n1. Roast at 425F for 15 minutes.', 200).pans > 1, 'roast at a temperature means sheet pans');
   ok(B('Baked penne\nServes 6\n1 lb penne\n24 oz marinara\n1. Boil the penne.\n2. Mix and bake at 375F for 25 minutes.', 40).dishes > 1, 'bake at a temperature means baking dishes'); }
 
+// Video to recipe (15 Nov 2026): an amount given as a word is never dropped and never turned into a number
+{
+  const base = 'Honey chicken\nServes 4\n2 lb chicken thighs\n';
+  const one = (l) => { const r = P(base + l + '\n1. Cook it all.'); return { r, i: r.ingredients[1], n: r.ingredients.length }; };
+  for (const [l, name, word] of [['a drizzle of honey', 'honey', 'a drizzle'], ['a glug of olive oil', 'olive oil', 'a glug'], ['a splash of soy sauce', 'soy sauce', 'a splash'],
+    ['a dash of hot sauce', 'hot sauce', 'a dash'], ['a sprinkle of sesame seeds', 'sesame seeds', 'a sprinkle'], ['a knob of butter', 'butter', 'a knob'],
+    ['some rice', 'rice', 'some'], ['some fresh parsley', 'fresh parsley', 'some'], ['soy sauce (a splash)', 'soy sauce', 'a splash'], ['honey (a drizzle)', 'honey', 'a drizzle'],
+    ['a good glug of extra virgin olive oil', 'extra virgin olive oil', 'a good glug'], ['a big handful of cilantro', 'cilantro', 'a big handful'],
+    ['A Drizzle of Maple Syrup', 'Maple Syrup', 'a drizzle'], ['a squeeze of lemon juice', 'lemon juice', 'a squeeze'], ['a couple of splashes of fish sauce', 'fish sauce', 'a couple of splashes']]) {
+    const { r, i, n } = one(l);
+    ok(n === 2, l + ': kept as its own ingredient (' + n + ')');
+    ok(i && i.name === name, l + ': name is ' + name + ' (' + (i && i.name) + ')');
+    ok(i && i.qty == null && !i.unit, l + ': no number made up');
+    ok(i && i.vague === word, l + ': keeps the word ' + word + ' (' + (i && i.vague) + ')');
+    ok(r.flags.filter((f) => f.type === 'noamount' && f.line === l).length === 1, l + ': one No amount given flag');
+    ok(!r.ingredients[0].note, l + ': not folded into the line above');
+    const g = E.batchDay(r, 12).grocery.find((x) => x.name === name);
+    ok(g && !/^(a|an|some)\s/i.test(g.name), l + ': grocery list has the name first');
+    ok(g && (g.amt === word || /estimate|for serving/.test(g.amt)), l + ': grocery amount is the word or a labelled estimate (' + (g && g.amt) + ')');
+    ok(g && (g.amt !== word || g.vague === true), l + ': the word is marked so the list puts the name first');
+    ok(g && (!/\d/.test(g.amt) || /estimate/.test(g.amt)), l + ': no bare number on the grocery list');
+  }
+  // a pinch and a handful are units already: one of them, as before
+  let x = one('a pinch of salt'); ok(x.i.name === 'salt' && x.i.qty === 1 && x.i.unit === 'pinch' && !x.i.vague, 'a pinch of salt is 1 pinch');
+  x = one('a handful of spinach'); ok(x.i.name === 'spinach' && x.i.qty === 1 && x.i.unit === 'handful' && !x.i.vague, 'a handful of spinach is 1 handful');
+  // to taste: kept, named, shown as "to taste", no number
+  for (const l of ['salt to taste', 'pepper, to taste', 'hot sauce to taste']) { x = one(l); ok(x.n === 2 && x.i.qty == null && x.i.toTaste && !/to taste/.test(x.i.name), l + ': kept, to taste');
+    const g = E.batchDay(x.r, 12).grocery.find((q) => q.name === x.i.name); ok(g && (g.amt === 'to taste' || g.amt === 'for serving'), l + ': grocery says to taste or for serving (' + (g && g.amt) + ')'); }
+  // a whole video recipe of vague lines: every one is there, in order
+  const all = P('Weeknight noodles\nServes 2\n8 oz noodles\na splash of soy sauce\na drizzle of honey\na glug of sesame oil\na knob of butter\nsome scallions\nchili flakes (a sprinkle)\nsalt to taste\n1. Boil the noodles.\n2. Toss with the rest.');
+  ok(all.ingredients.map((i) => i.name).join('|') === 'noodles|soy sauce|honey|sesame oil|butter|scallions|chili flakes|salt', 'vague recipe keeps all 8 in order (' + all.ingredients.map((i) => i.name).join('|') + ')');
+  ok(all.steps.length === 2, 'vague recipe keeps its steps');
+  ok(all.ingredients.filter((i) => i.vague).length === 6, 'six vague amounts marked');
+  // lines that are not vague amounts stay as they were
+  x = one('chopped, some for serving'); ok(x.n === 1, 'a wrapped note is still a note');
+  x = one('2 tbsp honey'); ok(x.i.qty === 2 && !x.i.vague, 'a real amount is not vague');
+  ok(!E.parseIngredient('a dash of salt').qty && E.parseIngredient('a dash of salt').name === 'salt', 'parseIngredient alone: a dash of salt');
+}
+
 console.log(`${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

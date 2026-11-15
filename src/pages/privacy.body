@@ -1,6 +1,6 @@
 <h1>Privacy</h1>
 <p class="muted">Last updated 15 November 2026</p>
-<p>batch.recipes turns recipe screenshots into a batch-cooking plan. There are no accounts.</p>
+<p>batch.recipes turns recipe screenshots, videos and text into a batch-cooking plan. There are no accounts.</p>
 
 <h2>Screenshots</h2>
 <p>When you add screenshots, they are sent to our reader on Hugging Face. The reader passes them to an AI model through Hugging Face Inference Providers, which runs the model on a third-party provider's servers, and sends back the recipe text. Our reader doesn't save the screenshots or the text. Hugging Face and the provider handle them under their own terms. To enforce read limits, the reader keeps your IP address and the times of your recent reads in memory until it restarts. It keeps nothing else.</p>
@@ -10,9 +10,25 @@
 <li>Don't add screenshots that show anything private.</li>
 </ul>
 
+<h2>Videos</h2>
+<p>When you add a video, your browser picks a few still frames and the sound from it on your device. The video file itself is not uploaded. The frames and up to 3 minutes of the sound are sent to our reader on Hugging Face. The reader passes the sound to a speech-to-text model, and the frames and the text to an AI model, both through Hugging Face Inference Providers on third-party providers' servers, and sends back the recipe text. Our reader doesn't save the frames, the sound or the text. Hugging Face and the providers handle them under their own terms. The same read limits apply, kept the same way as for screenshots.</p>
+<ul>
+<li>Voices and anything shown in the video are in what is sent. Don't add a video that shows or says anything private.</li>
+<li>If the video reader can't be used, nothing more from the video is sent, and nothing is read on your device instead.</li>
+<li>If the video has no sound, only the frames are sent.</li>
+</ul>
+
+<h2>YouTube links</h2>
+<p>This applies only when you paste a YouTube link and YouTube links are switched on. The link is sent to our reader. The reader asks YouTube for that video's title, description and channel name through YouTube API Services. If the description doesn't hold the recipe, the reader asks Google's Gemini service to watch that public video. Google handles the link under its own terms, and on Google's free tier may use what is sent, which is the public link and our instructions, to improve its products. Our reader doesn't save the link or anything it gets back. The channel name and the link are kept with the saved batch in your browser so the recipe says who it is from.</p>
+<ul>
+<li>By using YouTube links here you agree to the <a href="https://www.youtube.com/t/terms" rel="noopener">YouTube Terms of Service</a>. Google's handling of data is in the <a href="https://policies.google.com/privacy" rel="noopener">Google Privacy Policy</a>.</li>
+<li>Links to TikTok, Instagram, Facebook, Pinterest and other sites are not sent anywhere. The site tells you to add the video or a screenshot instead.</li>
+</ul>
+
 <h2>What stays on your device</h2>
 <ul>
-<li>Recipe text you paste is read in your browser and isn't uploaded.</li>
+<li>Recipe text you paste is read in your browser and isn't uploaded. A YouTube link pasted on its own is the one exception, described above.</li>
+<li>A video you add stays on your device. Only the frames and sound described above leave it.</li>
 <li>Recipes are saved in your browser's storage under My batches. Clearing your browser data removes them. We can't see or recover them.</li>
 <li><b>Back up</b> makes a file on your device with your batches, My freezer, your theme and your staples. It goes only where you save or send it.</li>
 <li>When you use <b>Copy link</b> or <b>Send</b>, the recipe goes inside the link itself. The part of a link after the # isn't sent to our servers.</li>
@@ -21,7 +37,8 @@
 <h2>Services the site uses</h2>
 <ul>
 <li><b>Vercel</b> hosts the site and sees your IP address.</li>
-<li><b>Hugging Face</b> runs the AI reader described above and passes screenshots to the AI model through its Inference Providers.</li>
+<li><b>Hugging Face</b> runs the AI reader described above and passes screenshots, and video frames and sound, to the AI models through its Inference Providers.</li>
+<li><b>Google</b> (YouTube API Services and the Gemini API) is used only when you paste a YouTube link, as described above.</li>
 <li><b>jsDelivr</b> serves the on-device reader, which is only loaded if the AI reader can't be used.</li>
 <li><b>Vercel Web Analytics</b> counts visits, the site a visit came from and a few anonymous actions, like reading a recipe or opening cook mode. It uses no cookies and stores no personal information.</li>
 <li><b>Umami</b> counts the same visits and actions. It also uses no cookies and stores no personal information.</li>

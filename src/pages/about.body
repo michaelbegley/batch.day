@@ -24,6 +24,9 @@
 <h3>Does it work on iPhone and Android?</h3>
 <p>Yes, in the browser. You can add it to your Home Screen to use it like an app.</p>
 
+<h2>Guides</h2>
+{{GUIDES}}
+
 <p>Made by Michael Begley.</p>
 <h2>Contact</h2>
 <p>Ideas, bugs or questions: open an issue at <a href="https://github.com/michaelbegley/batch.day/issues" rel="noopener">github.com/michaelbegley/batch.day</a>.</p>

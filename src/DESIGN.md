@@ -175,3 +175,17 @@ Checks in `breakit9.py`. Numbers from `freezer_even.py`. Screenshots in `freezer
 - **Spacing:** home card 24 above and below, heading to total 0, total to group label 16, label to rows 0, group to next label 16, Ate one 44 high and 8 from the dish. Store card: 8 between heading, line, date row and button; 16 from the labels card.
 - **Tests changed:** breakit6 (backup keys now include `freezer`) and breakit7 (label rows: the count moved under the code, Cooked and Use by are on their own rows).
 - **Not tested here:** a real phone camera on a printed label, real iPhone and Android taps. See the builder's report. One known limit: on iPhone, a camera scan opens Safari, and a Home Screen copy of the site keeps its own storage, so batches saved in the Home Screen app won't be found from a scan.
+
+## Guides: search pages (14 Nov)
+Checks in `breakit10.py` (351) and `test_guides.js` (run by breakit10). Screenshots in `guide-shots/` (`guide_shots.py`). Not committed or deployed by the builder.
+
+- **What they are.** Ten pages, one question each, at clean URLs (`/how-much-rice-for-meal-prep`). H1 is the question, the first paragraph is the answer with numbers, then a small calculator, a table where it helps, How it works, Questions, "Plan your own recipe" and three more guides. `/guides` lists them; About has the list; both footers link to Guides.
+- **Where the numbers come from.** `guides.js` (run by `build.py` with node) holds each page's `calc()`. It runs on `engine.js` at build time to write the answer paragraph, tables and the calculator's first state into the HTML, and the same `calc()` runs in the browser when a stepper moves. So a page with scripts off already has the numbers. No number is typed by hand; percentages and pot sizes are measured off the engine.
+- **Engine.** Untouched. Pages load `site/engine.js`, a copy `build.py` writes. Each page has one inline script (the calc and the stepper wiring), hashed into that page's own CSP meta, the same model as home.
+- **No portion rule.** The engine has none for meat, so the chicken page scales the recipe's own amount. Rice uses the engine's ⅓ cup dry a meal, and says it's an estimate.
+- **Common amounts tables** (double, triple) only list rows the engine's rounding gets exactly right. ⅓ cup doubled is left out: the engine rounds cups to the nearest quarter and gives ¾ cup.
+- **No keep times** on any guide, and no diet or health claims. The engine's "eat within 4 days" is not shown.
+- **Shell.** `pages/_shell.html` got `{{HEAD}}` and `{{CSS}}` slots, the card and stepper colours, and 44 px footer links. Guide styles are in `pages/_guide.css` (also used by About for the list). Steppers are the home page's: 148 x 52, hold to repeat, whole numbers, dim at the ends.
+- **Also new:** `sitemap.xml` (14 URLs) and `robots.txt` (allow all, points to the sitemap). "Plan your own recipe" sends `Guide plan {guide}`.
+- **Spacing:** h1 to answer 16, answer to card 24, card pad 20, rows 8, result 16 under its hairline, sections 32, question to answer 4, button 32 above.
+- **Not tested here:** real iPhone and Android.

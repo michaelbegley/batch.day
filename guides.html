@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cloud.umami.is; connect-src 'self' https://gateway.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guides · batch.recipes</title>
+<meta name="description" content="Batch cooking questions, each with a calculator: rice, chicken, pot sizes, doubling, tripling and baking.">
+<link rel="canonical" href="https://batch.recipes/guides">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="batch.recipes">
+<meta property="og:title" content="Guides · batch.recipes">
+<meta property="og:description" content="Batch cooking questions, each with a calculator: rice, chicken, pot sizes, doubling, tripling and baking.">
+<meta property="og:image" content="https://batch.recipes/og.png">
+<meta property="og:url" content="https://batch.recipes/guides">
+<meta name="twitter:card" content="summary_large_image">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="6ad3a50b-f9cd-46e8-911a-edda631db62a" data-domains="batch.recipes" data-exclude-hash="true"></script>
+<link rel="icon" href="favicon.svg?v=3" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
+<style>
+:root{--bg:#fff;--bg2:#f5f5f7;--raise:#fff;--ink:#1d1d1f;--ink2:#6e6e73;--line:rgba(0,0,0,.08);--accent:#c2410c;--accent-ink:#fff;--shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);--ease:cubic-bezier(.32,.72,0,1);--fade:cubic-bezier(.25,.1,.25,1);--font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Inter,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#000;--bg2:#2c2c2e;--raise:#1c1c1e;--ink:#f5f5f7;--ink2:#a1a1a6;--line:rgba(255,255,255,.12);--accent:#ff7a3d;--accent-ink:#1d1d1f;--shadow:none}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.55 var(--font);-webkit-font-smoothing:antialiased}
+.bar{display:flex;align-items:center;height:52px;padding:0 16px;border-bottom:1px solid var(--line)}
+.mark{font-weight:600;font-size:19px;letter-spacing:-.02em;color:var(--ink);text-decoration:none;min-height:44px;display:flex;align-items:center}
+.mark b{color:var(--accent);font-weight:600}
+main{max-width:640px;margin:0 auto;padding:40px 16px 64px}
+h1{font-size:40px;line-height:1.1;letter-spacing:-.03em;margin:0 0 8px;font-weight:600}
+h2{font-size:21px;letter-spacing:-.01em;margin:32px 0 8px;font-weight:600}
+p,li{color:var(--ink)}
+.muted{color:var(--ink2);font-size:15px}
+ul{padding-left:20px}li{margin:8px 0}
+a{color:var(--accent);overflow-wrap:anywhere}
+main{overflow-wrap:break-word}
+footer{display:flex;flex-wrap:wrap;justify-content:center;gap:0 16px;border-top:1px solid var(--line);padding:12px 16px;font-size:14px;color:var(--ink2)}
+footer a{color:var(--ink2);min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center}
+.num{font-variant-numeric:tabular-nums}
+.g h1{font-size:32px;margin:0 0 16px;text-wrap:balance}
+.g p{margin:0 0 16px}
+.g .lead{font-size:19px;line-height:1.47;margin:0}
+.g h2{margin:32px 0 8px}
+.g h3{font-size:17px;font-weight:600;margin:16px 0 4px}
+.g ul,.g ol{margin:0;padding-left:20px}
+.g h3+p{margin:0}
+.g .muted{margin:0 0 8px}
+.card{background:var(--raise);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:20px;margin:24px 0 0}
+.set{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--line)}
+.set:first-child{border-top:0;padding-top:0}
+.set label{font-size:17px;font-weight:600;min-width:0}
+.step{display:inline-flex;align-items:center;gap:4px;background:var(--bg2);border-radius:980px;padding:4px;flex:none;-webkit-user-select:none;user-select:none}
+.step button{width:44px;height:44px;border-radius:50%;border:0;background:none;cursor:pointer;font:inherit;font-size:22px;line-height:1;color:var(--accent);padding:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .15s var(--ease),opacity .2s var(--fade)}
+.step button:active{transform:scale(.88)}
+.step button.end{opacity:.4}.step button.end:active{transform:none}
+.step button:focus-visible,.btn:focus-visible{outline:0;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent)}
+.step input,.step output{width:44px;height:44px;text-align:center;border:0;background:none;color:var(--ink);font:inherit;font-weight:600;font-size:19px;line-height:44px;outline:none;border-radius:8px;padding:0;display:block}
+.step input:focus-visible{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent)}
+.step .nr{animation:nudgeR .2s var(--ease)}.step .nl{animation:nudgeL .2s var(--ease)}
+@keyframes nudgeR{35%{transform:translateX(4px)}to{transform:none}}
+@keyframes nudgeL{35%{transform:translateX(-4px)}to{transform:none}}
+.res{border-top:1px solid var(--line);margin-top:8px;padding-top:16px}
+.g .big{font-size:40px;line-height:1.1;font-weight:600;letter-spacing:-.03em;margin:0}
+.g .sub{color:var(--ink2);font-size:15px;margin:4px 0 0}
+.out{margin-top:16px}
+.tbl{width:100%;border-collapse:collapse;font-size:16px}
+.tbl th{text-align:left;font-weight:400;font-size:13px;line-height:20px;color:var(--ink2);padding:0 8px 4px 0}
+.tbl td{padding:12px 8px 12px 0;border-top:1px solid var(--line);vertical-align:top}
+.tbl th:last-child,.tbl td:last-child{padding-right:0}
+.tbl b{font-weight:600}
+.tbl small{display:block;font-size:13px;color:var(--ink2)}
+.calc .tbl tr:last-child td,.calc .buy:last-child li:last-child{padding-bottom:0}
+.g .aisle{margin:16px 0 0;font-size:13px;line-height:20px;color:var(--ink2)}
+.g .aisle:first-child{margin-top:0}
+.g .buy{list-style:none;margin:0;padding:0}
+.buy li{margin:0;padding:12px 0;border-top:1px solid var(--line);font-size:16px}
+.buy li:first-child{border-top:0}
+.buy .muted{font-size:16px}
+.g .cta{margin:32px 0 0}
+.btn{display:flex;align-items:center;justify-content:center;min-height:56px;border-radius:980px;padding:0 24px;font-weight:600;font-size:17px;background:var(--accent);color:var(--accent-ink);text-decoration:none;-webkit-tap-highlight-color:transparent;transition:transform .15s var(--ease),filter .2s var(--fade)}
+.btn:active{transform:scale(.97)}
+@media (hover:hover){.btn:hover{filter:brightness(1.06)}}
+ul.gl{list-style:none;margin:0;padding:0}
+ul.gl.idx{margin-top:12px}
+.gl li{margin:0;border-top:1px solid var(--line)}
+.gl li:first-child{border-top:0}
+.gl a{display:flex;flex-direction:column;justify-content:center;min-height:48px;padding:12px 0;text-decoration:none;font-weight:600}
+.gl a span{color:var(--ink2);font-weight:400;font-size:15px}
+.chg{animation:amt .18s var(--fade) both}
+@keyframes amt{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@media (min-width:480px){.g h1{font-size:40px}}
+@media (prefers-reduced-motion:reduce){.chg{animation:fadeIn .2s linear both}.step .nr,.step .nl{animation:none}.step button:active,.btn:active{transform:none}}
+</style>
+</head>
+<body>
+<header class="bar"><a class="mark" href="./">batch<b>.</b>recipes</a></header>
+<main>
+<article class="g">
+<h1>Guides</h1>
+<p class="lead">Batch cooking questions, each with a calculator.</p>
+<ul class="gl idx"><li><a href="how-much-rice-for-meal-prep">How much rice do I need for meal prep?<span>4½ cups of dry rice for 14 meals.</span></a></li><li><a href="how-much-chicken-for-meal-prep">How much chicken do I need for meal prep?<span>5¼ lb for 14 meals, from 1½ lb for 4 servings.</span></a></li><li><a href="how-to-scale-a-recipe-for-meal-prep">How do I scale a recipe for meal prep?<span>Meals over servings. Past double, salt at 70%, spices at 75%, oil at 60%.</span></a></li><li><a href="what-size-pot-for-a-double-batch">What size pot do I need to double a soup or chili recipe?<span>A 6 qt pot for a doubled 2 quart soup.</span></a></li><li><a href="how-much-rice-fits-in-a-pot">How much dry rice can I cook in one pot?<span>Up to 4 cups in a 3 qt pot.</span></a></li><li><a href="how-to-double-a-recipe">How do I double a recipe?<span>Everything times 2. Then check the pot.</span></a></li><li><a href="how-to-triple-a-recipe">How do I triple a recipe?<span>Salt at 2.1×, spices at 2.25×, oil at 1.8×.</span></a></li><li><a href="can-you-double-a-baking-recipe">Can you double or triple a baking recipe?<span>Double is fine. Past that, make more batches.</span></a></li><li><a href="tiktok-recipe-to-grocery-list">How do I turn a TikTok recipe into a grocery list?<span>From screenshots, in store order.</span></a></li><li><a href="how-much-meat-to-brown-at-once">How much meat can I brown at once?<span>About 1½ lb in a 12-inch pan.</span></a></li></ul>
+<p class="cta"><a class="btn" href="./" data-umami-event="Guide plan" data-umami-event-guide="guides">Plan your own recipe</a></p>
+</article>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "CollectionPage", "url": "https://batch.recipes/guides", "name": "Guides", "description": "Batch cooking questions, each with a calculator: rice, chicken, pot sizes, doubling, tripling and baking.", "isPartOf": {"@type": "WebSite", "name": "batch.recipes", "url": "https://batch.recipes/"}, "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "url": "https://batch.recipes/how-much-rice-for-meal-prep", "name": "How much rice do I need for meal prep?"}, {"@type": "ListItem", "position": 2, "url": "https://batch.recipes/how-much-chicken-for-meal-prep", "name": "How much chicken do I need for meal prep?"}, {"@type": "ListItem", "position": 3, "url": "https://batch.recipes/how-to-scale-a-recipe-for-meal-prep", "name": "How do I scale a recipe for meal prep?"}, {"@type": "ListItem", "position": 4, "url": "https://batch.recipes/what-size-pot-for-a-double-batch", "name": "What size pot do I need to double a soup or chili recipe?"}, {"@type": "ListItem", "position": 5, "url": "https://batch.recipes/how-much-rice-fits-in-a-pot", "name": "How much dry rice can I cook in one pot?"}, {"@type": "ListItem", "position": 6, "url": "https://batch.recipes/how-to-double-a-recipe", "name": "How do I double a recipe?"}, {"@type": "ListItem", "position": 7, "url": "https://batch.recipes/how-to-triple-a-recipe", "name": "How do I triple a recipe?"}, {"@type": "ListItem", "position": 8, "url": "https://batch.recipes/can-you-double-a-baking-recipe", "name": "Can you double or triple a baking recipe?"}, {"@type": "ListItem", "position": 9, "url": "https://batch.recipes/tiktok-recipe-to-grocery-list", "name": "How do I turn a TikTok recipe into a grocery list?"}, {"@type": "ListItem", "position": 10, "url": "https://batch.recipes/how-much-meat-to-brown-at-once", "name": "How much meat can I brown at once?"}]}}</script>
+</main>
+<footer><a href="./">Home</a><a href="guides">Guides</a><a href="about">About</a><a href="privacy">Privacy</a></footer>
+</body>
+</html>

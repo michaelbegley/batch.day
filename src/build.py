@@ -21,6 +21,38 @@ import json
 json.dump({"name":"batch.recipes","short_name":"batch.recipes","description":"Cook once. Eat all week.","start_url":"./","scope":"./","display":"standalone","background_color":"#ffffff","theme_color":"#ffffff",
  "icons":[{"src":"icon-192.png?v=3","sizes":"192x192","type":"image/png"},{"src":"icon-512.png?v=3","sizes":"512x512","type":"image/png"},{"src":"icon-maskable-512.png?v=3","sizes":"512x512","type":"image/png","purpose":"maskable"}]},open('site/manifest.webmanifest','w'),indent=1)
 
-s=open('pages/_shell.html').read()
+# search pages ("guides"): node guides.js runs every page's calculator on engine.js and prints the pages as JSON
+import subprocess, html as H
+GD=json.loads(subprocess.run(['node','guides.js'],capture_output=True,text=True,check=True).stdout)
+SITE='https://batch.recipes/'
+open('site/engine.js','w').write(open('engine.js').read())  # the guides' calculators load the same engine as the home page
+s=open('pages/_shell.html').read(); GCSS=open('pages/_guide.css').read()
+def page(name,title,desc,body,head='',css='',csp=False):
+    h=s.replace('{{TITLE}}',H.escape(title,quote=False)).replace('{{DESC}}',H.escape(desc)).replace('{{HEAD}}',head).replace('{{CSS}}',css).replace('{{BODY}}',body)
+    if csp:  # same model as the home page: every inline script is allowed by its hash
+        hs=["'sha256-"+base64.b64encode(hashlib.sha256(m.encode()).digest()).decode()+"'" for m in re.findall(r'<script>(.*?)</script>', h, re.S)]
+        c=("default-src 'self'; script-src 'self' "+' '.join(hs+['https://cloud.umami.is'])+"; connect-src 'self' https://gateway.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; "
+           "base-uri 'none'; object-src 'none'; form-action 'none'; upgrade-insecure-requests")
+        h=h.replace('<meta charset="utf-8">','<meta charset="utf-8">\n<meta http-equiv="Content-Security-Policy" content="'+c+'">\n<meta name="referrer" content="strict-origin-when-cross-origin">',1)
+    open(f'site/{name}.html','w').write(h)
+def seo(url,title,desc,kind='article'):
+    e=H.escape
+    return ('\n<link rel="canonical" href="'+url+'">\n<meta property="og:type" content="'+kind+'">\n<meta property="og:site_name" content="batch.recipes">\n<meta property="og:title" content="'+e(title)+'">\n<meta property="og:description" content="'+e(desc)+'">'
+            '\n<meta property="og:image" content="'+SITE+'og.png">\n<meta property="og:url" content="'+url+'">\n<meta name="twitter:card" content="summary_large_image">')
+GLIST='<ul class="gl">'+''.join(f'<li><a href="{g["slug"]}">{H.escape(g["h1"],quote=False)}</a></li>' for g in GD['pages'])+'</ul>'
 for n,t_,d in [('privacy','Privacy','How batch.recipes handles your recipes, screenshots and ads.'),('about','About','What batch.recipes is and who makes it.')]:
-    open(f'site/{n}.html','w').write(s.replace('{{TITLE}}',t_).replace('{{DESC}}',d).replace('{{BODY}}',open(f'pages/{n}.body').read()))
+    page(n,t_,d,open(f'pages/{n}.body').read().replace('{{GUIDES}}',GLIST),css=GCSS if n=='about' else '')
+for g in GD['pages']:
+    page(g['slug'],g['title'],g['desc'],g['body'],seo(g['url'],g['h1'],g['desc']),GCSS,True)
+gd='Batch cooking questions, each with a calculator: rice, chicken, pot sizes, doubling, tripling and baking.'
+ld={"@context":"https://schema.org","@type":"CollectionPage","url":SITE+"guides","name":"Guides","description":gd,"isPartOf":{"@type":"WebSite","name":"batch.recipes","url":SITE},
+    "mainEntity":{"@type":"ItemList","itemListElement":[{"@type":"ListItem","position":i+1,"url":g['url'],"name":g['h1']} for i,g in enumerate(GD['pages'])]}}
+page('guides','Guides',gd,'<article class="g">\n<h1>Guides</h1>\n<p class="lead">Batch cooking questions, each with a calculator.</p>\n<ul class="gl idx">'
+     +''.join(f'<li><a href="{g["slug"]}">{H.escape(g["h1"],quote=False)}<span>{H.escape(g["sum"],quote=False)}</span></a></li>' for g in GD['pages'])
+     +'</ul>\n<p class="cta"><a class="btn" href="./" data-umami-event="Guide plan" data-umami-event-guide="guides">Plan your own recipe</a></p>\n</article>\n<script type="application/ld+json">'+json.dumps(ld).replace('<','\\u003c')+'</script>',
+     seo(SITE+'guides','Guides · batch.recipes',gd,'website'),GCSS,True)
+# sitemap and robots (robots allows everything)
+urls=[SITE,SITE+'guides']+[g['url'] for g in GD['pages']]+[SITE+'about',SITE+'privacy']
+open('site/sitemap.xml','w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join(f'<url><loc>{u}</loc><lastmod>{GD["updated"]}</lastmod></url>\n' for u in urls)+'</urlset>\n')
+open('site/robots.txt','w').write('User-agent: *\nAllow: /\n\nSitemap: '+SITE+'sitemap.xml\n')
+print(len(GD['pages']),'guides')

@@ -108,7 +108,7 @@ async def main():
             await pg.fill('#paste',txt); await pg.tap('#usePaste'); await pg.wait_for_selector('#v-sheet:not(.hidden)'); await pg.wait_for_timeout(300); await pg.tap('#newRec'); await pg.wait_for_timeout(300)
         r0=await pg.locator('#savedList .open').count(); await pg.locator('#savedList .rm').first.scroll_into_view_if_needed(); await pg.tap('#savedList .rm >> nth=0')
         st=await pg.evaluate("(()=>{const g=document.querySelector('#savedList li.gone');return [document.querySelectorAll('#savedList .open').length,!!g,g&&g.getAttribute('aria-hidden'),g?g.querySelectorAll('button,a,input').length:-1,JSON.parse(localStorage.getItem('bd-batches')).length,document.activeElement.className]})()")
-        await pg.wait_for_timeout(450); g2=await pg.locator('#savedList li.gone').count(); lis=await pg.locator('#savedList li').count()
+        await pg.wait_for_timeout(900); g2=await pg.locator('#savedList li.gone').count(); lis=await pg.locator('#savedList li').count()
         await pg.tap('#toast button'); await pg.wait_for_timeout(300); r2=await pg.locator('#savedList .open').count()
         log('3 removed batch: list, storage and focus change at once; a hidden copy folds shut and is gone; Undo restores',r0==2 and st==[1,True,'true',0,1,'open'] and g2==0 and lis==1 and r2==2 and not errs,f'rows {r0}->{st[0]}->{r2} ghost={st[1:4]} stored={st[4]} focus={st[5]} ghostAfter={g2} errs={errs[:2]}'); await ctx.close()
         # 6 top-bar title

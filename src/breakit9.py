@@ -61,7 +61,7 @@ def scan_cv(png):
     img=cv2.imdecode(np.frombuffer(png,np.uint8),cv2.IMREAD_GRAYSCALE); t,_,_=cv2.QRCodeDetector().detectAndDecode(img); return t
 FZROWS="""(()=>({hidden:document.getElementById('fz').classList.contains('hidden'),sum:document.getElementById('fzSum').textContent,
  labels:[...document.querySelectorAll('#fzList .aisle')].map(e=>e.textContent),
- rows:[...document.querySelectorAll('#fzList li')].map(li=>({grp:(()=>{let p=li.parentNode.previousElementSibling;return p&&p.classList.contains('aisle')?p.textContent:''})(),t:li.querySelector('b').textContent,s:li.querySelector('.open span').textContent,btn:li.querySelector('.ate').textContent,name:li.querySelector('.ate').getAttribute('aria-label')}))}))()"""
+ rows:[...document.querySelectorAll('#fzList li:not(.gone)')].map(li=>({grp:(()=>{let p=li.parentNode.previousElementSibling;return p&&p.classList.contains('aisle')?p.textContent:''})(),t:li.querySelector('b').textContent,s:li.querySelector('.open span').textContent,btn:li.querySelector('.ate').textContent,name:li.querySelector('.ate').getAttribute('aria-label')}))}))()"""
 async def main():
     # ---------- unit: the split as numbers, and the QR encoder ----------
     out=subprocess.run(['node','-e',"const E=require('./engine.js');const r=E.parseRecipe('Soup\\nServes 4\\n1 cup lentils\\n2 carrots\\n1. Simmer 30 minutes.');console.log(JSON.stringify([14,4,3,1,30].map(n=>E.batchDay(r,n).portions)))"],capture_output=True,text=True)
@@ -157,9 +157,9 @@ console.log(JSON.stringify({o,long:Q.make('y'.repeat(200)),empty:Q.make(''),url:
         ask=await pg.evaluate("({txt:(document.querySelector('#didBox .tip')||{}).innerText||'',n:JSON.parse(localStorage.getItem('bd-freezer')).length,foc:document.activeElement.id,go:!!document.getElementById('didGo')})")
         log('cooked: the same batch on the same day asks first, adds nothing yet',ask['n']==1 and 'Already added for' in ask['txt'] and 'Add it again?' in ask['txt'] and ask['foc']=='didAgain' and not ask['go'] and not errs,ask)
         await pg.screenshot(path='breakit/9-ask.png')
-        await pg.tap('#didNo'); await pg.wait_for_timeout(150)
+        await pg.tap('#didNo'); await pg.wait_for_timeout(600)
         log('cooked: Cancel adds nothing and brings the button back',len(await pg.evaluate(LSJ,'bd-freezer'))==1 and await pg.evaluate("document.activeElement.id")=='didGo')
-        await pg.tap('#didGo'); await pg.wait_for_timeout(150); await pg.tap('#didAgain'); await pg.wait_for_timeout(200)
+        await pg.tap('#didGo'); await pg.wait_for_timeout(600); await pg.tap('#didAgain'); await pg.wait_for_timeout(200)  # round 3: Add again sits where the button was, and a tap there in the first half second is taken as a stray
         fz=await pg.evaluate(LSJ,'bd-freezer')
         log('cooked: Add again adds a second entry with its own id',len(fz)==2 and fz[0]['id']!=fz[1]['id'] and len(await pg.evaluate(EV,'Cooked'))==2,[x['id'] for x in fz])
         await pg.tap('#toast button'); await pg.wait_for_timeout(200)
@@ -205,7 +205,7 @@ console.log(JSON.stringify({o,long:Q.make('y'.repeat(200)),empty:Q.make(''),url:
         log('cook mode: Tab reaches Cancel and stays inside cook mode',f1=='cDidNo' and f2,(f1,f2))
         await pg.tap('#cDidNo'); await pg.wait_for_timeout(150)
         log('cook mode: Cancel adds nothing',len(await pg.evaluate(LSJ,'bd-freezer'))==1 and await pg.locator('#cDid').count()==1)
-        await pg.tap('#cDid'); await pg.wait_for_timeout(100); await pg.tap('#cDidAgain'); await pg.wait_for_timeout(200)
+        await pg.tap('#cDid'); await pg.wait_for_timeout(600); await pg.tap('#cDidAgain'); await pg.wait_for_timeout(200)
         log('cook mode: Add again adds',len(await pg.evaluate(LSJ,'bd-freezer'))==2)
         await pg.tap('#cNext'); await pg.wait_for_timeout(450); await tab(pg,'store')
         log('cook mode: back on the page the Store card knows',await pg.locator('#didSee').count()==1)
@@ -274,7 +274,7 @@ console.log(JSON.stringify({o,long:Q.make('y'.repeat(200)),empty:Q.make(''),url:
         log('home: singular, and the fridge row at 0 offers Remove',s['sum']=='1 meal in the freezer' and [x['btn'] for x in s['rows']]==['Remove','Ate one'],s)
         await pg.tap('#fzList [data-ate]'); await pg.wait_for_timeout(200); s=await pg.evaluate(FZROWS)
         log('home: nothing left anywhere says Nothing left, card still there until removed',s['sum']=='Nothing left' and not s['hidden'] and [x['btn'] for x in s['rows']]==['Remove','Remove'],s['sum'])
-        await pg.tap('#fzList [data-frm][data-p="r"]'); await pg.wait_for_timeout(200); await pg.tap('#fzList [data-frm][data-p="z"]'); await pg.wait_for_timeout(250)
+        await pg.tap('#fzList [data-frm][data-p="r"]'); await pg.wait_for_timeout(900); await pg.tap('#fzList [data-frm][data-p="z"]'); await pg.wait_for_timeout(250)  # round 3: after a row goes, the list's buttons wait 0.8 s
         r=await pg.evaluate("({hidden:document.getElementById('fz').classList.contains('hidden'),st:JSON.parse(localStorage.getItem('bd-freezer')),foc:document.activeElement.id})")
         log('home: both rows removed: the entry is gone, the card hides, focus goes to Choose screenshots',r=={'hidden':True,'st':[],'foc':'choose'},r)
         await pg.tap('#toast button'); await pg.wait_for_timeout(200)
@@ -352,7 +352,7 @@ console.log(JSON.stringify({o,long:Q.make('y'.repeat(200)),empty:Q.make(''),url:
         await pg.click('#lblPrint'); await pg.wait_for_timeout(300); await pg.emulate_media(media='print')
         saved=await pg.evaluate(LSJ,'bd-batches'); shot=await pg.locator('.lsheet').first.screenshot(); await pg.evaluate("0"); sc=scan(shot)
         open('freezer-shots/labels-print-qr-desktop.png','wb').write(shot)
-        log('label: printing saves the batch under the id the code carries',len(saved)==1 and saved[0]['id']==bid,(bid,saved and saved[0]['id']))
+        log('label: printing does not save a sample that was only looked at (round 3: same as Print in the Share sheet)',saved is None,saved)
         log('label: all 14 printed labels scan to that link',len(sc)==14 and {t for t,_ in sc}=={url},(len(sc),{t for t,_ in sc}))
         log('label: printed code is at least 0.6 in across',bool(sc) and min(w for _,w in sc)/4/96>=.6,[round(w/4/96,3) for _,w in sc][:3])
         pg9=await pg.evaluate("(()=>{const ls=[...document.querySelectorAll('#labels .lbl')];return {n:ls.length,nums:ls.map(e=>e.querySelector('.lq span').textContent),w:[...new Set(ls.map(e=>Math.round(e.getBoundingClientRect().width*100)/100))],h:[...new Set(ls.map(e=>Math.round(e.getBoundingClientRect().height*100)/100))],over:ls.filter(e=>e.scrollHeight>e.clientHeight+1||e.scrollWidth>e.clientWidth+1).length}})()")
@@ -363,6 +363,8 @@ console.log(JSON.stringify({o,long:Q.make('y'.repeat(200)),empty:Q.make(''),url:
         png=open(await dls[0].path(),'rb').read() if dls else b''; im=Image.open(io.BytesIO(png)) if png else None
         open('freezer-shots/labels-strip-qr.png','wb').write(png)
         sc=scan(png) if png else []
+        saved=await pg.evaluate(LSJ,'bd-batches')
+        log('label: Save as image saves the batch, under the id the printed code carries',bool(saved) and len(saved)==1 and saved[0]['id']==bid,(bid,saved and saved[0]['id']))
         log('label: the image strip is 788 x 300 a label, and all 14 codes scan to the link',bool(im) and im.size==(788,4200) and len(sc)==14 and {t for t,_ in sc}=={url},(im and im.size,len(sc)))
         log('label: code in the strip is 0.62 in at 300 dpi (186 px)',bool(sc) and all(abs(w-186)<=8 for _,w in sc),[round(w) for _,w in sc][:3])
         if im:
@@ -375,7 +377,7 @@ console.log(JSON.stringify({o,long:Q.make('y'.repeat(200)),empty:Q.make(''),url:
         ctx,pg,errs=await fresh(b,w=1280,h=900,mob=False,device_scale_factor=4); await pg.click('#pasteToggle'); await pg.fill('#paste',RH); await pg.click('#usePaste'); await pg.wait_for_timeout(700); await tab(pg,'store'); await pg.fill('#lblDate',''); await pg.wait_for_timeout(150)
         r=await pg.evaluate("(()=>{const l=document.querySelector('#lblPrev .lbl'),rows=[...l.querySelectorAll('.lt>div')];return {over:l.scrollHeight>l.clientHeight+1,rh:rows[3].textContent,cooked:rows[1].querySelectorAll('i').length,inside:rows[3].getBoundingClientRect().bottom<=l.getBoundingClientRect().bottom-7}})()")
         sc=scan(await pg.locator('#lblPrev .lbl').screenshot())
-        log('label: reheat line and a blank Cooked line fit beside the code, and it still scans',not r['over'] and r['rh']=='To reheat, microwave 2.5 minutes and stir.' and r['cooked']==1 and r['inside'] and len(sc)==1,r)
+        log('label: reheat line fits beside the code with the date emptied (round 3: that means today, no blank line), and it still scans',not r['over'] and r['rh']=='To reheat, microwave 2.5 minutes and stir.' and r['cooked']==0 and r['inside'] and len(sc)==1,r)
         await pg.locator('#lblPrev').screenshot(path='freezer-shots/label-reheat-nodate.png'); await ctx.close()
         # a batch whose id is too long for a small code: the old label, no code
         longb=[dict(BATCH(1)[0],id='L'*120)]

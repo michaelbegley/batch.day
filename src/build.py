@@ -3,7 +3,6 @@ READER=(open('reader.txt').read().strip() if os.path.exists('reader.txt') else '
 t=open('template.html').read().replace('/*READER*/',READER); e=open('engine.js').read()+'\n'+open('qr.js').read()  # the label QR encoder rides in the same inline script as the engine
 open('site/index.html','w').write(t.replace('/*ENGINE*/',e))
 open('site/favicon.svg','w').write('''<svg xmlns="http://www.w3.org/2000/svg" viewBox="1.804 0.804 52.391 52.391"><style>g{stroke:#c2410c}@media(prefers-color-scheme:dark){g{stroke:#ff7a3d}}</style><g fill="none" stroke="#c2410c" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16c-2-3 2-5 0-8"/><path d="M28 16c-2-3 2-5 0-8"/><path d="M36 16c-2-3 2-5 0-8"/><path d="M10 24h36"/><path d="M13 24v16a6 6 0 0 0 6 6h18a6 6 0 0 0 6-6V24"/><path d="M6 28h7M43 28h7"/></g></svg>''')  # from /home/claude/brand/mark.py: the one 3-steam pot
-open('site/404.html','w').write('<!DOCTYPE html><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=/"><title>batch.recipes</title>')
 open('site/CNAME','w').write('batch.recipes\n')
 open('site/.nojekyll','w').write('')
 G='https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.googletagservices.com https://*.adtrafficquality.google https://*.googleadservices.com'
@@ -41,7 +40,7 @@ def seo(url,title,desc,kind='article'):
             '\n<meta property="og:image" content="'+SITE+'og.png">\n<meta property="og:url" content="'+url+'">\n<meta name="twitter:card" content="summary_large_image">')
 GLIST='<ul class="gl">'+''.join(f'<li><a href="{g["slug"]}">{H.escape(g["h1"],quote=False)}</a></li>' for g in GD['pages'])+'</ul>'
 for n,t_,d in [('privacy','Privacy','How batch.recipes handles your recipes, screenshots and ads.'),('about','About','What batch.recipes is and who makes it.')]:
-    page(n,t_,d,open(f'pages/{n}.body').read().replace('{{GUIDES}}',GLIST),css=GCSS if n=='about' else '')
+    page(n,t_,d,open(f'pages/{n}.body').read().replace('{{GUIDES}}',GLIST),'\n<link rel="canonical" href="'+SITE+n+'">',GCSS if n=='about' else '')
 for g in GD['pages']:
     page(g['slug'],g['title'],g['desc'],g['body'],seo(g['url'],g['h1'],g['desc']),GCSS,True)
 gd='Batch cooking questions, each with a calculator: rice, chicken, pot sizes, doubling, tripling and baking.'
@@ -51,6 +50,14 @@ page('guides','Guides',gd,'<article class="g">\n<h1>Guides</h1>\n<p class="lead"
      +''.join(f'<li><a href="{g["slug"]}">{H.escape(g["h1"],quote=False)}<span>{H.escape(g["sum"],quote=False)}</span></a></li>' for g in GD['pages'])
      +'</ul>\n<p class="cta"><a class="btn" href="./" data-umami-event="Guide plan" data-umami-event-guide="guides">Plan your own recipe</a></p>\n</article>\n<script type="application/ld+json">'+json.dumps(ld).replace('<','\\u003c')+'</script>',
      seo(SITE+'guides','Guides · batch.recipes',gd,'website'),GCSS,True)
+# 404: a plain "Page not found" with ways on. Vercel serves /404.html, with status 404, for any address that isn't a file.
+# It can show at any depth (/a/b/c), so every address in it starts at the root. Not in the sitemap, and marked noindex.
+page('404','Page not found',"That page isn't here.",'<article class="g">\n<h1>Page not found</h1>\n<p class="lead">That address isn\'t on batch.recipes. It may have been mistyped.</p>\n<p class="cta"><a class="btn" href="/">Go to the home page</a></p>\n<p class="nf"><a href="/guides">See the guides</a></p>\n</article>',
+     '\n<meta name="robots" content="noindex">',GCSS+'.g .nf{margin:8px 0 0;text-align:center}.g .nf a{min-height:44px;display:inline-flex;align-items:center}')
+h4=open('site/404.html').read()
+for a,b in [('href="./"','href="/"'),('href="guides"','href="/guides"'),('href="about"','href="/about"'),('href="privacy"','href="/privacy"'),('href="favicon.svg','href="/favicon.svg'),('href="apple-touch-icon.png','href="/apple-touch-icon.png')]: h4=h4.replace(a,b)
+assert 'href="./' not in h4 and not __import__('re').search(r'(href|src)="(?!/|https://)',h4), 'a relative address on the 404 page'
+open('site/404.html','w').write(h4)
 # sitemap and robots (robots allows everything)
 urls=[SITE,SITE+'guides']+[g['url'] for g in GD['pages']]+[SITE+'about',SITE+'privacy']
 open('site/sitemap.xml','w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join(f'<url><loc>{u}</loc><lastmod>{GD["updated"]}</lastmod></url>\n' for u in urls)+'</urlset>\n')

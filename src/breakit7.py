@@ -213,7 +213,8 @@ async def main():
         await meals(pg,31); l3=' '.join((await pg.inner_text('#lblPrev .lbl')).split())
         log('labels: follows the meal count, keeps the date','1 of 31' in l3 and 'Dec 3, 2026' in l3 and await pg.input_value('#lblDate')=='2026-12-03',l3)
         await pg.fill('#lblDate',''); await pg.wait_for_timeout(150)
-        log('labels: no date leaves a line to write on',await pg.evaluate("(()=>{const r=document.querySelectorAll('#lblPrev .lbl .lt>div')[1];return r.firstElementChild.textContent==='Cooked'&&r.children[1].tagName==='I'&&r.querySelectorAll('i').length===1})()"))
+        # round 3 (M-08): an emptied date means today, on the label and in My freezer alike; it used to leave a line to write on
+        log('labels: an emptied date goes back to today',await pg.evaluate("(()=>{const r=document.querySelectorAll('#lblPrev .lbl .lt>div')[1];return r.firstElementChild.textContent+'|'+r.querySelectorAll('i').length})()")==f'Cooked {us}|0',us)
         await pg.fill('#lblDate','2026-12-03'); await meals(pg,14)
         # print
         await pg.click('#lblPrint'); await pg.wait_for_timeout(300)

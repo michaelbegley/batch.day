@@ -70,7 +70,7 @@ async def main():
         t2=await pg.locator('.checks input:checked').count(); await pg.click('#newRec'); await pg.click('#savedList .open >> nth=0'); await pg.wait_for_timeout(300)
         t3=await pg.locator('.checks input:checked').count()
         log('B3 ticks survive reload, stepper and reopen',t1==2 and t2==2 and t3==2 and not errs,f'{t1}/{t2}/{t3}')
-        await pg.click('[data-tab=recipe]'); await pg.click('#edit summary'); v=await pg.input_value('#text'); await pg.fill('#text',v.replace('boneless chicken thighs','pork shoulder')); await pg.click('#reparse'); await pg.wait_for_timeout(300); await pg.click('[data-tab=shop]')
+        await pg.click('[data-tab=recipe]'); await pg.click('#edit summary'); v=await pg.input_value('#text'); await pg.fill('#text',v.replace('boneless chicken thighs','pork shoulder')); await pg.wait_for_timeout(600); await pg.click('#reparse'); await pg.wait_for_timeout(300); await pg.click('[data-tab=shop]')  # round 3: Update scrolls to where Edit the text was tapped; a tap there within half a second is taken as a stray, so wait as a person would
         log('B3 a tick goes when its item text changes',await pg.locator('.checks input:checked').count()==1,''); await ctx.close()
         # B4 links
         ctx,pg,errs,_=await fresh(b)
